@@ -42,3 +42,15 @@ Memverifikasi kode STP atau kata sandi yang dimasukkan oleh pengguna.
 * **Proses**: Melakukan permintaan **HTTP POST** ke `https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/verify` dengan *payload* JSON berisi `phonenumber` dan `password`.
 * **Return**: Mengembalikan objek **JSON** dari respons server yang berisi status verifikasi.
 * **Error Handling**: Melemparkan *error* **"Failed to verify STP"** jika respons jaringan gagal.
+
+### 3. resendSTP(phoneNumber)
+
+Meminta pengiriman ulang kode STP ke nomor telepon pengguna jika kode sebelumnya tidak diterima atau kedaluwarsa.
+
+* *Parameter*:
+* *phoneNumber* (String): Nomor telepon tujuan (wajib menggunakan format *62*).
+
+
+* *Proses: Melakukan permintaan **HTTP POST* ke https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/resend dengan payload JSON berisi phonenumber.
+* *Return: Mengembalikan objek **JSON* dari respons server.
+* *Error Handling: Melemparkan *error *"Failed to resend STP"* jika respons jaringan gagal.
