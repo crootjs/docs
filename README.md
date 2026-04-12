@@ -86,9 +86,7 @@ Human in the loop:
 
 ## Login Menggunakan WhatsAuth
 
-[![Tutorial Web](https://img.youtube.com/vi/2erAXAWQB6Q/0.jpg)](https://www.youtube.com/watch?v=2erAXAWQB6Q)
-
-API whatsauth dapat digunakan untuk pengembangan implementasi SSO, login menggunakan QR dan Google SignIn. Buat repo baru yang berisi 3 file utama, yaitu:
+API whatsauth dapat digunakan untuk pengembangan implementasi SSO, login menggunakan QR dan Google SignIn. Buat repo baru yang berisi:
 1. index.html : File html utama yang memanggil js qr dan gsi
    ```html
    <!DOCTYPE html>
@@ -99,8 +97,7 @@ API whatsauth dapat digunakan untuk pengembangan implementasi SSO, login menggun
        <meta name="viewport" content="width=device-width, initial-scale=1.0">
        <title>WhatsAuth | Free WhatsApp API OTP Notif Broadcast Gratis</title>
        <link href="style.css" rel="stylesheet">
-   	<script src="qr.js" type="module"></script>
-   	<script src="gsi.js" type="module"></script>
+   	<script src="main.js" type="module"></script>
    </head>
    <body>
     <div id="hasphonenumber" class="w-full h-screen bg-blue-100 flex items-center justify-center">
@@ -116,11 +113,10 @@ API whatsauth dapat digunakan untuk pengembangan implementasi SSO, login menggun
    </body>
    </html>   
    ```
-2. qr.js : pengaturan login menggunakan qr  
-   [![Setting Parameter](https://img.youtube.com/vi/2667pmLihLo/0.jpg)](https://www.youtube.com/watch?v=2667pmLihLo)  
+2. main.js : pengaturan login menggunakan crootjs
    ```js
-   import {qrController,deleteCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.2/auth.js";
-   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.2/config.js";
+   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.3/auth.js";
+   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.3/config.js";
    
    wauthparam.auth_ws="d3NzOi8vYXBpLndhLm15LmlkL3dzL3doYXRzYXV0aC9wdWJsaWM=";
    wauthparam.keyword="aHR0cHM6Ly93YS5tZS82MjgzMTMxODk1MDAwP3RleHQ9d2g0dDVhdXRoMA==";
@@ -128,88 +124,16 @@ API whatsauth dapat digunakan untuk pengembangan implementasi SSO, login menggun
    wauthparam.redirect ="/auth"
    deleteCookie(wauthparam.tokencookiename);
    qrController(wauthparam);
+   
+   const url="https://asia-southeast2-awangga.cloudfunctions.net/bukupedia/auth/users";
+
+   const client_id="239713755402-4hr2cva377m43rsqs2dk0c7f7cktfeph.apps.googleusercontent.com";
+
+   // Panggil fungsi untuk menambahkan elemen
+   appendGoogleSignin(client_id,url);
    ```
    Ubah variabel `wauthparam.keyword` disesuaikan dengan nomor yang di daftarkan di WhatsAuth. Gunakan Base64 Decode dan Encode dengan melakukan update dari string keyword diatas untuk di update.
    ![image](https://github.com/user-attachments/assets/8e24a1ac-7249-45d3-8823-ee7f07c82058)  
-
-4. gsi.js : pengaturan login menggunakan google sign in
-   ```js
-   import {setCookieWithExpireHour,getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.2/cookie.js";
-   import {postJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.2/api.js";
-   import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.2/url.js";
-   import {addCSSInHead,addJSInHead} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.2/element.js";
-   import Swal from 'https://cdn.jsdelivr.net/npm/sweetalert2@11/src/sweetalert2.js';
-   
-   
-   await addCSSInHead("https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.css");
-   
-   const url="https://asia-southeast2-awangga.cloudfunctions.net/bukupedia/auth/users";
-   
-   const client_id="239713755402-4hr2cva377m43rsqs2dk0c7f7cktfeph.apps.googleusercontent.com";
-   
-   // Panggil fungsi untuk menambahkan elemen
-   appendGoogleSignin(client_id,url);
-   
-   
-   // Buat fungsi untuk memanggil gsi js dan menambahkan elemen div ke dalam DOM
-   async function appendGoogleSignin(client_id, target_url) {
-       try {
-           // Memuat script Google Sign-In
-           await addJSInHead("https://accounts.google.com/gsi/client");
-           // Menginisialisasi Google Sign-In dan menetapkan gSignIn sebagai callback
-           google.accounts.id.initialize({
-               client_id: client_id,
-               callback:  (response) => gSignIn(response, target_url), // Menggunakan gSignIn sebagai callback untuk Google Sign-In
-           });
-           // Render tombol Google Sign-In dalam elemen dengan id "tombolgsigngoogle"
-           google.accounts.id.renderButton(
-            document.getElementById("logs"),
-            {
-                theme: "outline", // Bisa "filled_blue", "filled_black", "outline"
-                size: "large", // Bisa "small", "medium", "large"
-                text: "signin_with", // Bisa "signin_with" atau "continue_with"
-                shape: "pill", // Bisa "rectangular", "pill", "circle", "square"
-            }
-           );
-           // Memunculkan pop-up Google Sign-In
-           google.accounts.id.prompt();
-           console.log('Google Sign-In open successfully!');
-       } catch (error) {
-           console.error('Failed to load Google Sign-In script:', error);
-       }
-   }
-   
-   async function gSignIn(response, target_url) {
-       try {
-           const gtoken = { token: response.credential };
-           await postJSON(target_url, "login", getCookie("login"), gtoken, responsePostFunction);
-       } catch (error) {
-           console.error("Network or JSON parsing error:", error);
-           Swal.fire({
-               icon: "error",
-               title: "Network Error",
-               text: "An error occurred while trying to log in. Please try again.",
-           });
-       }
-   }
-   
-   function responsePostFunction(response) {
-       if (response.status === 200 && response.data) {
-           console.log(response.data);
-           setCookieWithExpireHour('login',response.data.token,18);
-           redirect("/dashboard");
-       } else {
-           console.error("Login failed:", response.data?.message || "Unknown error");
-           Swal.fire({
-               icon: "error",
-               title: "Login Failed",
-               text: response.data?.message || "Anda belum terdaftar dengan login google, silahkan tap atau scan qr dahulu untuk pendaftaran.",
-           }).then(() => {
-               redirect("/login");
-           });
-       }
-   }
-   ```
 
 Untuk file-file tambahan:
 1. [style.css](style.css)
