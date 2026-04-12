@@ -11,7 +11,7 @@ Buka prompt
 buatkan landing page untuk platform digital kampus dengan menggunakan HTML, CSS dan JS ES6+ Module dilengkapi dengan meta tag untuk sosial media (termasuk sharing whatsapp yang tampil gambar, judul dan deskripsinya ketika di share)
 ```
 
-Human in the loop
+Human in the loop:
 1. Pastikan terdapat meta tag
    ```html
     <!DOCTYPE html>
@@ -42,4 +42,42 @@ Human in the loop
     <body>
     </body>
     </html>
+   ```
+2. Pastikan terdapat robots.txt
+   ```txt
+   User-agent: *
+   Allow: /
+   Sitemap: https://alamat.github.io/sitemap.xml
+   ```
+3. Pastikan terdapat sitemap.xml
+   ```xml
+   <?xml version="1.0" encoding="UTF-8"?>
+    <urlset
+        xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+                http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+    <url>
+    <loc>https://www.bukupedia.co.id/</loc>
+    <lastmod>2022-10-18T09:47:19+00:00</lastmod>
+    <priority>1.00</priority>
+    </url>
+    <url>
+    <loc>https://katalog.bukupedia.co.id/</loc>
+    <lastmod>2022-10-18T09:47:19+00:00</lastmod>
+    <priority>0.80</priority>
+    </url>
+    <url>
+    <loc>https://penulis.bukupedia.co.id/</loc>
+    <lastmod>2022-10-18T09:47:19+00:00</lastmod>
+    <priority>0.80</priority>
+    </url>
+    <url>
+    <loc>https://www.bukupedia.co.id/p/layanan.html</loc>
+    <lastmod>2022-10-18T09:47:19+00:00</lastmod>
+    <priority>0.80</priority>
+    </url>
+
+    </urlset>
    ```
