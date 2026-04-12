@@ -1,8 +1,10 @@
 # Dokumentasi Human in The Loop
 
-Dokumentasi Pemakaian CrootJS
+Dokumentasi Pemakaian CrootJS dengna AI Companion dan Human in the loop.
 
-## AI Companion
+## Landing Page
+
+Pembuatan landing page awal pada alamat.github.io
 
 Pastikan terlebih dahulu anda memiliki file favicon.ico dan mengunggahnya di root direktory
 
