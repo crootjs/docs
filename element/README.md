@@ -112,161 +112,45 @@ Fungsi `onClick` memungkinkan pengembang membangun interaksi dengan kode minimal
 
 Kontributor: AL YASMIN ASSA'DIYAH - 714240014
 
-# Dokumentasi Fungsi show, hide, dan textFocus
+# Dokumentasi Fungsi Tambahan element.js
 
-Module: **element.js**
-Module element.js menyediakan fungsi manipulasi elemen DOM untuk mengatur visibilitas dan fokus elemen secara modular dalam CrootJS.
+## 1. onChange(id, actionFunction)
 
-## 1. `show()`
+Menambahkan event listener `change` pada elemen target. Fungsi callback akan dieksekusi saat pengguna selesai mengubah nilai dan elemen kehilangan fokus. Callback langsung menerima referensi elemen target. Sebaiknya dipanggil di dalam `runAfterDOM()`.
 
-Fungsi show() digunakan untuk menampilkan elemen yang sebelumnya tersembunyi `(misalnya memiliki display: none)` tanpa menghapusnya dari **struktur DOM.**
-
-### Contoh
-
-```js
-import { show } from './element.js';
-
-show('box');
-// Elemen dengan id="box" akan ditampilkan
-
-
-2. `hide()`
-
-Fungsi hide() digunakan untuk menyembunyikan elemen dari tampilan halaman tanpa menghapusnya dari DOM, sehingga elemen masih bisa dimanipulasi kembali.
-
-### Contoh
-
-import { hide } from './element.js';
-
-hide('box');
-// Elemen dengan id="box" akan disembunyikan
-
-3. `textfocus()`
-
-Fungsi textFocus() digunakan untuk memberikan fokus otomatis pada elemen input teks, sehingga pengguna dapat langsung mengetik tanpa perlu klik manual.
-
-
- ### Contoh
- 
- import { textFocus } from './element.js';
-
-textFocus('username');
-// Input dengan id="username" akan langsung mendapat fokus
-
-
-# 📦 CrootJs — Dokumentasi `element.js`
-
-> **CrootJs** adalah library JavaScript ringan untuk menyederhanakan manipulasi DOM dan event handling di sisi klien.
-
----
-## Muhammad Arif Rivaldi
-## 📋 Daftar Isi
-
-- [Instalasi & Import](#instalasi--import)
-- [1. onChange()](#1-onchangeid-actionfunctionname)
-- [2. getValue()](#2-getvalueid)
-- [3. setInner()](#3-setinnerid-content)
----
-
-## Instalasi & Import
-
-```js
-import { onChange, getValue, setInner } from './element.js';
-```
-
----
-
-## 1. `onChange(id, actionfunctionname)`
-
-Mendaftarkan event listener `change` pada elemen berdasarkan `id`. Callback dipanggil setiap kali nilai elemen **berubah dan kehilangan fokus**.
-
-### Parameter
-
-| Parameter            | Tipe       | Wajib | Deskripsi                                          |
-|----------------------|------------|-------|----------------------------------------------------|
-| `id`                 | `string`   | ✅    | ID elemen target (`<input>`, `<select>`, `<textarea>`) |
-| `actionfunctionname` | `Function` | ✅    | Fungsi callback; menerima `event.target` sebagai argumen |
-
-### Catatan
-
-- Gunakan di dalam `runAfterDOM()` agar elemen sudah tersedia saat listener didaftarkan.
-- Callback menerima `target` (bukan `event`), sehingga langsung bisa akses `target.value`.
-- Berbeda dengan `onInput()` yang aktif setiap ketukan, `onChange()` hanya aktif setelah elemen kehilangan fokus.
-
-### Contoh
-
-```js
+**Contoh Penggunaan:**
+```javascript
 import { onChange } from './element.js';
 
-onChange('selectKota', (target) => {
-    console.log('Kota dipilih:', target.value);
-    // Output: "Kota dipilih: Bandung"
+onChange('pilihLevel', (target) => {
+    console.log('Terpilih:', target.value);
 });
 ```
 
----
+## 2. getValue(id)
 
-## 2. `getValue(id)`
+Mengambil nilai berupa teks (string) dari elemen formulir seperti input, select, dan textarea. Mengembalikan string kosong jika nilai tidak ada. Catatan penting: nilai yang dikembalikan selalu berjenis teks, diperlukan konversi eksplisit dengan `Number()` untuk isian bertipe angka.
 
-Mengambil nilai properti `value` dari elemen input berdasarkan `id`. Cocok untuk membaca data dari `<input>`, `<textarea>`, maupun `<select>`.
-
-### Parameter
-
-| Parameter | Tipe     | Wajib | Deskripsi              |
-|-----------|----------|-------|------------------------|
-| `id`      | `string` | ✅    | ID elemen input target |
-
-### Return Value
-
-| Tipe     | Deskripsi                                             |
-|----------|-------------------------------------------------------|
-| `string` | Nilai dari properti `value` elemen. Mengembalikan string kosong `""` jika input belum diisi. |
-
-### Catatan
-
-- Hasil selalu bertipe `string`. Gunakan `Number()` atau `parseInt()` jika membutuhkan angka.
-- Jika elemen tidak ditemukan, akan melempar error `Cannot read properties of null`.
-
-### Contoh
-
-```js
+**Contoh Penggunaan:**
+```javascript
 import { getValue } from './element.js';
 
-const nama  = getValue('txtNama');     // → "Saripudin"
-const umur  = Number(getValue('txtUmur')); // → 21
-const email = getValue('txtEmail');   // → "saripudin@mail.com"
+const usia = Number(getValue('fieldUmur'));
+const nama = getValue('fieldSiswa');
 ```
 
----
+## 3. setInner(id, content)
 
-## 3. `setInner(id, content)`
+Secara langsung mengganti isi (innerHTML) dari elemen HTML target dengan konten baru. Biasa dimanfaatkan untuk proses perubahan tampilan dinamis tanpa me-muat ulang halaman. Penting: Pastikan bahwa teks atau string HTML masukan telah melalui tahap sanitasi guna mencegah bahaya Cross Site Scripting (XSS).
 
-Mengubah `innerHTML` dari elemen berdasarkan `id`. Digunakan untuk **merender konten HTML secara dinamis** ke dalam elemen tanpa perlu reload halaman.
-
-### Parameter
-
-| Parameter | Tipe     | Wajib | Deskripsi                                              |
-|-----------|----------|-------|--------------------------------------------------------|
-| `id`      | `string` | ✅    | ID elemen target                                       |
-| `content` | `string` | ✅    | String HTML yang akan dirender sebagai konten elemen   |
-
-### Catatan
-
-- Mendukung tag HTML penuh — teks, tabel, gambar, dan elemen lainnya.
-- Konten lama **akan ditimpa** sepenuhnya. Gunakan `addInner()` jika ingin menambahkan tanpa menghapus yang lama.
-- Hati-hati terhadap **XSS** jika `content` berasal langsung dari input pengguna yang tidak disanitasi.
-
-### Contoh
-
-```js
+**Contoh Penggunaan:**
+```javascript
 import { setInner } from './element.js';
 
-// Pesan status
-setInner('divPesan', '<span class="sukses">✅ Data berhasil disimpan!</span>');
+setInner('boxStatus', 'Data berhasil diperbarui.');
 
-// Render tabel dari data
-const rows = data.map(d => `<tr><td>${d.nama}</td><td>${d.nilai}</td></tr>`).join('');
-setInner('tbodyHasil', rows);
+const infoList = dataMap.map(x => `<li>${x.teks}</li>`).join('');
+setInner('ulDaftar', infoList);
 ```
 
 ---
