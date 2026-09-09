@@ -1,172 +1,47 @@
-# Panduan Penggunaan mongo.js
+# Dokumentasi Modul `mongo.js`
 
-## Pendahuluan
-
-`mongo.js` adalah modul untuk menghubungkan aplikasi ke database MongoDB.
-File ini biasanya dipanggil sebelum server atau aplikasi utama dijalankan.
+`mongo.js` adalah modul kecil untuk lingkungan **browser** yang membantu bekerja dengan MongoDB `ObjectId` di sisi client — tanpa perlu MongoDB driver dan tanpa koneksi database sama sekali. Modul ini murni fungsi utilitas string/date.
 
 ---
 
-# 1. Persiapan
-
-## 1.1 Install Dependency
-
-Install MongoDB driver terlebih dahulu:
-
-```bash
-npm install mongodb
-```
-
-Pastikan MongoDB sudah berjalan di komputer atau server Anda.
-
----
-
-# 2. Membuat File mongo.js
-
-Buat file:
-
-```
-mongo.js
-```
-
-Isi dengan kode berikut:
+## Cara Penggunaan (Import)
 
 ```javascript
-const { MongoClient } = require("mongodb");
-
-let client;
-
-async function mongo(uri, options = {}) {
-  try {
-    client = new MongoClient(uri, options);
-    await client.connect();
-    console.log("MongoDB Connected");
-    return client;
-  } catch (error) {
-    console.error("MongoDB Connection Error:", error);
-    throw error;
-  }
-}
-
-module.exports = mongo;
+import { generateObjectId, getDateFromObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.5/mongo.js";
 ```
 
----
+## Daftar Fungsi
 
-# 3. Cara Menggunakan mongo.js
+### `generateObjectId()`
 
-## 3.1 Import di File Utama
+Membuat string 24-karakter yang menyerupai format MongoDB `ObjectId` (4 byte timestamp + 12 hex karakter acak), langsung di browser, tanpa perlu memanggil server atau library `mongodb`.
 
-Misalnya di `server.js` atau `index.js`:
+**Contoh Penggunaan:**
 
 ```javascript
-const mongo = require("./mongo");
+import { generateObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.5/mongo.js";
 
-async function startApp() {
-  try {
-    await mongo("mongodb://localhost:27017/mydatabase");
-    console.log("Database siap digunakan");
-  } catch (err) {
-    console.error("Gagal koneksi database:", err);
-  }
-}
-
-startApp();
+const id = generateObjectId();
+console.log(id); // contoh: "65f1a2b3c4d5e6f708192a3b"
 ```
 
----
+### `getDateFromObjectId(stringID)`
 
-# 4. Menggunakan Database Setelah Terhubung
+Mengambil kembali waktu pembuatan (timestamp) yang tertanam di 8 karakter pertama sebuah `ObjectId`, dan mengembalikannya sebagai objek `Date`.
 
-Contoh mengambil collection dan insert data:
+**Parameter:**
+- `stringID` (`string`) — string ObjectId (24 karakter hex, atau minimal 8 karakter pertama).
+
+**Contoh Penggunaan:**
 
 ```javascript
-const mongo = require("./mongo");
+import { getDateFromObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.5/mongo.js";
 
-async function startApp() {
-  const client = await mongo("mongodb://localhost:27017/mydatabase");
-
-  const db = client.db("mydatabase");
-  const users = db.collection("users");
-
-  await users.insertOne({
-    name: "Budi",
-    age: 25
-  });
-
-  console.log("Data berhasil ditambahkan");
-}
-
-startApp();
+const tanggalDibuat = getDateFromObjectId("65f1a2b3c4d5e6f708192a3b");
+console.log(tanggalDibuat); // Date object sesuai 8 karakter pertama ObjectId
 ```
 
----
+## Catatan
 
-# 5. Menggunakan Environment Variable (Disarankan)
-
-Install dotenv:
-
-```bash
-npm install dotenv
-```
-
-Buat file `.env`:
-
-```
-MONGO_URI=mongodb://localhost:27017/mydatabase
-```
-
-Gunakan di aplikasi:
-
-```javascript
-require("dotenv").config();
-const mongo = require("./mongo");
-
-mongo(process.env.MONGO_URI);
-```
-
----
-
-# 6. Error Handling
-
-Gunakan try/catch untuk mencegah aplikasi crash:
-
-```javascript
-try {
-  await mongo(process.env.MONGO_URI);
-} catch (err) {
-  console.error("Koneksi gagal:", err.message);
-  process.exit(1);
-}
-```
-
----
-
-# 7. Menutup Koneksi
-
-Untuk menutup koneksi saat aplikasi berhenti:
-
-```javascript
-process.on("SIGINT", async () => {
-  await client.close();
-  console.log("MongoDB connection closed");
-  process.exit(0);
-});
-```
-
----
-
-# Best Practice
-
-- Gunakan environment variable
-- Jangan hardcode password
-- Gunakan async/await
-- Tangani error dengan benar
-- Tutup koneksi saat aplikasi shutdown
-
----
-
-# Kesimpulan
-
-`mongo.js` mempermudah pengelolaan koneksi MongoDB agar kode tetap modular dan rapi.
-File ini sebaiknya hanya menangani koneksi database, bukan logika bisnis aplikasi.
+- Modul ini **tidak** membuka koneksi ke MongoDB — hanya menghasilkan/membaca string yang kompatibel dengan format `ObjectId` MongoDB, cocok dipakai di frontend untuk generate ID sementara sebelum data dikirim ke backend.
+- Untuk koneksi MongoDB sesungguhnya (driver `mongodb`, `MongoClient`, dll), itu adalah kode **server-side (Node.js)** dan berada di luar cakupan `crootjs/lib`, bukan di modul ini.

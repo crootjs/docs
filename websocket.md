@@ -15,7 +15,7 @@ import {
   connectws,
   sendMessagetoWebSocket, 
   closeWebSocket 
-} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.1/websocket.js";
+} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.5/websocket.js";
 ```
 ## 2. Membuka Koneksi & Menangkap Pesan
 
@@ -23,29 +23,48 @@ Untuk membuka koneksi, modul ini menggunakan dua fungsi yang saling terhubung: `
 
 ### Penjelasan Fungsi:
 
-* **`openWebSocketSetId(id, url_ws)`**: Fungsi utama untuk membuka koneksi. Mengecek dukungan browser, lalu memanggil `connectws()`.
+* **`openWebSocketSetId(id, url_ws, onMessage?)`**: Fungsi utama untuk membuka koneksi. Mengecek dukungan browser, lalu memanggil `connectws()`. Mengembalikan sebuah **Promise** yang resolve dengan objek `WebSocket` begitu koneksi terbuka (koneksi WebSocket selalu asinkron, jadi tidak mungkin dikembalikan secara langsung/sinkron).
   * **`id`** *(String/Number)*: Identitas unik *user* yang dikirim saat terhubung.
   * **`url_ws`** *(String)*: URL endpoint WebSocket yang **harus** di-enkode Base64.
-* **`connectws(id, url_ws)`**: Fungsi *Promise* di belakang layar yang mendekode URL (`atob()`), membuka koneksi, dan meneruskan pesan masuk ke sebuah fungsi global bernama `catcher()`.
+  * **`onMessage`** *(Function, opsional)*: Callback yang dipanggil setiap pesan masuk, menerima data pesan (`onMessage(pesan)`). Kalau tidak diisi, modul ini akan otomatis memanggil `window.catcher(pesan)` jika Anda sudah mendefinisikannya (lihat opsi B di bawah) — untuk kompatibilitas dengan kode lama.
+* **`connectws(id, url_ws, onMessage?)`**: Fungsi *Promise* di belakang layar yang mendekode URL (`atob()`) dan membuka koneksi. Parameternya sama seperti `openWebSocketSetId`.
 
 ### Cara Penggunaan:
 
-Sebelum memanggil fungsi buka koneksi, Anda **wajib** membuat fungsi global `window.catcher` untuk menangkap pesan dari server.
+**Opsi A — Callback eksplisit (direkomendasikan):**
+
+```javascript
+// A. Siapkan data koneksi
+const idPengguna = "User_714240001";
+const urlServer = btoa("wss://contoh-server-websocket.com"); // Wajib di-enkode Base64
+
+// B. Buka koneksi dan tangkap pesan lewat callback
+openWebSocketSetId(idPengguna, urlServer, (pesanMasuk) => {
+    console.log("Pesan baru dari server: ", pesanMasuk);
+    // Tulis logika Anda di sini (misal: tampilkan ke HTML)
+}).then((koneksiWs) => {
+    // koneksiWs baru tersedia setelah Promise ini resolve —
+    // simpan untuk dipakai nanti di sendMessagetoWebSocket/closeWebSocket
+    window.koneksiWs = koneksiWs;
+});
+```
+
+**Opsi B — `window.catcher` global (gaya lama, tetap didukung):**
 
 ```javascript
 // A. Buat penangkap pesan (Catcher) dari server
 window.catcher = function(pesanMasuk) {
     console.log("Pesan baru dari server: ", pesanMasuk);
-    // Tulis logika Anda di sini (misal: tampilkan ke HTML)
 };
 
 // B. Siapkan data koneksi
-const idPengguna = "User_714240001"; 
+const idPengguna = "User_714240001";
 const urlServer = btoa("wss://contoh-server-websocket.com"); // Wajib di-enkode Base64
 
-// C. Buka Koneksi
-// Nilai kembaliannya (koneksiWs) akan digunakan untuk mengirim/menutup pesan nanti
-let koneksiWs = openWebSocketSetId(idPengguna, urlServer);
+// C. Buka Koneksi — tanpa argumen ke-3, otomatis pakai window.catcher
+openWebSocketSetId(idPengguna, urlServer).then((koneksiWs) => {
+    window.koneksiWs = koneksiWs;
+});
 ```
 ## 3. Mengirim Pesan ke Server
 
@@ -65,10 +84,10 @@ Pastikan Anda memberi sedikit jeda waktu (atau letakkan di dalam *event listener
 // Contoh mengirim pesan setelah jeda 2 detik
 setTimeout(() => {
     let pesanSaya = "Halo, ini pesan dari Front-End!";
-    
-    // Kirim pesan menggunakan variabel koneksiWs yang dibuat di langkah 2
-    sendMessagetoWebSocket(pesanSaya, koneksiWs);
-    
+
+    // Kirim pesan menggunakan koneksi yang disimpan di langkah 2 (window.koneksiWs)
+    sendMessagetoWebSocket(pesanSaya, window.koneksiWs);
+
 }, 2000);
 ```
 ## 4. Menutup Koneksi
@@ -87,7 +106,7 @@ Panggil fungsi ini di dalam *event* tertentu, misalnya saat tombol "Tutup Koneks
 ```javascript
 // Contoh jika dimasukkan ke dalam fungsi tombol
 function akhiriSesi() {
-    closeWebSocket(koneksiWs);
+    closeWebSocket(window.koneksiWs);
     console.log("Koneksi berhasil diputus.");
 }
 ```

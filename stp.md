@@ -6,6 +6,12 @@ Modul **`stp.js`** menyediakan kumpulan fungsi asinkron untuk mengelola alur ote
 
 Modul ini mengekspor tiga fungsi utama untuk berinteraksi dengan API otentikasi. Semua fungsi bergantung pada fungsi validasi internal untuk memastikan integritas data sebelum mengirimkan permintaan jaringan.
 
+## Cara Penggunaan (Import)
+
+```javascript
+import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.5/stp.js";
+```
+
 ## Fungsi Internal
 
 ### `validatePhoneNumber(phoneNumber)`
@@ -47,21 +53,13 @@ Memverifikasi kode STP atau kata sandi yang dimasukkan oleh pengguna.
 
 Meminta pengiriman ulang kode STP ke nomor telepon pengguna jika kode sebelumnya tidak diterima atau kedaluwarsa.
 
-* *Parameter*:
-* *phoneNumber* (String): Nomor telepon tujuan (wajib menggunakan format *62*).
+* **Parameter**:
+* **`phoneNumber`** (*String*): Nomor telepon tujuan (wajib menggunakan format **62**).
 
 
-* *Proses: Melakukan permintaan **HTTP POST* ke https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/resend dengan payload JSON berisi phonenumber.
-* *Return: Mengembalikan objek **JSON* dari respons server.
-* *Error Handling: Melemparkan *error *"Failed to resend STP"* jika respons jaringan gagal.
-
-### 4. Manajemen URL dan Routing (url.js)
-Membangun aplikasi Single Page Application (SPA) membutuhkan pengelolaan URL yang baik. Modul url.js membantu Anda mengekstrak informasi dari address bar peramban.
-
-# Fitur Utama:
-
-* Ekstraksi Data: Mengambil parameter pencarian dengan getQueryString(), atau mengambil nilai hash dengan getHash().
-* Navigasi: Mengarahkan pengguna ke halaman lain menggunakan fungsi redirect(URL).
+* **Proses**: Melakukan permintaan **HTTP POST** ke `https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/resend` dengan *payload* JSON berisi `phonenumber`.
+* **Return**: Mengembalikan objek **JSON** dari respons server.
+* **Error Handling**: Melemparkan *error* **"Failed to resend STP"** jika respons jaringan gagal.
 
 ### Kesimpulan
 CrootJS menawarkan pendekatan modular; Anda hanya perlu mengimpor fungsi yang benar-benar Anda gunakan, menjaga ukuran bundle aplikasi Anda tetap kecil dan optimal. Dengan memisahkan logika boilerplate ke dalam fungsi utilitas seperti api.js, element.js, dan validate.js, kode utama Anda akan menjadi jauh lebih bersih, mudah dibaca, dan mudah dikelola.

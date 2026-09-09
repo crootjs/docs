@@ -53,6 +53,7 @@ Fungsi `onClick` digunakan untuk memberikan aksi ketika elemen HTML diklik. Fung
 
 ```javascript
 onClick(id, action)
+```
 
 ### 3.3 Parameter
 
@@ -70,29 +71,19 @@ onClick(id, action)
 5. Memberikan peringatan jika elemen tidak ditemukan
 
 ### 3.5 Contoh Penggunaan
+
 HTML:
+```html
 <button id="btn-alert">Klik Saya!</button>
+```
 
 JavaScript:
+```javascript
 onClick("btn-alert", () => {
     alert("Tombol berhasil diklik menggunakan CrootJS");
     console.log("Interaksi user terekam");
 });
-
-### 3.3 Parameter
-
-- `id` : ID elemen HTML target  
-- `action` : fungsi callback yang dijalankan saat klik  
-
----
-
-### 3.4 Cara Kerja
-
-1. Mencari elemen dengan `document.getElementById(id)`  
-2. Menambahkan event listener `click`  
-3. Menunggu interaksi pengguna  
-4. Menjalankan callback saat klik terjadi  
-5. Memberikan peringatan jika elemen tidak ditemukan
+```
 
 ### 3.6 Kegunaan
 
