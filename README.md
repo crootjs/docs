@@ -2,6 +2,25 @@
 
 Dokumentasi Pemakaian CrootJS dengna AI Companion dan Human in the loop.
 
+## Referensi Modul
+
+Dokumentasi per-modul dari `crootjs/lib`:
+
+- [api.js](api/) — `getJSON`, `postJSON`, `putJSON`, `deleteJSON`, upload file
+- [element.js](element/) — `onClick`, `setInner`, `getValue`, dan helper DOM lainnya
+- [cookie.js](cookie) — simpan/ambil/hapus cookie
+- [url.js](url) — protokol, host, path, query string, hash, redirect
+- [validate.js](validate) — validasi & format input (username, nomor telepon, Rupiah)
+- [websocket.js](websocket) — buka/tutup koneksi WebSocket
+- [stp.js](stp) — kirim/verifikasi/kirim ulang OTP WhatsApp
+- [useragent.js](useragent) — deteksi perangkat mobile
+- [trace.js](trace) — lacak koordinat klik/sentuhan
+- [image.js](image) — warna acak (hex & nama warna)
+- [loading.js](loading) — aset SVG loading spinner
+- [mongo.js](mongo.js) — helper `ObjectId` MongoDB (browser-only, tanpa koneksi DB)
+
+Lihat juga: [source code lib](https://github.com/crootjs/lib) dan [contoh implementasi](https://github.com/crootjs/examples).
+
 ## Landing Page
 
 Pembuatan landing page awal pada alamat.github.io
