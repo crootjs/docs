@@ -21,6 +21,14 @@ Dokumentasi per-modul dari `crootjs/lib`:
 
 Lihat juga: [source code lib](https://github.com/crootjs/lib) dan [contoh implementasi](https://github.com/crootjs/examples).
 
+## Coding Conventions (Wajib)
+
+Semua kode yang memakai CrootJS — ditulis manusia maupun AI coding agent — **wajib** memisahkan HTML, CSS, dan JS ke file terpisah, dan JS wajib dimuat sebagai `type="module"`. Tidak boleh ada `<style>`/`<script>` inline atau atribut `onclick`/`style=""` di HTML.
+
+Baca aturan lengkap & alasannya: **[conventions.md](conventions)**.
+
+Pakai AI coding agent? Unduh [`CLAUDE.md`](https://raw.githubusercontent.com/crootjs/lib/main/CLAUDE.md) dan taruh di root project kamu — Claude Code otomatis mengikuti aturan ini.
+
 ## Landing Page
 
 Pembuatan landing page awal pada alamat.github.io
