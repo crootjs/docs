@@ -66,4 +66,10 @@ import { getJSON, postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.5
 
 ## For AI coding agents
 
-If you (an AI agent) are building or editing a page that uses CrootJS, drop [`CLAUDE.md`](https://raw.githubusercontent.com/crootjs/lib/main/CLAUDE.md) into the project root — Claude Code (and compatible agents that read a root instructions file) will pick these rules up automatically. See [github.com/crootjs/lib/blob/main/CLAUDE.md](https://github.com/crootjs/lib/blob/main/CLAUDE.md).
+If you (an AI agent) are building or editing a page that uses CrootJS, drop `CLAUDE.md` into the project root — Claude Code (and compatible agents that read a root instructions file) will pick these rules up automatically:
+
+```sh
+curl -o CLAUDE.md https://raw.githubusercontent.com/crootjs/lib/main/CLAUDE.md
+```
+
+Read it in a browser at [croot.js.org/lib/CLAUDE](https://croot.js.org/lib/CLAUDE).
