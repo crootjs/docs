@@ -5,7 +5,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.7/useragent.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.8/useragent.js";
 ```
 
 ## Daftar Fungsi
@@ -21,7 +21,7 @@ Mengembalikan `true` jika `navigator.userAgent` cocok dengan pola perangkat mobi
 **Contoh Penggunaan:**
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.7/useragent.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.8/useragent.js";
 
 if (isMobile()) {
     console.log("Diakses dari perangkat mobile");
@@ -33,8 +33,8 @@ if (isMobile()) {
 **Contoh: menampilkan tombol berbeda untuk mobile**
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.7/useragent.js";
-import { show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.7/element.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.8/useragent.js";
+import { show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.8/element.js";
 
 if (isMobile()) {
     show("tombol-buka-app");

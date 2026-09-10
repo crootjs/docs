@@ -21,7 +21,7 @@ Import langsung dari jsDelivr:
 
 ```javascript
 import { setCookieWithExpireHour } 
-from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.7/cookie.js";
+from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.8/cookie.js";
 
 ```
 
@@ -45,7 +45,7 @@ Menyimpan Session Selama 2 Jam
 
 ```javascript
 import { setCookieWithExpireHour } 
-from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.7/cookie.js";
+from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.8/cookie.js";
 function login() {
   let username = "Zahra";
 setCookieWithExpireHour("loginUser", "user_714240003", 2);

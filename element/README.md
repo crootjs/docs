@@ -350,3 +350,31 @@ Pada contoh di atas, setiap kali pengguna mengetik pada input, teks akan langsun
 Fungsi `onInput` mempermudah pengelolaan event input pada elemen HTML dengan cara yang lebih ringkas dan terstruktur.
 
 Dengan fungsi ini, developer dapat membuat interaksi real-time tanpa harus menulis kode event listener secara berulang, sehingga kode menjadi lebih bersih, modular, dan mudah dipahami.
+
+---
+
+## `serializeForm(id)`
+
+Mengambil semua field yang punya atribut `name` di dalam form (text, email, checkbox, radio yang terpilih, select) dan mengembalikannya sebagai satu object `{nama: nilai}` — jadi tidak perlu memanggil `getValue()` satu per satu sebelum kirim ke server. Field yang `disabled` dan `<input type="file">` otomatis dilewati (file butuh `postFile`/`postFileJSON` dari `api.js`, bukan JSON biasa).
+
+**Contoh Penggunaan:**
+
+```html
+<form id="formDaftar">
+  <input type="text" name="nama">
+  <input type="email" name="email">
+  <input type="checkbox" name="setuju">
+</form>
+```
+
+```javascript
+import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.8/element.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.8/api.js";
+
+const data = serializeForm("formDaftar");
+// { nama: "...", email: "...", setuju: true/false }
+
+postJSON("https://api.example.com/daftar", data, (res) => {
+    console.log(res);
+});
+```
