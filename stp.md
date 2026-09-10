@@ -9,7 +9,7 @@ Modul ini mengekspor tiga fungsi utama untuk berinteraksi dengan API otentikasi.
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.8/stp.js";
+import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.9/stp.js";
 ```
 
 ## Fungsi Internal

@@ -13,6 +13,28 @@ Semua fungsi JSON pada modul ini (`getJSON`, `postJSON`, `deleteJSON`, `putJSON`
 }
 ```
 
+#### Menangani Kegagalan Jaringan/Timeout
+
+`responseFunction` **selalu** dipanggil, termasuk saat request gagal total (bukan cuma saat server merespons dengan status error seperti 404/500). Kalau jaringan gagal (offline, DNS gagal, CORS ditolak) atau server tidak merespons sama sekali dalam 15 detik (request otomatis dibatalkan lewat timeout), `responseFunction` dipanggil dengan:
+
+```javascript
+{ status: 0, data: null }
+```
+
+`status: 0` bukan kode HTTP asli (kode HTTP asli selalu >= 100) — jadi aman dipakai sebagai penanda "request gagal total", terpisah dari status error dari server seperti 404/500 yang tetap membawa `data` dari body respons server.
+
+```javascript
+getJSON("https://api.example.com/data", (res) => {
+    if (res.status === 0) {
+        console.log("Request gagal — cek koneksi internet atau server sedang down");
+    } else if (res.status >= 400) {
+        console.log("Server merespons dengan error:", res.status, res.data);
+    } else {
+        console.log("Berhasil:", res.data);
+    }
+});
+```
+
 ### 1.1 `getJSON()`
 
 Melakukan **HTTP GET** request ke URL yang ditentukan dan mengembalikan respons dalam format JSON ke callback function.
