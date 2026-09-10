@@ -5,7 +5,7 @@
 import fungsi dari CDN jsDelivr ke dalam file JavaScript kamu yang bertipe `module`.
 
 ```javascript
-import { validateUserName, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.6/validate.js";
+import { validateUserName, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.7/validate.js";
 ```
 
 # Daftar Fungsi
@@ -39,7 +39,7 @@ Berikut adalah cara menerapkannya pada elemen HTML menggunakan Event Listener:
 ### JavaScript
 
 ```javascript
-import { validateUserName, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.6/validate.js";
+import { validateUserName, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.7/validate.js";
 ```
 
 # Kesimpulan

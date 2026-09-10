@@ -51,7 +51,7 @@ Never as a plain classic script. This matches how CrootJS itself is distributed 
 ## 3. Import CrootJS from a pinned CDN version
 
 ```js
-import { getJSON, postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.6/api.js";
+import { getJSON, postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.7/api.js";
 ```
 
 - Always pin an exact version tag (`@0.0.5`), never `@latest`, in committed code — `@latest` can silently change behavior under you.

@@ -5,7 +5,7 @@ Modul `trace.js` pada library croot.js berfungsi untuk melakukan pelacakan atau 
 Import fungsi dari `trace.js` melalui CDN jsDelivr. Pastikan dipanggil di dalam *script* HTML kamu yang bertipe `module`.
 
 ```javascript
-import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.6/trace.js";
+import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.7/trace.js";
 ```
 
 ## Daftar Fungsi
@@ -19,7 +19,7 @@ Fungsi ini berfungsi untuk mendeteksi interaksi mouse berupa klik atau *touch* u
 Untuk menggunakan fungsi `tapClick`, pasangkan pada `EventListener` untuk *event* yang ingin dilacak, seperti `click`, `touchstart`, atau `touchmove`.
 
 ```javascript
-import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.6/trace.js";
+import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.7/trace.js";
 
 // Melacak interaksi klik (Mouse)
 document.addEventListener('click', tapClick);
