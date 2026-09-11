@@ -412,80 +412,16 @@ menggunakan `fetch()` dan `FormData`.
 
 ---
 
-# 📌 SOURCE CODE
+# 📌 PERILAKU SAAT GAGAL
 
-```javascript
-export function postFile(target_url,id,formdataname,responseFunction) {
-    const input = document.getElementById(id);
-    const file = input.files[0];
-    const formData = new FormData();
-    formData.append(formdataname, file);
+Source code lengkap ada di [`api.js`](https://github.com/crootjs/lib/blob/main/api.js) — sengaja tidak disalin ke sini supaya tidak basi saat kodenya berubah.
 
-    var requestOptions = {
-        method: 'POST',
-        body: formData,
-        redirect: 'follow'
-    };
-    
-    fetch(target_url, requestOptions)
-    .then(response => response.text())
-    .then(result => responseFunction(JSON.parse(result)))
-    .catch(error => console.log('error', error));
-}
+Semua fungsi upload **selalu** memanggil `responseFunction`, termasuk saat request gagal, dan membatalkan request otomatis setelah 15 detik kalau server tidak merespons:
 
-// make sure formdataname use in the backend to get data file
-export function postFileWithHeader(target_url,tokenkey,tokenvalue,id,formdataname,responseFunction) {
-    let myHeaders = new Headers();
-    myHeaders.append(tokenkey, tokenvalue);
-    myHeaders.append("Accept", "application/json");
-
-    const input = document.getElementById(id);
-    const file = input.files[0];
-    const formData = new FormData();
-    formData.append(formdataname, file);
-
-    var requestOptions = {
-        method: 'POST',
-        body: formData,
-        redirect: 'follow',
-        headers: myHeaders
-    };
-    
-    fetch(target_url, requestOptions)
-    .then(response => response.text())
-    .then(result => responseFunction(JSON.parse(result)))
-    .catch(error => console.log('error', error));
-}
-
-export function postFileJSON(target_url, tokenkey, tokenvalue, id, formdataname, responseFunction) {
-    let myHeaders = new Headers();
-    myHeaders.append(tokenkey, tokenvalue);
-    myHeaders.append("Accept", "application/json");
-
-    const input = document.getElementById(id);
-    const file = input.files[0];
-    const formData = new FormData();
-    formData.append(formdataname, file);
-
-    var requestOptions = {
-        method: 'POST',
-        body: formData,
-        redirect: 'follow',
-        headers: myHeaders
-    };
-
-    fetch(target_url, requestOptions)
-    .then(response => response.text().then(data => ({
-        status: response.status,
-        data: data
-    })))
-    .then(result => responseFunction({
-        status: result.status,
-        data: JSON.parse(result.data)
-    }))
-    .catch(error => console.log('error', error));
-}
-```
+| Fungsi | Sukses | Body bukan JSON | Jaringan gagal / timeout |
+|---|---|---|---|
+| `postFile`, `postFileWithHeader` | body JSON yang sudah di-parse | `null` | `null` |
+| `postFileJSON` | `{ status, data }` | `{ status, data: null }` | `{ status: 0, data: null }` |
 
 ---
 
