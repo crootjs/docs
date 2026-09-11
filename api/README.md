@@ -307,7 +307,7 @@ putJSON(
 Fetches raw HTML from a URL and **injects it into a DOM element** by its `id`, then runs a callback function after rendering.
 
 ```javascript
-insertHTML(target_url, id, runFunction)
+insertHTML(target_url, id, runFunction, errorFunction?)
 ```
 
 **Parameters**
@@ -317,6 +317,7 @@ insertHTML(target_url, id, runFunction)
 | `target_url` | `string` | ✅ | The URL to fetch HTML content from |
 | `id` | `string` | ✅ | The `id` of the DOM element where the HTML will be injected |
 | `runFunction` | `function` | ✅ | Callback executed after the HTML has been inserted |
+| `errorFunction` | `function` | ❌ | Called with an `Error` if the element doesn't exist, the server replies with a non-2xx status, the network fails, or the request times out (15s). On failure the element's content is left unchanged and `runFunction` is not called. |
 
 **Example**
 

@@ -204,7 +204,7 @@ Fungsi ini memungkinkan halaman web memuat konten secara dinamis tanpa perlu mel
 ## 3.2 Sintaks
 
 ```javascript
-renderHTML(id, urlHTML, callback = null)
+renderHTML(id, urlHTML, callback = null, errorCallback = null)
 ```
 
 ---
@@ -219,6 +219,9 @@ renderHTML(id, urlHTML, callback = null)
 
 - **`callback` (opsional)**  
   Fungsi yang dijalankan setelah konten berhasil dimuat.
+
+- **`errorCallback` (opsional)**  
+  Fungsi yang dipanggil dengan sebuah `Error` kalau elemen tidak ditemukan, server membalas status non-2xx (misal 404), jaringan gagal, atau request timeout (15 detik). Saat gagal, isi elemen tidak diubah dan `callback` tidak dipanggil.
 
 ---
 
@@ -368,8 +371,8 @@ Mengambil semua field yang punya atribut `name` di dalam form (text, email, chec
 ```
 
 ```javascript
-import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.10/element.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.10/api.js";
+import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.11/element.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.11/api.js";
 
 const data = serializeForm("formDaftar");
 // { nama: "...", email: "...", setuju: true/false }
