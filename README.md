@@ -16,6 +16,10 @@ Dokumentasi per-modul dari `crootjs/lib`:
 - [toast.js](toast) — notifikasi ringan tanpa dependency eksternal (`toast`, `toastSuccess`, `toastError`, `toastWarning`, `toastInfo`)
 - [geo.js](geo) — baca data geospasial GeoJSON dari URL atau file lokal (`getGeoJSON`, `readGeoJSONFile`, `parseGeoJSON`), plus kotak pembatas, titik tengah, dan daftar properti
 - [map.js](map) — peta interaktif tanpa library eksternal: peta dasar tile (OpenStreetMap), gambar GeoJSON, popup, klik koordinat (`createMap`, `addGeoJSON`, `fitMap`, `onMapClick`)
+- [mapmarker.js](mapmarker) — modul tambahan `map.js`: marker pin, ikon, atau elemen sendiri, dengan label, popup, dan bisa digeser (`addMarker`)
+- [mapcontrol.js](mapcontrol) — modul tambahan `map.js`: garis skala dan "lokasi saya" (`addScaleBar`, `addLocateButton`, `locateUser`)
+- [geomeasure.js](geomeasure) — jarak, panjang, luas, titik-di-dalam-area, titik terdekat, lingkaran radius (`getDistance`, `getArea`, `isInside`, `createCircle`, ...)
+- [georoute.js](georoute) — rute terpendek di sepanjang garis-garis di dalam data GeoJSON, dihitung di browser (`findRoute`)
 - [url.js](url) — protokol, host, path, query string, hash, redirect
 - [validate.js](validate) — validasi & format input (username, nomor telepon, Rupiah)
 - [websocket.js](websocket) — buka/tutup koneksi WebSocket
@@ -149,8 +153,8 @@ API whatsauth dapat digunakan untuk pengembangan implementasi SSO, login menggun
    ```
 2. main.js : pengaturan login menggunakan crootjs
    ```js
-   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/auth.js";
-   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/config.js";
+   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/auth.js";
+   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/config.js";
    
    wauthparam.auth_ws="d3NzOi8vYXBpLndhLm15LmlkL3dzL3doYXRzYXV0aC9wdWJsaWM=";
    wauthparam.keyword="aHR0cHM6Ly93YS5tZS82MjgzMTMxODk1MDAwP3RleHQ9d2g0dDVhdXRoMA==";
@@ -217,9 +221,9 @@ Pada file index.html
 
 Pada file index.js
 ```js
-import {getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/cookie.js";
-import {getJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/api.js";
-import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/url.js";
+import {getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/cookie.js";
+import {getJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/api.js";
+import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/url.js";
 
 if (getCookie("login")){
     getJSON("https://asia-southeast2-awangga.cloudfunctions.net/florka/data/user",responseFunction,"login",getCookie("login"));

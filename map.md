@@ -2,12 +2,14 @@
 
 `map.js` menampilkan peta interaktif dan menggambar data GeoJSON di atasnya — ditulis dari nol, tanpa Leaflet atau library peta lain. Peta dasarnya berupa tile raster (bawaan: OpenStreetMap), datanya digambar sebagai SVG, dan semuanya bisa digeser, di-zoom, dan diklik, baik dengan mouse maupun jari.
 
-CSS-nya di-*inject* otomatis oleh modul ini sendiri (seperti [`toast.js`](toast)), jadi tidak ada file CSS yang perlu ditautkan. Yang diunduh browser sekitar 10 KB (gzip): `map.min.js` beserta [`geo.js`](geo) yang dipakainya. Sebagai pembanding, Leaflet sekitar 46 KB (gzip) untuk JS dan CSS-nya.
+CSS-nya di-*inject* otomatis oleh modul ini sendiri (seperti [`toast.js`](toast)), jadi tidak ada file CSS yang perlu ditautkan. Yang diunduh browser sekitar 11 KB (gzip): `map.min.js` beserta [`geo.js`](geo) yang dipakainya. Sebagai pembanding, Leaflet sekitar 46 KB (gzip) untuk JS dan CSS-nya.
+
+Marker ikon, skala, "lokasi saya", pengukuran, dan rute ada di [modul tambahan](#modul-tambahan) yang terpisah, masing-masing 1–2 KB, supaya halaman hanya mengunduh yang dipakainya.
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/map.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/map.js";
 ```
 
 Semua fungsi [`geo.js`](geo) (`getGeoJSON`, `readGeoJSONFile`, `parseGeoJSON`, `getBBox`, dan lainnya) ikut diekspor dari `map.js`. Halaman yang menampilkan peta cukup mengimpor dari `map.js` saja.
@@ -32,7 +34,7 @@ Elemen tempat peta **wajib punya tinggi** dari CSS. Peta mengisi elemen itu sepe
 
 ```javascript
 // index.js
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/map.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/map.js";
 
 createMap("peta");
 
@@ -176,8 +178,8 @@ Nilai `center` yang dikembalikan bisa berbeda di digit-digit terakhir dari yang 
 Kegunaan paling umum: memilih lokasi untuk sebuah form.
 
 ```javascript
-import { createMap, addGeoJSON, onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/map.js";
-import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/element.js";
+import { createMap, addGeoJSON, onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/map.js";
+import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/element.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
 
@@ -190,6 +192,52 @@ onMapClick("peta", (position) => {
     hapusPenanda();
     hapusPenanda = addGeoJSON("peta", { type: "Point", coordinates: position });
 });
+```
+
+## `onMapMove(id, runFunction)` dan `getMapBounds(id)`
+
+`runFunction({ center, zoom })` dipanggil setiap kali tampilan berubah: digeser, di-zoom, atau ukuran petanya berubah. Selama sebuah gestur berlangsung ia dipanggil di setiap frame. Mengembalikan function `stop()` untuk berhenti mendengarkan.
+
+`getMapBounds(id)` mengembalikan bagian dunia yang sedang terlihat sebagai kotak pembatas `[minLng, minLat, maxLng, maxLat]`.
+
+Keduanya biasa dipakai bersama untuk meminta ke backend **hanya data di area yang tampak**. Karena `onMapMove` terpanggil sangat sering, bungkus dengan [`debounce`](debounce) supaya request baru dikirim setelah peta berhenti bergerak:
+
+```javascript
+import { createMap, addGeoJSON, clearMap, onMapMove, getMapBounds, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/map.js";
+import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/debounce.js";
+
+createMap("peta", { center: [107.5759, -6.8736], zoom: 16 });
+
+onMapMove("peta", debounce(() => {
+    const bbox = getMapBounds("peta");
+    getGeoJSON("https://api.example.com/lokasi?bbox=" + bbox.join(","), (response) => {
+        if (!response.data) return;
+        clearMap("peta");
+        addGeoJSON("peta", response.data);
+    });
+}, 400));
+```
+
+## `mapToPoint(id, position)` dan `pointToPosition(id, point)`
+
+Mengubah posisi `[lng, lat]` menjadi titik `[x, y]` dalam piksel (dihitung dari pojok kiri-atas peta), dan sebaliknya. Hasil `mapToPoint` bisa berada di luar ukuran peta kalau posisinya sedang tidak terlihat.
+
+```javascript
+mapToPoint("peta", [107.575914, -6.8732098]); // misalnya [412.6, 180.3]
+pointToPosition("peta", [0, 0]);              // [lng, lat] di pojok kiri-atas peta
+```
+
+Bersama `onMapMove`, kedua fungsi ini cukup untuk membuat elemen HTML sendiri yang mengikuti peta. Untuk marker, pakai [`mapmarker.js`](mapmarker) yang sudah mengurus itu.
+
+## `addMapControl(id, element, corner = "top-right")`
+
+Menaruh elemen buatanmu — tombol, legenda, kotak info — di pojok peta: `"top-left"`, `"top-right"`, `"bottom-left"`, atau `"bottom-right"`. Beberapa kontrol di pojok yang sama ditumpuk rapi, dan klik di dalamnya tidak ikut menggeser atau mengklik peta. Mengembalikan function `remove()`.
+
+```javascript
+const legenda = document.createElement("div");
+legenda.className = "legenda"; // tampilannya dari CSS halamanmu
+legenda.textContent = "Biru: gedung kampus";
+addMapControl("peta", legenda, "bottom-right");
 ```
 
 ## `showPopup(id, position, content)` dan `closePopup(id)`
@@ -242,6 +290,64 @@ createMap("peta", {
 createMap("peta", { tiles: false });
 ```
 
+## Modul Tambahan
+
+Fitur yang tidak dibutuhkan semua peta dipisahkan ke modul sendiri. Impor hanya yang kamu pakai:
+
+| Modul | Isi |
+|---|---|
+| [`mapmarker.js`](mapmarker) | Marker pin, ikon gambar, atau elemen sendiri — dengan label, popup, dan bisa digeser (`addMarker`) |
+| [`mapcontrol.js`](mapcontrol) | Garis skala dan "lokasi saya" (`addScaleBar`, `addLocateButton`, `locateUser`) |
+| [`geomeasure.js`](geomeasure) | Jarak, panjang, luas, titik-di-dalam-area, titik terdekat, lingkaran radius |
+| [`georoute.js`](georoute) | Rute terpendek di sepanjang garis-garis di dalam data GeoJSON (`findRoute`) |
+
+```javascript
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/map.js";
+import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/mapmarker.js";
+import { addScaleBar, addLocateButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/mapcontrol.js";
+
+createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
+addMarker("peta", [107.575914, -6.8732098], { label: "ULBI", popup: "Kampus ULBI" });
+addScaleBar("peta");
+addLocateButton("peta");
+```
+
+## Membuat Modul Tambahan Sendiri
+
+`createMap` menitipkan sebuah antarmuka kecil di elemen petanya, di properti `crootjsMap`. Lewat itulah `mapmarker.js` dan `mapcontrol.js` bekerja, dan modul buatanmu bisa memakai jalan yang sama:
+
+```javascript
+// penanda.js - modul tambahan sederhana: sebuah teks yang menempel di satu posisi
+export function addText(id, position, text) {
+    const map = document.getElementById(id).crootjsMap; // undefined kalau petanya belum dibuat
+
+    const element = document.createElement("div");
+    element.className = "penanda"; // butuh position: absolute dari CSS-mu
+    element.textContent = text;
+    map.overlay.appendChild(element);
+
+    const place = () => {
+        const point = map.toPoint(position);
+        element.style.transform = `translate(${point[0]}px, ${point[1]}px)`;
+    };
+    place();
+    map.onMove(place); // dipanggil setiap kali peta bergerak
+}
+```
+
+| Anggota `crootjsMap` | Kegunaan |
+|---|---|
+| `overlay` | Elemen tempat menaruh elemen HTML-mu: di atas data, di bawah popup, terpotong di tepi peta |
+| `toPoint(position)` / `toPosition(point)` | `[lng, lat]` ke piksel dan sebaliknya |
+| `getView()` | `{ center, zoom }` |
+| `setView(center, zoom)` | Memindahkan tampilan |
+| `panBy(dx, dy)` | Menggeser peta sejauh sekian piksel |
+| `onMove(runFunction)` | Mendengarkan perubahan tampilan; mengembalikan `stop()` |
+| `addControl(element, corner)` | Menaruh elemen di pojok peta; mengembalikan `remove()` |
+| `showPopup(position, content, offset)` / `closePopup()` | Popup; `offset` = jarak ke atas dari posisinya, dalam piksel |
+
+**Modul tambahan jangan mengimpor `map.js`.** Halaman biasanya memuat `map.min.js`, sedangkan `import "./map.js"` dari modul lain memuat *salinan kedua* dengan daftar petanya sendiri — dan peta yang dibuat halaman tidak akan ditemukan. Antarmuka di elemen ini menghindari itu: modulmu bekerja dengan salinan `map.js` mana pun yang dipakai halaman.
+
 ## Catatan
 
 - **Semua posisi memakai urutan GeoJSON: `[longitude, latitude]`** — `center`, `position` di `onMapClick`, `showPopup`, dan `getMapView`. Jadi koordinat dari data GeoJSON bisa langsung dipakai tanpa dibalik.
@@ -256,3 +362,4 @@ createMap("peta", { tiles: false });
 - Peta dasar hanya tile raster (gambar). Vector tile tidak didukung.
 - Peta tidak berulang ke kiri-kanan melewati garis bujur 180°.
 - Data digambar sebagai SVG, satu elemen per bentuk. Ini nyaman untuk ratusan sampai beberapa ribu fitur; untuk puluhan ribu titik, browser mulai terasa berat dan modul ini belum punya pengelompokan titik (*clustering*).
+- Belum ada alat untuk menggambar atau mengedit bentuk langsung di peta.

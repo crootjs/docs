@@ -7,7 +7,7 @@ Apa pun sumber dan bentuk datanya, hasil yang kamu terima selalu sama: sebuah `F
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { getGeoJSON, getBBox, getPropertyKeys } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/geo.js";
+import { getGeoJSON, getBBox, getPropertyKeys } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/geo.js";
 ```
 
 ## Mengambil dari URL
@@ -23,7 +23,7 @@ Mengambil GeoJSON dari `target_url`. Urutan parameternya sama dengan `getJSON` d
 | Jaringan gagal, CORS ditolak, atau lewat 15 detik | `0` | `null` |
 
 ```javascript
-import { getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/geo.js";
+import { getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/geo.js";
 
 getGeoJSON("https://github.com/petapedia/geojson/blob/main/contoh.geojson", (response) => {
     if (response.status === 0) {
@@ -50,8 +50,8 @@ getGeoJSON("https://github.com/petapedia/geojson/blob/main/contoh.geojson", (res
 Dengan token (untuk backend milikmu sendiri):
 
 ```javascript
-import { getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/geo.js";
-import { getCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/cookie.js";
+import { getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/geo.js";
+import { getCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/cookie.js";
 
 getGeoJSON("https://api.example.com/lokasi", tampilkan, "login", getCookie("login"));
 
@@ -74,8 +74,8 @@ Membaca file yang dipilih user di `<input type="file" id="...">`. File dibaca la
 
 ```javascript
 // index.js
-import { readGeoJSONFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/geo.js";
-import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/element.js";
+import { readGeoJSONFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/geo.js";
+import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/element.js";
 
 onChange("berkas", () => {
     readGeoJSONFile("berkas", (data) => {
@@ -104,7 +104,7 @@ Bentuk masukan yang diterima:
 | Array berisi `Feature`/geometri (bentuk yang biasa dibalas backend dari query MongoDB) | `FeatureCollection` berisi semuanya |
 
 ```javascript
-import { parseGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/geo.js";
+import { parseGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/geo.js";
 
 parseGeoJSON('{"type":"Point","coordinates":[107.575914,-6.8732098]}');
 // { type: "FeatureCollection", features: [
@@ -173,7 +173,7 @@ toLatLng([107.575914, -6.8732098]); // [-6.8732098, 107.575914]
 Untuk menggambar datanya di peta, pakai [`map.js`](map) — modul peta CrootJS sendiri, tanpa library eksternal. Semua fungsi `geo.js` ikut diekspor dari `map.js`, jadi cukup satu import:
 
 ```javascript
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.14/map.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/map.js";
 
 createMap("peta"); // elemen <div id="peta"> harus punya tinggi dari CSS
 
@@ -192,4 +192,5 @@ Contoh lengkap (URL, file lokal, peta, dan tabel properti): [demo](https://croot
 - `getGeoJSON` tunduk pada CORS. Server tempat file itu berada harus mengirim header `Access-Control-Allow-Origin`; kalau tidak, hasilnya `status: 0`. GitHub (`raw.githubusercontent.com`), GitHub Pages, dan jsDelivr mengirimkannya.
 - Validasinya hanya memeriksa bentuk data (tipe geometri dan struktur `coordinates`). Modul ini tidak memeriksa apakah ring polygon tertutup, atau apakah nilai koordinat masuk akal (misalnya latitude di luar -90..90).
 - `getBBox` menghitung nilai minimum dan maksimum apa adanya, jadi data yang melintasi garis bujur 180° (antimeridian) akan menghasilkan kotak yang membentang mengelilingi dunia.
+- Untuk menghitung dari datanya — jarak, luas, titik di dalam area, titik terdekat — lihat [`geomeasure.js`](geomeasure); untuk rute di sepanjang garis-garisnya, [`georoute.js`](georoute).
 - Data yang ditampilkan ke halaman berasal dari luar. Pasang nilai properti lewat `textContent`/`setInnerText`, bukan `innerHTML`/`setInner`, supaya isinya tidak ikut dieksekusi sebagai HTML.
