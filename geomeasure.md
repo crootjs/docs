@@ -7,7 +7,7 @@ Posisi selalu `[lng, lat]` seperti di GeoJSON, dan hasil selalu dalam **meter** 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { getDistance, getArea, isInside } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/geomeasure.js";
+import { getDistance, getArea, isInside } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/geomeasure.js";
 ```
 
 Fungsi yang menerima `geojson` sama fleksibelnya dengan [`parseGeoJSON`](geo): `FeatureCollection`, satu `Feature`, satu geometri polos, array-nya, atau teks JSON. Contoh-contoh di bawah memakai `data` dari [contoh.geojson](https://github.com/petapedia/geojson/blob/main/contoh.geojson).
@@ -74,9 +74,9 @@ const radiusPresensi = createCircle([107.575914, -6.8732098], 100); // lingkaran
 Gabungan yang paling sering dipakai: gambar radiusnya, ambil lokasi user, lalu periksa apakah ia di dalamnya.
 
 ```javascript
-import { createMap, addGeoJSON, fitMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/map.js";
-import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/mapcontrol.js";
-import { createCircle, isInside, getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.15/geomeasure.js";
+import { createMap, addGeoJSON, fitMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/map.js";
+import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/mapcontrol.js";
+import { createCircle, isInside, getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/geomeasure.js";
 
 const kampus = [107.575914, -6.8732098];
 const area = createCircle(kampus, 100);
