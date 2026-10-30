@@ -9,7 +9,7 @@ Marker ikon, skala, "lokasi saya", live tracking, koordinat, layar penuh, alat u
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/map.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/map.js";
 ```
 
 Semua fungsi [`geo.js`](geo) (`getGeoJSON`, `readGeoJSONFile`, `parseGeoJSON`, `getBBox`, dan lainnya) ikut diekspor dari `map.js`. Halaman yang menampilkan peta cukup mengimpor dari `map.js` saja.
@@ -34,7 +34,7 @@ Elemen tempat peta **wajib punya tinggi** dari CSS. Peta mengisi elemen itu sepe
 
 ```javascript
 // index.js
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/map.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/map.js";
 
 createMap("peta");
 
@@ -309,8 +309,8 @@ Nilai `center` yang dikembalikan bisa berbeda di digit-digit terakhir dari yang 
 Kegunaan paling umum: memilih lokasi untuk sebuah form.
 
 ```javascript
-import { createMap, addGeoJSON, onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/map.js";
-import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/element.js";
+import { createMap, addGeoJSON, onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/map.js";
+import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/element.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
 
@@ -334,8 +334,8 @@ onMapClick("peta", (position) => {
 Keduanya biasa dipakai bersama untuk meminta ke backend **hanya data di area yang tampak**. Karena `onMapMove` terpanggil sangat sering, bungkus dengan [`debounce`](debounce) supaya request baru dikirim setelah peta berhenti bergerak:
 
 ```javascript
-import { createMap, addGeoJSON, clearMap, onMapMove, getMapBounds, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/map.js";
-import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/debounce.js";
+import { createMap, addGeoJSON, clearMap, onMapMove, getMapBounds, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/map.js";
+import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/debounce.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 16 });
 
@@ -470,9 +470,9 @@ Fitur yang tidak dibutuhkan semua peta dipisahkan ke modul sendiri. Impor hanya 
 | [`georoute.js`](georoute) | Rute terpendek di sepanjang garis-garis di dalam data GeoJSON (`findRoute`) |
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/map.js";
-import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/mapmarker.js";
-import { addScaleBar, addLocateButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/mapcontrol.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/map.js";
+import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/mapmarker.js";
+import { addScaleBar, addLocateButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/mapcontrol.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
 addMarker("peta", [107.575914, -6.8732098], { label: "ULBI", popup: "Kampus ULBI" });
@@ -530,6 +530,7 @@ export function addText(id, position, text) {
 - Dalam satu lapisan, titik selalu digambar paling atas, apa pun urutannya di data, supaya tidak tertutup polygon. Lapisan yang ditambahkan belakangan berada di atas lapisan sebelumnya, kecuali diatur dengan `order`.
 - Garis tipis punya area klik selebar 20 piksel yang tidak terlihat. Lapisan garis yang rapat (misalnya kontur) di atas polygon bisa menutupi klik dan *hover* polygon itu; taruh lapisan garisnya di bawah dengan `order`.
 - Peta menyesuaikan diri sendiri kalau ukuran elemennya berubah, termasuk saat elemen yang tadinya `display: none` (misalnya isi tab) ditampilkan.
+- Tampilan bawaan peta (tombol, popup, label, marker) di-*inject* sebagai `<style>` di **awal** `<head>`, jadi CSS halamanmu menimpanya tanpa `!important` — misalnya `.crootjs-marker-label { color: #fff; text-shadow: 0 0 3px #000; }` untuk label marker putih di atas citra satelit.
 - Boleh ada beberapa peta dalam satu halaman, masing-masing dengan ID elemennya sendiri.
 - Fungsi yang dipanggil dengan ID yang belum di-`createMap` tidak melempar error; ia menulis peringatan di console dan tidak melakukan apa-apa.
 

@@ -5,8 +5,8 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/map.js";
-import { addMeasureControl, measure, addImageOverlay, exportMapImage, downloadMapImage } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/maptools.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/map.js";
+import { addMeasureControl, measure, addImageOverlay, exportMapImage, downloadMapImage } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/maptools.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` lebih dulu.
@@ -89,7 +89,7 @@ masterPlan.setOpacity(0.4);
 **Dari titik kontrol.** Kalau yang diketahui adalah beberapa titik di gambar (piksel) beserta lng/lat-nya, buat transformasinya dengan [`createAffineTransform`](geomeasure#createaffinetransformfrom-to) lalu hitung ketiga sudutnya:
 
 ```javascript
-import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/geomeasure.js";
+import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/geomeasure.js";
 
 // Gambar 2400 x 1600 piksel; tiga titik yang dikenali di gambar dan di peta.
 const piksel = [[310, 220], [2105, 260], [400, 1390]];
@@ -126,8 +126,10 @@ exportMapImage("peta", (blob, info) => {
 | `scale` | `devicePixelRatio` | Kelipatan resolusi. `2` = gambar dua kali lebih tajam (dan lebih besar) |
 | `attribution` | `true` | `false` = tanpa teks atribusi. Lisensi OpenStreetMap mewajibkan atribusi pada gambar yang dipublikasikan |
 
-Yang **ikut**: peta dasar, gambar overlay, semua lapisan GeoJSON (SVG dan canvas), label fitur, marker (pin bawaan, ikon gambar, atau SVG di dalam elemen sendiri) beserta labelnya, hasil alat ukur, garis skala, dan atribusi.
-Yang **tidak ikut**: popup, tombol dan panel kontrol, dan elemen HTML lain buatan sendiri (misalnya gelembung [`mapcluster.js`](mapcluster) dan penanda lokasi).
+Yang **ikut**: peta dasar, gambar overlay, semua lapisan GeoJSON (SVG dan canvas), label fitur, marker (pin bawaan, ikon gambar, atau elemen sendiri) beserta labelnya, gelembung [`mapcluster.js`](mapcluster), penanda lokasi, hasil alat ukur, garis skala, dan atribusi.
+Yang **tidak ikut**: popup, serta tombol dan panel kontrol.
+
+Label dan elemen HTML digambar dari **CSS hasil hitungan browser**, jadi label berlatar kotak tampil seperti di layar: `background-color`, `border`, `border-radius`, `padding`, perataan, teks beberapa baris (`white-space: pre`), `opacity`, dan isi `::before`/`::after` (misalnya ikon 📷). `text-shadow` menjadi halo di sekeliling teks; kalau warnanya terlalu mirip warna teks (misalnya teks putih dengan bayangan putih), halonya diganti warna yang kontras supaya tetap terbaca. Yang belum ikut digambar: `box-shadow`, latar gradien atau gambar, dan elemen yang diputar dengan `transform`.
 
 Browser hanya mengizinkan gambar dari domain lain masuk ke PNG kalau servernya mengizinkan **CORS**. Tile OpenStreetMap dan Esri mengizinkan. Tile dari server yang tidak mengizinkan dilewati (dihitung di `missingImages`) — sisanya tetap jadi. Untuk gambar overlay dari domain lain, beri `crossOrigin: true` di `addImageOverlay`, dan servernya harus mengirim header CORS.
 
