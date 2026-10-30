@@ -9,7 +9,7 @@ Marker ikon, skala, "lokasi saya", live tracking, pengelompokan titik, pengukura
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/map.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
 ```
 
 Semua fungsi [`geo.js`](geo) (`getGeoJSON`, `readGeoJSONFile`, `parseGeoJSON`, `getBBox`, dan lainnya) ikut diekspor dari `map.js`. Halaman yang menampilkan peta cukup mengimpor dari `map.js` saja.
@@ -34,7 +34,7 @@ Elemen tempat peta **wajib punya tinggi** dari CSS. Peta mengisi elemen itu sepe
 
 ```javascript
 // index.js
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/map.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
 
 createMap("peta");
 
@@ -64,8 +64,13 @@ Membuat peta di dalam elemen ber-ID `id`. Memanggilnya lagi untuk ID yang sama m
 | `zoom` | `4` | Level zoom awal |
 | `minZoom` | `1` | Zoom terjauh yang diizinkan |
 | `maxZoom` | `19` | Zoom terdekat yang diizinkan |
-| `tiles` | tile OpenStreetMap | Pola URL tile raster dengan `{z}`, `{x}`, `{y}`. `false` = tanpa peta dasar |
-| `attribution` | — | Teks atribusi untuk `tiles` buatan sendiri |
+| `tiles` | tile OpenStreetMap | Pola URL tile raster dengan `{z}`, `{x}`, `{y}` — lihat [pola URL](#pola-url-tile). `false` = tanpa peta dasar |
+| `attribution` | — | Atribusi untuk `tiles` buatan sendiri: teks, elemen DOM (untuk tautan), atau array-nya kalau sumbernya lebih dari satu |
+| `attributionPrefix` | `true` | `false` = tanpa tautan "CrootJS" di depan atribusi |
+| `maxNativeZoom` | sama dengan `maxZoom` | Level tile tertinggi yang ada di server. Di atasnya tile level itu diperbesar (*overzoom*), jadi `maxZoom` boleh lebih tinggi |
+| `labels` | — | Pola URL (atau array pola) tile label transparan yang digambar di atas `tiles` — untuk citra satelit + nama jalan (*hybrid*) |
+| `subdomains` | `"abc"` | Pengganti `{s}` di pola URL: string atau array |
+| `errorTiles` | — | URL gambar pengganti tile yang gagal dimuat |
 | `zoomControl` | `true` | `false` = tanpa tombol + / − |
 | `scrollZoom` | `true` | `false` = roda mouse tetap menggulung halaman, tidak men-zoom peta |
 
@@ -77,12 +82,14 @@ createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
 
 Menggambar GeoJSON di atas peta. `geojson` boleh berupa apa pun yang diterima [`parseGeoJSON`](geo): `FeatureCollection`, satu `Feature`, satu geometri polos, array-nya, atau teks JSON. Semua tipe geometri didukung (`Point`, `LineString`, `Polygon`, versi `Multi`-nya, dan `GeometryCollection`).
 
-Mengembalikan function `remove()` untuk menghapus lapisan itu lagi — pola yang sama dengan `dismiss()` di [`toast.js`](toast).
+Mengembalikan function `remove()` untuk menghapus lapisan itu lagi — pola yang sama dengan `dismiss()` di [`toast.js`](toast). Function itu juga punya `remove.show()`, `remove.hide()`, `remove.setStyle(style)`, dan `remove.setOrder(order)` untuk lapisan yang tidak diberi nama (lihat [Lapisan Bernama](#lapisan-bernama)).
 
 ```javascript
 const hapusGedung = addGeoJSON("peta", dataGedung);
 // ...
-hapusGedung(); // lapisan ini saja yang hilang
+hapusGedung.hide(); // sembunyikan sementara
+hapusGedung.show();
+hapusGedung();      // lapisan ini saja yang hilang
 ```
 
 `options` (semuanya opsional):
@@ -97,6 +104,9 @@ hapusGedung(); // lapisan ini saja yang hilang
 | `fill` | polygon, titik | biru `#2563eb` |
 | `fillOpacity` | polygon, titik | polygon 0.25, titik 1 |
 | `radius` | titik | 7 (piksel) |
+| `strokeDasharray` | garis, tepi polygon, tepi titik | garis utuh. `"6 4"` atau `[6, 4]` = 6 piksel garis, 4 piksel celah |
+| `lineCap` | ujung garis | `"round"` (lainnya `"butt"`, `"square"`) |
+| `lineJoin` | sudut garis | `"round"` (lainnya `"miter"`, `"bevel"`) |
 
 ```javascript
 // semua fitur merah
@@ -108,7 +118,12 @@ addGeoJSON("peta", data, {
 });
 ```
 
-Ketebalan garis dan ukuran titik tetap sama di layar pada zoom berapa pun.
+Ketebalan garis, panjang putus-putus, dan ukuran titik tetap sama di layar pada zoom berapa pun.
+
+```javascript
+// jalur indikatif: garis putus-putus
+addGeoJSON("peta", jalurRencana, { style: { stroke: "#ea580c", strokeDasharray: [8, 6], lineCap: "butt" } });
+```
 
 **`popup`** — isi popup saat sebuah fitur diklik:
 
@@ -137,13 +152,90 @@ addGeoJSON("peta", data, {
 });
 ```
 
+**`hoverStyle`** dan **`tooltip`** — umpan balik saat kursor mouse berada di atas sebuah fitur (layar sentuh tidak punya *hover*, jadi di sana keduanya tidak muncul):
+
+- `hoverStyle` — object gaya (kunci sama dengan `style`) yang ditimpakan selama kursor di atas fitur itu.
+- `tooltip` — function `(feature) => teks atau elemen DOM` (atau `null`); hasilnya tampil di kotak kecil yang mengikuti kursor. Popup saat diklik tetap berjalan seperti biasa.
+
+```javascript
+addGeoJSON("peta", zona, {
+    hoverStyle: { stroke: "#dc2626", strokeWidth: 4 },
+    tooltip: (feature) => "Zona " + feature.properties.nomor,
+});
+```
+
+**`label`** — teks yang selalu tampil di atas fitur: nama properti, atau function `(feature) => teks` (`null` = tanpa label). Label sebuah titik ada di titiknya, label garis di tengah panjang garisnya, dan label polygon di titik beratnya. Label yang bertabrakan dengan label lain disembunyikan, lalu muncul lagi saat peta di-zoom dan ruangnya cukup — lapisan yang di atas didahulukan, lalu urutan fitur di datanya.
+
+`labelOptions` (opsional): `minZoom` / `maxZoom` (label hanya tampil di rentang zoom ini), `className` (kelas CSS tambahan untuk elemen labelnya), `overlap: true` (tanpa penghindaran tabrakan).
+
+```javascript
+addGeoJSON("peta", kontur, {
+    label: (feature) => feature.properties.elevasi + " m",
+    labelOptions: { minZoom: 16, className: "label-kontur" },
+});
+```
+
+**`name`, `minZoom`, `maxZoom`, `order`, `visible`, `attribution`** — lihat [Lapisan Bernama](#lapisan-bernama).
+
+## Lapisan Bernama
+
+Lapisan yang diberi `name` di `addGeoJSON` bisa diatur tanpa digambar ulang:
+
+| Fungsi | Hasil |
+|---|---|
+| `showLayer(id, name)` / `hideLayer(id, name)` | Menampilkan / menyembunyikan lapisan. Popup dan *hover* miliknya ikut ditutup saat disembunyikan |
+| `setLayerStyle(id, name, style)` | Mengganti gaya seluruh lapisan; `style` object atau function, sama seperti di `addGeoJSON` |
+| `setLayerOrder(id, name, order)` | Urutan tumpuk: makin besar makin di atas |
+| `removeLayer(id, name)` | Menghapus lapisan |
+| `getLayers(id)` | Daftar lapisan bernama dari bawah ke atas: `[{ name, visible, order }]` |
+
+Opsi `addGeoJSON` yang terkait:
+
+| Opsi | Bawaan | Keterangan |
+|---|---|---|
+| `name` | — | Nama lapisan. Lapisan baru dengan nama yang sudah dipakai **menggantikan** lapisan lama itu — cara mudah memperbarui data |
+| `minZoom`, `maxZoom` | semua zoom | Lapisan hanya tampil di rentang zoom ini, misalnya denah blok yang baru berguna di zoom 18 ke atas |
+| `order` | `0` | Urutan tumpuk. Lapisan dengan `order` sama ditumpuk menurut urutan ditambahkan |
+| `visible` | `true` | `false` = ditambahkan dalam keadaan tersembunyi |
+| `attribution` | — | Sumber data lapisan ini; ditambahkan ke atribusi peta selama lapisannya ada |
+
+```javascript
+addGeoJSON("peta", batasZona, { name: "zona", order: 1, style: { strokeDasharray: "4 4" } });
+addGeoJSON("peta", denahBlok, { name: "blok", minZoom: 18 });
+
+hideLayer("peta", "zona");
+setLayerStyle("peta", "blok", (feature) => ({ fill: feature.properties.terisi ? "#16a34a" : "#9ca3af" }));
+```
+
+Untuk daftar centang siap pakai, lihat `addLayerControl` di [`mapcontrol.js`](mapcontrol).
+
+## `setTiles(id, tiles, options)`
+
+Mengganti peta dasar **tanpa membuat ulang peta**: lapisan, marker, popup yang terbuka, dan tampilan tetap di tempatnya. Tile peta dasar lama dibiarkan sampai tile baru selesai dimuat, jadi peta tidak berkedip kosong.
+
+`tiles` sama seperti opsi `tiles` di `createMap` (tanpa nilai = OpenStreetMap, `false` = tanpa peta dasar). `options` berisi `labels`, `maxNativeZoom`, `subdomains`, `errorTiles`, dan `attribution`, sama seperti di `createMap`; yang tidak disebut kembali ke bawaannya.
+
+```javascript
+// ke citra satelit + label (hybrid)
+setTiles("peta", "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+    labels: "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",
+    maxNativeZoom: 18,
+    attribution: "Tiles © Esri",
+});
+
+setTiles("peta"); // kembali ke OpenStreetMap
+```
+
+Untuk pilihan peta dasar siap pakai, lihat `addBasemapControl` di [`mapcontrol.js`](mapcontrol).
+
 ## `fitMap(id, geojson, padding = 24)`
 
-Memaskan tampilan ke seluruh data. `geojson` sama fleksibelnya dengan di `addGeoJSON`, atau langsung sebuah kotak pembatas `[minLng, minLat, maxLng, maxLat]`. `padding` adalah jarak kosong (piksel) antara data dan tepi peta.
+Memaskan tampilan ke seluruh data. `geojson` sama fleksibelnya dengan di `addGeoJSON`, atau langsung sebuah kotak pembatas `[minLng, minLat, maxLng, maxLat]`. `padding` adalah jarak kosong (piksel) antara data dan tepi peta — satu angka untuk semua sisi, atau per sisi `{ top, right, bottom, left }` (sisi yang tidak disebut tetap 24), misalnya supaya data tidak tertutup panel.
 
 ```javascript
 fitMap("peta", data);
-fitMap("peta", [95, -11, 141, 6]); // seluruh Indonesia
+fitMap("peta", [95, -11, 141, 6]);         // seluruh Indonesia
+fitMap("peta", data, { left: 320 });       // panel selebar 300 piksel di kiri peta
 ```
 
 - Data yang hanya berupa satu titik ditampilkan pada zoom 17.
@@ -178,8 +270,8 @@ Nilai `center` yang dikembalikan bisa berbeda di digit-digit terakhir dari yang 
 Kegunaan paling umum: memilih lokasi untuk sebuah form.
 
 ```javascript
-import { createMap, addGeoJSON, onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/map.js";
-import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/element.js";
+import { createMap, addGeoJSON, onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
+import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/element.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
 
@@ -203,8 +295,8 @@ onMapClick("peta", (position) => {
 Keduanya biasa dipakai bersama untuk meminta ke backend **hanya data di area yang tampak**. Karena `onMapMove` terpanggil sangat sering, bungkus dengan [`debounce`](debounce) supaya request baru dikirim setelah peta berhenti bergerak:
 
 ```javascript
-import { createMap, addGeoJSON, clearMap, onMapMove, getMapBounds, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/map.js";
-import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/debounce.js";
+import { createMap, addGeoJSON, clearMap, onMapMove, getMapBounds, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
+import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/debounce.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 16 });
 
@@ -268,12 +360,13 @@ Kalau popup terpotong tepi peta, petanya digeser sedikit supaya popup terlihat u
 | Tombol panah (saat peta terfokus) | menggeser peta |
 | Tombol `+` / `-` (saat peta terfokus) | zoom |
 | Klik / tap sebuah fitur | membuka popup-nya |
+| Kursor di atas fitur (mouse) | `hoverStyle` dan `tooltip`, kalau lapisannya memakainya |
 
 Pengguna yang mengaktifkan *reduce motion* di sistemnya mendapat zoom tanpa animasi.
 
 ## Peta Dasar
 
-**OpenStreetMap (bawaan).** Tile diambil dari `tile.openstreetmap.org`, dan atribusi "© OpenStreetMap contributors" otomatis ditampilkan di pojok kanan bawah — lisensi datanya mewajibkan itu, jadi jangan disembunyikan. Server tile OpenStreetMap gratis tetapi dijalankan relawan dan punya [kebijakan pemakaian](https://operations.osmfoundation.org/policies/tiles/): cocok untuk belajar dan situs dengan trafik kecil. Untuk aplikasi dengan trafik besar, pakai penyedia tile sendiri.
+**OpenStreetMap (bawaan).** Tile diambil dari `tile.openstreetmap.org`, dan atribusi "CrootJS | © OpenStreetMap contributors" otomatis ditampilkan di pojok kanan bawah — lisensi datanya mewajibkan itu, jadi jangan disembunyikan. Server tile OpenStreetMap gratis tetapi dijalankan relawan dan punya [kebijakan pemakaian](https://operations.osmfoundation.org/policies/tiles/): cocok untuk belajar dan situs dengan trafik kecil. Untuk aplikasi dengan trafik besar, pakai penyedia tile sendiri.
 
 **Penyedia tile lain.** Isi `tiles` dengan pola URL-nya dan `attribution` dengan teks atribusi yang diminta penyedianya:
 
@@ -281,6 +374,40 @@ Pengguna yang mengaktifkan *reduce motion* di sistemnya mendapat zoom tanpa anim
 createMap("peta", {
     tiles: "https://tiles.example.com/{z}/{x}/{y}.png",
     attribution: "© Example Maps",
+});
+```
+
+Atribusi selalu diawali tautan "CrootJS" ke situs ini, lalu sumber peta dasar, lalu `attribution` tiap lapisan data — sumber yang sama cukup ditulis sekali. Isinya diperbarui setiap kali peta dasar diganti atau lapisan ditambah/dihapus. `attributionPrefix: false` di `createMap` menghilangkan tautan "CrootJS"; atribusi penyedia tile tetap tampil.
+
+### Pola URL Tile
+
+| Penanda | Diganti dengan |
+|---|---|
+| `{z}`, `{x}`, `{y}` | level zoom, kolom, dan baris tile |
+| `{-y}` | baris tile skema TMS (dihitung dari bawah), untuk server seperti GeoServer/TileCache |
+| `{s}` | subdomain, bergiliran dari `subdomains` (bawaan `"abc"`) supaya beban tersebar |
+| `{r}` | `@2x` di layar retina, kosong di layar biasa |
+
+```javascript
+createMap("peta", {
+    tiles: "https://{s}.tiles.example.com/{z}/{x}/{y}{r}.png",
+    subdomains: "abcd",
+    errorTiles: "/img/tile-kosong.png", // pengganti tile yang gagal dimuat
+    attribution: "© Example Maps",
+});
+```
+
+### Citra Satelit, Overzoom, dan Hybrid
+
+Banyak penyedia citra hanya punya tile sampai zoom 18 di sebagian besar wilayah. `maxNativeZoom: 18` membuat peta tetap bisa di-zoom sampai `maxZoom` — tile level 18 diperbesar, bukan kosong. `labels` menumpuk tile label transparan (nama jalan dan tempat) di atas citranya:
+
+```javascript
+createMap("peta", {
+    maxZoom: 21,
+    maxNativeZoom: 18,
+    tiles: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    labels: "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",
+    attribution: "Tiles © Esri",
 });
 ```
 
@@ -297,15 +424,15 @@ Fitur yang tidak dibutuhkan semua peta dipisahkan ke modul sendiri. Impor hanya 
 | Modul | Isi |
 |---|---|
 | [`mapmarker.js`](mapmarker) | Marker pin, ikon gambar, atau elemen sendiri — dengan label, popup, dan bisa digeser (`addMarker`) |
-| [`mapcontrol.js`](mapcontrol) | Garis skala, "lokasi saya", dan live tracking (`addScaleBar`, `addLocateButton`, `locateUser`, `addTrackButton`, `trackUser`) |
+| [`mapcontrol.js`](mapcontrol) | Garis skala, "lokasi saya", live tracking, pilihan peta dasar, dan daftar centang lapisan (`addScaleBar`, `addLocateButton`, `locateUser`, `addTrackButton`, `trackUser`, `addBasemapControl`, `addLayerControl`) |
 | [`mapcluster.js`](mapcluster) | Pengelompokan titik untuk data titik yang sangat banyak (`addCluster`) |
 | [`geomeasure.js`](geomeasure) | Jarak, panjang, luas, titik-di-dalam-area, titik terdekat, lingkaran radius |
 | [`georoute.js`](georoute) | Rute terpendek di sepanjang garis-garis di dalam data GeoJSON (`findRoute`) |
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/map.js";
-import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/mapmarker.js";
-import { addScaleBar, addLocateButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/mapcontrol.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
+import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/mapmarker.js";
+import { addScaleBar, addLocateButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/mapcontrol.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
 addMarker("peta", [107.575914, -6.8732098], { label: "ULBI", popup: "Kampus ULBI" });
@@ -347,13 +474,16 @@ export function addText(id, position, text) {
 | `onTap(element, runFunction)` | Menangani tap pada sebuah elemen di `overlay`: peta tidak menganggapnya klik peta (`onMapClick` tidak dipanggil), sedangkan geseran yang berawal di elemen itu tetap menggeser peta |
 | `addControl(element, corner)` | Menaruh elemen di pojok peta; mengembalikan `remove()` |
 | `showPopup(position, content, offset)` / `closePopup()` | Popup; `offset` = jarak ke atas dari posisinya, dalam piksel |
+| `setTiles(tiles, options)` | Sama dengan `setTiles(id, ...)` |
+| `getLayers()` / `setLayerVisible(name, visible)` | Daftar lapisan bernama; menampilkan/menyembunyikan satu lapisan |
 
 **Modul tambahan jangan mengimpor `map.js`.** Halaman biasanya memuat `map.min.js`, sedangkan `import "./map.js"` dari modul lain memuat *salinan kedua* dengan daftar petanya sendiri — dan peta yang dibuat halaman tidak akan ditemukan. Antarmuka di elemen ini menghindari itu: modulmu bekerja dengan salinan `map.js` mana pun yang dipakai halaman.
 
 ## Catatan
 
 - **Semua posisi memakai urutan GeoJSON: `[longitude, latitude]`** — `center`, `position` di `onMapClick`, `showPopup`, dan `getMapView`. Jadi koordinat dari data GeoJSON bisa langsung dipakai tanpa dibalik.
-- Dalam satu lapisan, titik selalu digambar paling atas, apa pun urutannya di data, supaya tidak tertutup polygon. Lapisan yang ditambahkan belakangan berada di atas lapisan sebelumnya.
+- Dalam satu lapisan, titik selalu digambar paling atas, apa pun urutannya di data, supaya tidak tertutup polygon. Lapisan yang ditambahkan belakangan berada di atas lapisan sebelumnya, kecuali diatur dengan `order`.
+- Garis tipis punya area klik selebar 20 piksel yang tidak terlihat. Lapisan garis yang rapat (misalnya kontur) di atas polygon bisa menutupi klik dan *hover* polygon itu; taruh lapisan garisnya di bawah dengan `order`.
 - Peta menyesuaikan diri sendiri kalau ukuran elemennya berubah, termasuk saat elemen yang tadinya `display: none` (misalnya isi tab) ditampilkan.
 - Boleh ada beberapa peta dalam satu halaman, masing-masing dengan ID elemennya sendiri.
 - Fungsi yang dipanggil dengan ID yang belum di-`createMap` tidak melempar error; ia menulis peringatan di console dan tidak melakukan apa-apa.
@@ -364,4 +494,5 @@ export function addText(id, position, text) {
 - Peta dasar hanya tile raster (gambar). Vector tile tidak didukung.
 - Peta tidak berulang ke kiri-kanan melewati garis bujur 180°.
 - Data digambar sebagai SVG, satu elemen per bentuk. Ini nyaman untuk ratusan sampai beberapa ribu fitur; untuk puluhan ribu titik, pakai [`mapcluster.js`](mapcluster) yang mengelompokkannya.
+- Label fitur ditulis mendatar; label garis tidak mengikuti arah garisnya.
 - Belum ada alat untuk menggambar atau mengedit bentuk langsung di peta.

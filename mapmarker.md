@@ -7,8 +7,8 @@ Titik di dalam data GeoJSON sudah digambar `addGeoJSON` sebagai lingkaran kecil.
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/map.js";
-import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/mapmarker.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
+import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/mapmarker.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` sebelum `addMarker` dipanggil.
@@ -32,7 +32,8 @@ addMarker("peta", [107.5757, -6.8738], { label: "Rektorat", popup: "Gedung Rekto
 | `icon` | URL gambar sebagai pengganti pin |
 | `size` | `[lebar, tinggi]` gambar `icon` dalam piksel. Bawaan: `[32, 32]` |
 | `element` | Elemen DOM buatan sendiri sebagai pengganti pin/ikon |
-| `anchor` | Bagian marker yang menempel di posisinya: `"bottom"` (bawaan — ujung bawah di tengah, cocok untuk pin) atau `"center"` (cocok untuk ikon bulat) |
+| `anchor` | Bagian marker yang menempel di posisinya: `"bottom"` (bawaan — ujung bawah di tengah, cocok untuk pin), `"center"` (cocok untuk ikon bulat), `"top"`, `"left"`, `"right"`, `"top-left"`, `"top-right"`, `"bottom-left"`, atau `"bottom-right"` |
+| `offset` | `[dx, dy]` — geser tambahan dalam piksel dari titik jangkarnya (`dy` positif = ke bawah). Bawaan: `[0, 0]` |
 | `label` | Teks yang selalu tampil di bawah marker |
 | `title` | Teks bantuan saat kursor berada di atas marker |
 | `popup` | Teks atau elemen DOM yang ditampilkan saat marker diklik |
@@ -61,14 +62,27 @@ lencana.textContent = "12";
 addMarker("peta", [107.5762, -6.8734], { element: lencana, anchor: "center" });
 ```
 
+## Anchor dan Offset
+
+`anchor` menentukan bagian marker yang menempel tepat di posisinya, dan `offset` menggesernya sedikit dari situ. Contohnya, label nomor tiang yang ditaruh di kanan titiknya, berjarak 6 piksel:
+
+```javascript
+const nomor = document.createElement("span");
+nomor.className = "nomor-tiang"; // tampilannya dari CSS halamanmu
+nomor.textContent = "T-12";
+addMarker("peta", [107.5757, -6.8738], { element: nomor, anchor: "left", offset: [6, 0] });
+```
+
+Popup marker tetap muncul di atas tepi atas marker, di mana pun anchor-nya.
+
 ## Marker yang Bisa Digeser
 
 Kegunaan paling umum: user menggeser pin ke lokasi yang tepat, lalu koordinatnya masuk ke form.
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/map.js";
-import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/mapmarker.js";
-import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/element.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
+import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/mapmarker.js";
+import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/element.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
 
@@ -85,7 +99,7 @@ addMarker("peta", [107.5759, -6.8736], {
 Untuk memindahkan marker dari kode — misalnya ke titik yang diklik di peta — pakai `setPosition`:
 
 ```javascript
-import { onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/map.js";
+import { onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
 
 const pin = addMarker("peta", [107.5759, -6.8736]);
 onMapClick("peta", (position) => pin.setPosition(position));

@@ -7,7 +7,7 @@ Apa pun sumber dan bentuk datanya, hasil yang kamu terima selalu sama: sebuah `F
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { getGeoJSON, getBBox, getPropertyKeys } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/geo.js";
+import { getGeoJSON, getBBox, getPropertyKeys } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/geo.js";
 ```
 
 ## Mengambil dari URL
@@ -23,7 +23,7 @@ Mengambil GeoJSON dari `target_url`. Urutan parameternya sama dengan `getJSON` d
 | Jaringan gagal, CORS ditolak, atau lewat 15 detik | `0` | `null` |
 
 ```javascript
-import { getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/geo.js";
+import { getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/geo.js";
 
 getGeoJSON("https://github.com/petapedia/geojson/blob/main/contoh.geojson", (response) => {
     if (response.status === 0) {
@@ -50,8 +50,8 @@ getGeoJSON("https://github.com/petapedia/geojson/blob/main/contoh.geojson", (res
 Dengan token (untuk backend milikmu sendiri):
 
 ```javascript
-import { getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/geo.js";
-import { getCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/cookie.js";
+import { getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/geo.js";
+import { getCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/cookie.js";
 
 getGeoJSON("https://api.example.com/lokasi", tampilkan, "login", getCookie("login"));
 
@@ -74,8 +74,8 @@ Membaca file yang dipilih user di `<input type="file" id="...">`. File dibaca la
 
 ```javascript
 // index.js
-import { readGeoJSONFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/geo.js";
-import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/element.js";
+import { readGeoJSONFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/geo.js";
+import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/element.js";
 
 onChange("berkas", () => {
     readGeoJSONFile("berkas", (data) => {
@@ -104,7 +104,7 @@ Bentuk masukan yang diterima:
 | Array berisi `Feature`/geometri (bentuk yang biasa dibalas backend dari query MongoDB) | `FeatureCollection` berisi semuanya |
 
 ```javascript
-import { parseGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/geo.js";
+import { parseGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/geo.js";
 
 parseGeoJSON('{"type":"Point","coordinates":[107.575914,-6.8732098]}');
 // { type: "FeatureCollection", features: [
@@ -173,7 +173,7 @@ toLatLng([107.575914, -6.8732098]); // [-6.8732098, 107.575914]
 Untuk menggambar datanya di peta, pakai [`map.js`](map) — modul peta CrootJS sendiri, tanpa library eksternal. Semua fungsi `geo.js` ikut diekspor dari `map.js`, jadi cukup satu import:
 
 ```javascript
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/map.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
 
 createMap("peta"); // elemen <div id="peta"> harus punya tinggi dari CSS
 

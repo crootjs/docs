@@ -1,12 +1,12 @@
 # Dokumentasi Modul `mapcontrol.js`
 
-`mapcontrol.js` adalah modul tambahan untuk [`map.js`](map) berisi kontrol yang paling sering diminta dari sebuah peta: **garis skala**, **lokasi saya**, dan **live tracking** (mengikuti lokasi terus-menerus). Terpisah dari `map.js` supaya halaman yang tidak memakainya tidak ikut mengunduhnya (sekitar 2 KB gzip).
+`mapcontrol.js` adalah modul tambahan untuk [`map.js`](map) berisi kontrol yang paling sering diminta dari sebuah peta: **garis skala**, **lokasi saya**, **live tracking** (mengikuti lokasi terus-menerus), **pilihan peta dasar**, dan **daftar centang lapisan**. Terpisah dari `map.js` supaya halaman yang tidak memakainya tidak ikut mengunduhnya (sekitar 3 KB gzip).
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/map.js";
-import { addScaleBar, addLocateButton, locateUser, addTrackButton, trackUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/mapcontrol.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
+import { addScaleBar, addLocateButton, locateUser, addTrackButton, trackUser, addBasemapControl, addLayerControl } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/mapcontrol.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` lebih dulu.
@@ -48,8 +48,8 @@ Menanyakan lokasi perangkat ke browser (sekali), lalu:
 | Izin ditolak, perangkat tidak mendukung, atau lewat 15 detik | `null` |
 
 ```javascript
-import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/mapcontrol.js";
-import { getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/geomeasure.js";
+import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/mapcontrol.js";
+import { getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/geomeasure.js";
 
 const kampus = [107.575914, -6.8732098];
 
@@ -86,8 +86,8 @@ Mengembalikan function `stop()` untuk menghentikan pelacakan.
 Kalau izin lokasi ditolak atau perangkat tidak mendukung, `responseFunction` dipanggil **sekali** dengan `null` dan pelacakan berhenti sendiri. Gangguan sementara seperti sinyal hilang tidak menghentikan pelacakan; browser mencoba lagi.
 
 ```javascript
-import { createMap, addGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/map.js";
-import { trackUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.16/mapcontrol.js";
+import { createMap, addGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
+import { trackUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/mapcontrol.js";
 
 createMap("peta");
 
@@ -129,6 +129,63 @@ Mengembalikan function `remove()` yang menghentikan pelacakan dan mencabut tombo
 addTrackButton("peta");
 ```
 
+## `addBasemapControl(id, basemaps, options)`
+
+Menambahkan pilihan peta dasar (tombol radio) ke peta. Memilih salah satu memanggil [`setTiles`](map#settilesid-tiles-options) — lapisan, marker, popup, dan tampilan tetap di tempatnya.
+
+`basemaps` adalah array `{ name, tiles, labels, maxNativeZoom, subdomains, errorTiles, attribution }`; semua kunci kecuali `name` sama dengan opsi `setTiles`.
+
+`options` (semuanya opsional):
+
+| Opsi | Bawaan | Keterangan |
+|---|---|---|
+| `selected` | `0` | Indeks atau `name` peta dasar yang langsung dipasang |
+| `title` | `"Peta dasar"` | Judul panel (`""` = tanpa judul) |
+| `corner` | `"top-right"` | Pojok peta |
+| `collapsed` | `false` | `true` = panel disimpan di balik tombol ikon lapisan, dibuka-tutup dengan klik — cocok untuk layar sempit |
+| `onChange` | — | Function `(basemap)` yang dipanggil setelah peta dasar diganti |
+
+Mengembalikan function `remove()` untuk mencabut panelnya; peta dasar yang terakhir dipilih tetap terpasang.
+
+```javascript
+addBasemapControl("peta", [
+    { name: "Jalan" }, // tanpa tiles = OpenStreetMap
+    {
+        name: "Satelit",
+        tiles: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        maxNativeZoom: 18,
+        attribution: "Tiles © Esri",
+    },
+    {
+        name: "Hybrid",
+        tiles: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        labels: "https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}",
+        maxNativeZoom: 18,
+        attribution: "Tiles © Esri",
+    },
+]);
+```
+
+## `addLayerControl(id, layers, options)`
+
+Menambahkan daftar centang untuk menampilkan/menyembunyikan lapisan bernama (opsi `name` di [`addGeoJSON`](map#lapisan-bernama)). Mencentang hanya mengubah visibilitas — lapisannya tidak digambar ulang, dan popup yang terbuka di lapisan lain tetap terbuka.
+
+`layers` adalah array nama, atau array `{ name, label }` kalau teks di daftar berbeda dari namanya. `null` = semua lapisan bernama yang sudah ada saat fungsi ini dipanggil, dari bawah ke atas.
+
+`options` (semuanya opsional): `title` (bawaan `"Lapisan"`), `corner` (bawaan `"top-right"`), `collapsed`, dan `onChange` — function `(name, visible)` yang dipanggil setiap kali sebuah centang diubah.
+
+Mengembalikan function `remove()` untuk mencabut panelnya.
+
+```javascript
+addGeoJSON("peta", jalurFiber, { name: "fiber" });
+addGeoJSON("peta", batasZona, { name: "zona" });
+
+addLayerControl("peta", [
+    { name: "fiber", label: "Jalur fiber" },
+    { name: "zona", label: "Batas zona" },
+]);
+```
+
 ## Catatan
 
 - **Lokasi hanya tersedia di halaman HTTPS** (atau `localhost` saat pengembangan). Di halaman `http://` biasa browser menolak tanpa bertanya ke user, dan hasilnya `null`.
@@ -139,3 +196,4 @@ addTrackButton("peta");
 - Pelacakan hanya berjalan selama halamannya terbuka. Browser memperlambat atau menghentikan pembaruan lokasi saat tab berada di latar belakang atau layar ponsel mati, jadi ini bukan untuk merekam perjalanan dengan layar tertutup.
 - Seberapa sering posisi baru datang ditentukan perangkat dan browser, bukan modul ini.
 - Untuk kontrol buatan sendiri (tombol, legenda), pakai [`addMapControl`](map) dari `map.js`.
+- `addLayerControl` membaca keadaan awal tiap centang dari lapisannya. Kalau lapisan disembunyikan lewat `hideLayer` setelah panelnya dibuat, centangnya tidak ikut berubah.
