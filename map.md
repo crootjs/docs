@@ -2,14 +2,14 @@
 
 `map.js` menampilkan peta interaktif dan menggambar data GeoJSON di atasnya — ditulis dari nol, tanpa Leaflet atau library peta lain. Peta dasarnya berupa tile raster (bawaan: OpenStreetMap), datanya digambar sebagai SVG, dan semuanya bisa digeser, di-zoom, dan diklik, baik dengan mouse maupun jari.
 
-CSS-nya di-*inject* otomatis oleh modul ini sendiri (seperti [`toast.js`](toast)), jadi tidak ada file CSS yang perlu ditautkan. Yang diunduh browser sekitar 11 KB (gzip): `map.min.js` beserta [`geo.js`](geo) yang dipakainya. Sebagai pembanding, Leaflet sekitar 46 KB (gzip) untuk JS dan CSS-nya.
+CSS-nya di-*inject* otomatis oleh modul ini sendiri (seperti [`toast.js`](toast)), jadi tidak ada file CSS yang perlu ditautkan. Yang diunduh browser sekitar 13 KB (gzip): `map.min.js` beserta [`geo.js`](geo) yang dipakainya. Sebagai pembanding, Leaflet sekitar 46 KB (gzip) untuk JS dan CSS-nya.
 
-Marker ikon, skala, "lokasi saya", live tracking, pengelompokan titik, pengukuran, dan rute ada di [modul tambahan](#modul-tambahan) yang terpisah, masing-masing 1–3 KB, supaya halaman hanya mengunduh yang dipakainya.
+Marker ikon, skala, "lokasi saya", live tracking, koordinat, layar penuh, alat ukur, gambar overlay, ekspor PNG, pengelompokan titik, dan rute ada di [modul tambahan](#modul-tambahan) yang terpisah, masing-masing 1–5 KB, supaya halaman hanya mengunduh yang dipakainya.
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/map.js";
 ```
 
 Semua fungsi [`geo.js`](geo) (`getGeoJSON`, `readGeoJSONFile`, `parseGeoJSON`, `getBBox`, dan lainnya) ikut diekspor dari `map.js`. Halaman yang menampilkan peta cukup mengimpor dari `map.js` saja.
@@ -34,7 +34,7 @@ Elemen tempat peta **wajib punya tinggi** dari CSS. Peta mengisi elemen itu sepe
 
 ```javascript
 // index.js
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/map.js";
 
 createMap("peta");
 
@@ -177,6 +177,29 @@ addGeoJSON("peta", kontur, {
 
 **`name`, `minZoom`, `maxZoom`, `order`, `visible`, `attribution`** — lihat [Lapisan Bernama](#lapisan-bernama).
 
+**`renderer`** dan **`simplify`** — lihat [Data Besar](#data-besar-canvas-dan-penyederhanaan).
+
+## Data Besar: Canvas dan Penyederhanaan
+
+Secara bawaan setiap bentuk digambar sebagai satu elemen SVG. Itu nyaman sampai beberapa ribu bentuk, tetapi mulai berat di ponsel kalau garisnya ribuan. Dua opsi `addGeoJSON` untuk data seperti itu:
+
+| Opsi | Bawaan | Keterangan |
+|---|---|---|
+| `renderer` | `"svg"` | `"canvas"` = seluruh lapisan digambar di satu `<canvas>`, tanpa elemen per bentuk. Gaya (termasuk putus-putus), popup, `hoverStyle`, `tooltip`, label, dan `onMapClick` tetap berlaku — klik dan *hover* dihitung sendiri dari geometrinya |
+| `simplify` | `0` | Toleransi penyederhanaan dalam piksel layar, misalnya `1`. Per level zoom, titik yang menyimpang kurang dari itu dari garis lurus dibuang (Douglas-Peucker), jadi saat zoom jauh garis berisi ribuan titik cukup digambar dengan puluhan titik. Berlaku untuk SVG dan canvas |
+
+```javascript
+addGeoJSON("peta", jaringanFiber, {    // misalnya 5.600 garis
+    name: "fiber",
+    renderer: "canvas",
+    simplify: 1,
+    style: { stroke: "#ea580c", strokeWidth: 2 },
+    tooltip: (feature) => feature.properties.kode,
+});
+```
+
+Lapisan canvas selalu berada **di bawah** semua lapisan SVG, apa pun `order`-nya (`order` tetap mengatur urutan di antara sesama lapisan canvas). Jadi lapisan latar yang besar cocok di canvas, sedangkan lapisan kecil yang harus tampil di atasnya tetap di SVG.
+
 ## Lapisan Bernama
 
 Lapisan yang diberi `name` di `addGeoJSON` bisa diatur tanpa digambar ulang:
@@ -213,7 +236,7 @@ Untuk daftar centang siap pakai, lihat `addLayerControl` di [`mapcontrol.js`](ma
 
 Mengganti peta dasar **tanpa membuat ulang peta**: lapisan, marker, popup yang terbuka, dan tampilan tetap di tempatnya. Tile peta dasar lama dibiarkan sampai tile baru selesai dimuat, jadi peta tidak berkedip kosong.
 
-`tiles` sama seperti opsi `tiles` di `createMap` (tanpa nilai = OpenStreetMap, `false` = tanpa peta dasar). `options` berisi `labels`, `maxNativeZoom`, `subdomains`, `errorTiles`, dan `attribution`, sama seperti di `createMap`; yang tidak disebut kembali ke bawaannya.
+`tiles` sama seperti opsi `tiles` di `createMap` (tanpa nilai = OpenStreetMap, `false` = tanpa peta dasar). `options` berisi `labels`, `maxNativeZoom`, `subdomains`, `errorTiles`, dan `attribution`, sama seperti di `createMap`; yang tidak disebut kembali ke bawaannya. `minZoom` dan `maxZoom` juga boleh disebut — misalnya peta dasar yang tidak boleh di-zoom lewat level 17 — tetapi berbeda dari opsi lain, yang tidak disebut **tetap** seperti sebelumnya (lihat `setZoomRange` di bawah).
 
 ```javascript
 // ke citra satelit + label (hybrid)
@@ -228,6 +251,15 @@ setTiles("peta"); // kembali ke OpenStreetMap
 
 Untuk pilihan peta dasar siap pakai, lihat `addBasemapControl` di [`mapcontrol.js`](mapcontrol).
 
+## `setZoomRange(id, minZoom, maxZoom)`
+
+Mengubah rentang zoom yang diizinkan tanpa membuat ulang peta. `minZoom` atau `maxZoom` yang tidak diisi (`undefined`/`null`) dibiarkan. Kalau zoom sekarang di luar rentang baru, peta langsung di-zoom ke batas terdekat, dan tombol + / − ikut menyesuaikan.
+
+```javascript
+setZoomRange("peta", null, 17); // jangan lebih dekat dari zoom 17
+setZoomRange("peta", 10);       // jangan lebih jauh dari zoom 10, batas atas tetap
+```
+
 ## `fitMap(id, geojson, padding = 24)`
 
 Memaskan tampilan ke seluruh data. `geojson` sama fleksibelnya dengan di `addGeoJSON`, atau langsung sebuah kotak pembatas `[minLng, minLat, maxLng, maxLat]`. `padding` adalah jarak kosong (piksel) antara data dan tepi peta — satu angka untuk semua sisi, atau per sisi `{ top, right, bottom, left }` (sisi yang tidak disebut tetap 24), misalnya supaya data tidak tertutup panel.
@@ -236,6 +268,13 @@ Memaskan tampilan ke seluruh data. `geojson` sama fleksibelnya dengan di `addGeo
 fitMap("peta", data);
 fitMap("peta", [95, -11, 141, 6]);         // seluruh Indonesia
 fitMap("peta", data, { left: 320 });       // panel selebar 300 piksel di kiri peta
+```
+
+Padding per sisi juga cocok untuk tombol "zoom ke" yang responsif — panel di kiri pada layar lebar, di bawah pada ponsel:
+
+```javascript
+const sempit = window.matchMedia("(max-width: 640px)").matches;
+fitMap("peta", getBBox(dataLokasi), sempit ? { bottom: 260 } : { left: 340 });
 ```
 
 - Data yang hanya berupa satu titik ditampilkan pada zoom 17.
@@ -270,8 +309,8 @@ Nilai `center` yang dikembalikan bisa berbeda di digit-digit terakhir dari yang 
 Kegunaan paling umum: memilih lokasi untuk sebuah form.
 
 ```javascript
-import { createMap, addGeoJSON, onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
-import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/element.js";
+import { createMap, addGeoJSON, onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/map.js";
+import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/element.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
 
@@ -295,8 +334,8 @@ onMapClick("peta", (position) => {
 Keduanya biasa dipakai bersama untuk meminta ke backend **hanya data di area yang tampak**. Karena `onMapMove` terpanggil sangat sering, bungkus dengan [`debounce`](debounce) supaya request baru dikirim setelah peta berhenti bergerak:
 
 ```javascript
-import { createMap, addGeoJSON, clearMap, onMapMove, getMapBounds, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
-import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/debounce.js";
+import { createMap, addGeoJSON, clearMap, onMapMove, getMapBounds, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/map.js";
+import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/debounce.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 16 });
 
@@ -424,15 +463,16 @@ Fitur yang tidak dibutuhkan semua peta dipisahkan ke modul sendiri. Impor hanya 
 | Modul | Isi |
 |---|---|
 | [`mapmarker.js`](mapmarker) | Marker pin, ikon gambar, atau elemen sendiri — dengan label, popup, dan bisa digeser (`addMarker`) |
-| [`mapcontrol.js`](mapcontrol) | Garis skala, "lokasi saya", live tracking, pilihan peta dasar, dan daftar centang lapisan (`addScaleBar`, `addLocateButton`, `locateUser`, `addTrackButton`, `trackUser`, `addBasemapControl`, `addLayerControl`) |
+| [`mapcontrol.js`](mapcontrol) | Garis skala, "lokasi saya", live tracking, pilihan peta dasar, daftar centang lapisan, koordinat kursor, dan layar penuh (`addScaleBar`, `addLocateButton`, `locateUser`, `addTrackButton`, `trackUser`, `addBasemapControl`, `addLayerControl`, `addCoordinateControl`, `addFullscreenButton`) |
+| [`maptools.js`](maptools) | Alat ukur jarak dan luas, gambar bergeoreferensi dengan rotasi, ekspor tampilan ke PNG (`addMeasureControl`, `measure`, `addImageOverlay`, `exportMapImage`, `downloadMapImage`) |
 | [`mapcluster.js`](mapcluster) | Pengelompokan titik untuk data titik yang sangat banyak (`addCluster`) |
 | [`geomeasure.js`](geomeasure) | Jarak, panjang, luas, titik-di-dalam-area, titik terdekat, lingkaran radius |
 | [`georoute.js`](georoute) | Rute terpendek di sepanjang garis-garis di dalam data GeoJSON (`findRoute`) |
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
-import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/mapmarker.js";
-import { addScaleBar, addLocateButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/mapcontrol.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/map.js";
+import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/mapmarker.js";
+import { addScaleBar, addLocateButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/mapcontrol.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
 addMarker("peta", [107.575914, -6.8732098], { label: "ULBI", popup: "Kampus ULBI" });
@@ -476,6 +516,11 @@ export function addText(id, position, text) {
 | `showPopup(position, content, offset)` / `closePopup()` | Popup; `offset` = jarak ke atas dari posisinya, dalam piksel |
 | `setTiles(tiles, options)` | Sama dengan `setTiles(id, ...)` |
 | `getLayers()` / `setLayerVisible(name, visible)` | Daftar lapisan bernama; menampilkan/menyembunyikan satu lapisan |
+| `setZoomRange(minZoom, maxZoom)` | Sama dengan `setZoomRange(id, ...)` |
+| `root` | Elemen peta itu sendiri (berisi semua lapisan) — misalnya untuk mendengarkan `pointermove` |
+| `underlay` | Elemen tempat gambar di atas peta dasar dan di bawah data (dipakai `addImageOverlay`) |
+| `onClick(runFunction)` | Sama dengan `onMapClick`; mengembalikan `stop()` |
+| `captureClick(runFunction)` | Meminjam klik peta: selama aktif, klik dan klik ganda hanya diteruskan ke `runFunction(position, "click" \| "dblclick")` — tanpa popup, tanpa zoom klik ganda, tanpa `onMapClick`. Mengembalikan `release()`. Dipakai alat ukur |
 
 **Modul tambahan jangan mengimpor `map.js`.** Halaman biasanya memuat `map.min.js`, sedangkan `import "./map.js"` dari modul lain memuat *salinan kedua* dengan daftar petanya sendiri — dan peta yang dibuat halaman tidak akan ditemukan. Antarmuka di elemen ini menghindari itu: modulmu bekerja dengan salinan `map.js` mana pun yang dipakai halaman.
 
@@ -493,6 +538,6 @@ export function addText(id, position, text) {
 - Proyeksinya Web Mercator saja (yang dipakai hampir semua peta web), dengan lintang dibatasi ±85,05°.
 - Peta dasar hanya tile raster (gambar). Vector tile tidak didukung.
 - Peta tidak berulang ke kiri-kanan melewati garis bujur 180°.
-- Data digambar sebagai SVG, satu elemen per bentuk. Ini nyaman untuk ratusan sampai beberapa ribu fitur; untuk puluhan ribu titik, pakai [`mapcluster.js`](mapcluster) yang mengelompokkannya.
+- Data digambar sebagai SVG, satu elemen per bentuk, kecuali lapisan `renderer: "canvas"`. SVG nyaman untuk ratusan sampai beberapa ribu fitur; untuk ribuan garis pakai canvas (lihat [Data Besar](#data-besar-canvas-dan-penyederhanaan)), dan untuk puluhan ribu titik pakai [`mapcluster.js`](mapcluster) yang mengelompokkannya.
 - Label fitur ditulis mendatar; label garis tidak mengikuti arah garisnya.
 - Belum ada alat untuk menggambar atau mengedit bentuk langsung di peta.

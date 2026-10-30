@@ -1,12 +1,12 @@
 # Dokumentasi Modul `mapcontrol.js`
 
-`mapcontrol.js` adalah modul tambahan untuk [`map.js`](map) berisi kontrol yang paling sering diminta dari sebuah peta: **garis skala**, **lokasi saya**, **live tracking** (mengikuti lokasi terus-menerus), **pilihan peta dasar**, dan **daftar centang lapisan**. Terpisah dari `map.js` supaya halaman yang tidak memakainya tidak ikut mengunduhnya (sekitar 3 KB gzip).
+`mapcontrol.js` adalah modul tambahan untuk [`map.js`](map) berisi kontrol yang paling sering diminta dari sebuah peta: **garis skala**, **lokasi saya**, **live tracking** (mengikuti lokasi terus-menerus), **pilihan peta dasar**, **daftar centang lapisan**, **koordinat kursor**, dan **layar penuh**. Terpisah dari `map.js` supaya halaman yang tidak memakainya tidak ikut mengunduhnya (sekitar 4 KB gzip).
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
-import { addScaleBar, addLocateButton, locateUser, addTrackButton, trackUser, addBasemapControl, addLayerControl } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/mapcontrol.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/map.js";
+import { addScaleBar, addLocateButton, locateUser, addTrackButton, trackUser, addBasemapControl, addLayerControl, addCoordinateControl, addFullscreenButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/mapcontrol.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` lebih dulu.
@@ -48,8 +48,8 @@ Menanyakan lokasi perangkat ke browser (sekali), lalu:
 | Izin ditolak, perangkat tidak mendukung, atau lewat 15 detik | `null` |
 
 ```javascript
-import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/mapcontrol.js";
-import { getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/geomeasure.js";
+import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/mapcontrol.js";
+import { getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/geomeasure.js";
 
 const kampus = [107.575914, -6.8732098];
 
@@ -86,8 +86,8 @@ Mengembalikan function `stop()` untuk menghentikan pelacakan.
 Kalau izin lokasi ditolak atau perangkat tidak mendukung, `responseFunction` dipanggil **sekali** dengan `null` dan pelacakan berhenti sendiri. Gangguan sementara seperti sinyal hilang tidak menghentikan pelacakan; browser mencoba lagi.
 
 ```javascript
-import { createMap, addGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
-import { trackUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/mapcontrol.js";
+import { createMap, addGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/map.js";
+import { trackUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/mapcontrol.js";
 
 createMap("peta");
 
@@ -133,7 +133,7 @@ addTrackButton("peta");
 
 Menambahkan pilihan peta dasar (tombol radio) ke peta. Memilih salah satu memanggil [`setTiles`](map#settilesid-tiles-options) — lapisan, marker, popup, dan tampilan tetap di tempatnya.
 
-`basemaps` adalah array `{ name, tiles, labels, maxNativeZoom, subdomains, errorTiles, attribution }`; semua kunci kecuali `name` sama dengan opsi `setTiles`.
+`basemaps` adalah array `{ name, tiles, labels, maxNativeZoom, subdomains, errorTiles, attribution, minZoom, maxZoom }`; semua kunci kecuali `name` sama dengan opsi `setTiles`. Dengan `maxZoom`, tiap peta dasar bisa punya batas zoom sendiri; peta langsung di-zoom keluar kalau sedang lebih dekat dari batas peta dasar yang dipilih.
 
 `options` (semuanya opsional):
 
@@ -184,6 +184,52 @@ addLayerControl("peta", [
     { name: "fiber", label: "Jalur fiber" },
     { name: "zona", label: "Batas zona" },
 ]);
+```
+
+## `addCoordinateControl(id, options)`
+
+Menampilkan koordinat di bawah kursor mouse. Klik (atau tap) di peta **menahan** koordinat titik itu dan memunculkan tombol salin di sebelahnya. Di layar sentuh tidak ada kursor, jadi yang tampil hanya koordinat yang di-tap.
+
+`options` (semuanya opsional):
+
+| Opsi | Bawaan | Keterangan |
+|---|---|---|
+| `format` | `"lat, lng"` | Function `(position) => teks` yang ditampilkan dan disalin. Ini kait untuk sistem koordinat lokal |
+| `precision` | `6` | Angka di belakang koma untuk format bawaan (6 ≈ 10 cm) |
+| `corner` | `"bottom-left"` | Pojok peta |
+| `onClick` | — | Function `(position, text)` yang dipanggil saat koordinat ditahan |
+
+Mengembalikan function `remove()`.
+
+Format bawaan berurutan **lat, lng** (`-6.873600, 107.575900`) — urutan yang diterima kotak pencarian Google Maps dan kebanyakan GPS — walaupun `position` tetap `[lng, lat]`.
+
+Tombol salin memakai Clipboard API, yang hanya tersedia di halaman HTTPS (atau `localhost`). Di halaman `http://` biasa teksnya diblok, jadi tinggal tekan Ctrl+C.
+
+**Grid lokal (CAD).** Dengan [`createAffineTransform`](geomeasure#createaffinetransformfrom-to) dari `geomeasure.js`, koordinat bisa ditampilkan dalam grid proyek. Contohnya, tiga titik patok yang diketahui koordinat grid dan lng/lat-nya:
+
+```javascript
+import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/geomeasure.js";
+
+const grid = [[1000, 2000], [1500, 2000], [1000, 2400]];                  // meter, grid CAD
+const wgs84 = [[107.57520, -6.87410], [107.57974, -6.87407], [107.57517, -6.87048]];
+const gridToWgs = createAffineTransform(grid, wgs84);
+
+addCoordinateControl("peta", {
+    format: (position) => {
+        const [x, y] = gridToWgs.inverse(position);
+        return `X ${x.toFixed(2)}  Y ${y.toFixed(2)}`;
+    },
+});
+```
+
+## `addFullscreenButton(id, corner = "top-left")`
+
+Menambahkan tombol layar penuh: peta memenuhi seluruh layar, klik lagi (atau Esc) untuk kembali. Browser tanpa Fullscreen API untuk elemen — Safari di iPhone — mendapat tiruannya: peta memenuhi jendela browser. Ukuran peta menyesuaikan sendiri di kedua arah.
+
+Mengembalikan function `remove()`, yang juga keluar dari layar penuh.
+
+```javascript
+addFullscreenButton("peta");
 ```
 
 ## Catatan

@@ -1,13 +1,13 @@
 # Dokumentasi Modul `geomeasure.js`
 
-`geomeasure.js` berisi perhitungan yang paling sering dibutuhkan dari data geospasial: jarak, panjang, luas, titik-di-dalam-area, titik terdekat, dan lingkaran radius. Semuanya fungsi murni — tidak butuh peta, tidak butuh DOM — jadi bisa dipakai dengan atau tanpa [`map.js`](map).
+`geomeasure.js` berisi perhitungan yang paling sering dibutuhkan dari data geospasial: jarak, panjang, luas, titik-di-dalam-area, titik terdekat, lingkaran radius, dan transformasi dari sistem koordinat lokal. Semuanya fungsi murni — tidak butuh peta, tidak butuh DOM — jadi bisa dipakai dengan atau tanpa [`map.js`](map).
 
 Posisi selalu `[lng, lat]` seperti di GeoJSON, dan hasil selalu dalam **meter** (atau meter persegi).
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { getDistance, getArea, isInside } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/geomeasure.js";
+import { getDistance, getArea, isInside, createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/geomeasure.js";
 ```
 
 Fungsi yang menerima `geojson` sama fleksibelnya dengan [`parseGeoJSON`](geo): `FeatureCollection`, satu `Feature`, satu geometri polos, array-nya, atau teks JSON. Contoh-contoh di bawah memakai `data` dari [contoh.geojson](https://github.com/petapedia/geojson/blob/main/contoh.geojson).
@@ -69,14 +69,41 @@ Membuat Feature polygon berbentuk lingkaran dengan pusat `center` dan jari-jari 
 const radiusPresensi = createCircle([107.575914, -6.8732098], 100); // lingkaran 100 m
 ```
 
+## `createAffineTransform(from, to)`
+
+Membuat transformasi *affine* (geser, putar, skala, miring) dari pasangan titik kontrol: titik ke-*i* di `from` berpasangan dengan titik ke-*i* di `to`, masing-masing `[x, y]`. Gunanya mengubah koordinat sistem lokal — grid CAD, denah gedung, piksel gambar hasil scan — menjadi `[lng, lat]`, dan sebaliknya.
+
+Butuh minimal **3 pasangan yang tidak segaris**. Lebih dari 3 dicocokkan dengan kuadrat terkecil, jadi titik kontrol tambahan meratakan kesalahan ukur.
+
+Mengembalikan function `transform([x, y])`, atau `null` kalau titik kontrolnya kurang, jumlahnya tidak sama, atau segaris. Function itu juga punya:
+
+| Anggota | Isi |
+|---|---|
+| `transform.inverse([x, y])` | Arah sebaliknya: dari sistem `to` ke sistem `from` |
+| `transform.error` | Selisih rata-rata (RMS) titik kontrol setelah ditransformasi, dalam satuan `to`. Untuk `[lng, lat]`, 0,00001° ≈ 1,1 m. Nilai yang besar berarti ada titik kontrol yang salah ketik |
+
+```javascript
+// Tiga patok yang diketahui koordinat grid proyek (meter) dan lng/lat-nya.
+const grid = [[1000, 2000], [1500, 2000], [1000, 2400]];
+const wgs84 = [[107.57520, -6.87410], [107.57974, -6.87407], [107.57517, -6.87048]];
+const gridToWgs = createAffineTransform(grid, wgs84);
+
+gridToWgs([1250, 2200]);                 // [lng, lat] titik grid itu
+gridToWgs.inverse([107.5775, -6.8723]);  // [x, y] grid dari lng/lat
+```
+
+Mengubah seluruh data GeoJSON dari grid CAD tinggal memetakan setiap koordinatnya dengan `gridToWgs`. Untuk menempelkan gambar denah dengan titik kontrol, lihat `addImageOverlay` di [`maptools.js`](maptools).
+
+Affine pada `[lng, lat]` cukup teliti untuk area seukuran kawasan (beberapa kilometer). Untuk wilayah yang jauh lebih luas, atau data dalam proyeksi resmi seperti UTM/TM-3, pakai rumus proyeksinya.
+
 ## Contoh: Presensi Berbasis Lokasi
 
 Gabungan yang paling sering dipakai: gambar radiusnya, ambil lokasi user, lalu periksa apakah ia di dalamnya.
 
 ```javascript
-import { createMap, addGeoJSON, fitMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/map.js";
-import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/mapcontrol.js";
-import { createCircle, isInside, getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/geomeasure.js";
+import { createMap, addGeoJSON, fitMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/map.js";
+import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/mapcontrol.js";
+import { createCircle, isInside, getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/geomeasure.js";
 
 const kampus = [107.575914, -6.8732098];
 const area = createCircle(kampus, 100);

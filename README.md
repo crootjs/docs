@@ -15,11 +15,12 @@ Dokumentasi per-modul dari `crootjs/lib`:
 - [debounce.js](debounce) — `debounce`/`throttle` untuk membatasi frekuensi eksekusi function (search-as-you-type, scroll, dsb)
 - [toast.js](toast) — notifikasi ringan tanpa dependency eksternal (`toast`, `toastSuccess`, `toastError`, `toastWarning`, `toastInfo`)
 - [geo.js](geo) — baca data geospasial GeoJSON dari URL atau file lokal (`getGeoJSON`, `readGeoJSONFile`, `parseGeoJSON`), plus kotak pembatas, titik tengah, dan daftar properti
-- [map.js](map) — peta interaktif tanpa library eksternal: peta dasar tile (OpenStreetMap), gambar GeoJSON, popup, klik koordinat, lapisan bernama, label, hover, ganti peta dasar (`createMap`, `addGeoJSON`, `fitMap`, `onMapClick`, `showLayer`, `setTiles`)
+- [map.js](map) — peta interaktif tanpa library eksternal: peta dasar tile (OpenStreetMap), gambar GeoJSON, popup, klik koordinat, lapisan bernama, label, hover, ganti peta dasar, renderer canvas (`createMap`, `addGeoJSON`, `fitMap`, `onMapClick`, `showLayer`, `setTiles`)
 - [mapmarker.js](mapmarker) — modul tambahan `map.js`: marker pin, ikon, atau elemen sendiri, dengan label, popup, dan bisa digeser (`addMarker`)
-- [mapcontrol.js](mapcontrol) — modul tambahan `map.js`: garis skala, "lokasi saya", live tracking, pilihan peta dasar, dan daftar centang lapisan (`addScaleBar`, `addLocateButton`, `locateUser`, `addTrackButton`, `trackUser`, `addBasemapControl`, `addLayerControl`)
+- [mapcontrol.js](mapcontrol) — modul tambahan `map.js`: garis skala, "lokasi saya", live tracking, pilihan peta dasar, daftar centang lapisan, koordinat, dan layar penuh (`addScaleBar`, `addLocateButton`, `locateUser`, `addTrackButton`, `trackUser`, `addBasemapControl`, `addLayerControl`, `addCoordinateControl`, `addFullscreenButton`)
+- [maptools.js](maptools) — modul tambahan `map.js`: alat ukur jarak dan luas, gambar bergeoreferensi dengan rotasi, ekspor PNG (`addMeasureControl`, `addImageOverlay`, `exportMapImage`)
 - [mapcluster.js](mapcluster) — modul tambahan `map.js`: pengelompokan titik untuk data titik yang sangat banyak (`addCluster`)
-- [geomeasure.js](geomeasure) — jarak, panjang, luas, titik-di-dalam-area, titik terdekat, lingkaran radius (`getDistance`, `getArea`, `isInside`, `createCircle`, ...)
+- [geomeasure.js](geomeasure) — jarak, panjang, luas, titik-di-dalam-area, titik terdekat, lingkaran radius, konversi dari grid lokal (`getDistance`, `getArea`, `isInside`, `createCircle`, `createAffineTransform`, ...)
 - [georoute.js](georoute) — rute terpendek di sepanjang garis-garis di dalam data GeoJSON, dihitung di browser (`findRoute`)
 - [url.js](url) — protokol, host, path, query string, hash, redirect
 - [validate.js](validate) — validasi & format input (username, nomor telepon, Rupiah)
@@ -154,8 +155,8 @@ API whatsauth dapat digunakan untuk pengembangan implementasi SSO, login menggun
    ```
 2. main.js : pengaturan login menggunakan crootjs
    ```js
-   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/auth.js";
-   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/config.js";
+   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/auth.js";
+   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/config.js";
    
    wauthparam.auth_ws="d3NzOi8vYXBpLndhLm15LmlkL3dzL3doYXRzYXV0aC9wdWJsaWM=";
    wauthparam.keyword="aHR0cHM6Ly93YS5tZS82MjgzMTMxODk1MDAwP3RleHQ9d2g0dDVhdXRoMA==";
@@ -222,9 +223,9 @@ Pada file index.html
 
 Pada file index.js
 ```js
-import {getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/cookie.js";
-import {getJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/api.js";
-import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.17/url.js";
+import {getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/cookie.js";
+import {getJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/api.js";
+import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.18/url.js";
 
 if (getCookie("login")){
     getJSON("https://asia-southeast2-awangga.cloudfunctions.net/florka/data/user",responseFunction,"login",getCookie("login"));
