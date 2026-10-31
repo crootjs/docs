@@ -15,9 +15,9 @@ Dokumentasi per-modul dari `crootjs/lib`:
 - [debounce.js](debounce) — `debounce`/`throttle` untuk membatasi frekuensi eksekusi function (search-as-you-type, scroll, dsb)
 - [toast.js](toast) — notifikasi ringan tanpa dependency eksternal (`toast`, `toastSuccess`, `toastError`, `toastWarning`, `toastInfo`)
 - [geo.js](geo) — baca data geospasial GeoJSON dari URL atau file lokal (`getGeoJSON`, `readGeoJSONFile`, `parseGeoJSON`), plus kotak pembatas, titik tengah, dan daftar properti
-- [map.js](map) — peta interaktif tanpa library eksternal: peta dasar tile (OpenStreetMap), gambar GeoJSON, popup, klik koordinat, lapisan bernama, label, hover, ganti peta dasar, renderer canvas (`createMap`, `addGeoJSON`, `fitMap`, `onMapClick`, `showLayer`, `setTiles`)
+- [map.js](map) — peta interaktif tanpa library eksternal: peta dasar tile (OpenStreetMap), gambar GeoJSON, popup, klik koordinat, klik kanan, lapisan bernama, label, hover, ganti peta dasar, renderer canvas (`createMap`, `addGeoJSON`, `fitMap`, `onMapClick`, `onMapContextMenu`, `showLayer`, `setTiles`)
 - [mapmarker.js](mapmarker) — modul tambahan `map.js`: marker pin, ikon, atau elemen sendiri, dengan label, popup, dan bisa digeser (`addMarker`)
-- [mapcontrol.js](mapcontrol) — modul tambahan `map.js`: garis skala, "lokasi saya", live tracking, pilihan peta dasar (daftar atau kartu bergambar), daftar centang lapisan, koordinat, dan layar penuh (`addScaleBar`, `addLocateButton`, `locateUser`, `addTrackButton`, `trackUser`, `addBasemapControl`, `setBasemap`, `addLayerControl`, `addCoordinateControl`, `addFullscreenButton`)
+- [mapcontrol.js](mapcontrol) — modul tambahan `map.js`: garis skala, "lokasi saya", live tracking, pilihan peta dasar (daftar atau kartu bergambar), daftar centang lapisan, koordinat, menu klik kanan, dan layar penuh (`addScaleBar`, `addLocateButton`, `locateUser`, `addTrackButton`, `trackUser`, `addBasemapControl`, `setBasemap`, `addLayerControl`, `addCoordinateControl`, `addContextMenu`, `addFullscreenButton`)
 - [maptools.js](maptools) — modul tambahan `map.js`: alat ukur jarak dan luas, gambar bergeoreferensi dengan rotasi, ekspor PNG (`addMeasureControl`, `addImageOverlay`, `exportMapImage`)
 - [mapcluster.js](mapcluster) — modul tambahan `map.js`: pengelompokan titik untuk data titik yang sangat banyak (`addCluster`)
 - [mapheat.js](mapheat) — modul tambahan `map.js`: heatmap kepadatan titik dan peta petak persegi/heksagon berwarna menurut nilai, seperti peta cakupan sinyal (`addHeatmap`, `addGridMap`)
@@ -156,8 +156,8 @@ API whatsauth dapat digunakan untuk pengembangan implementasi SSO, login menggun
    ```
 2. main.js : pengaturan login menggunakan crootjs
    ```js
-   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/auth.js";
-   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/config.js";
+   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/auth.js";
+   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/config.js";
    
    wauthparam.auth_ws="d3NzOi8vYXBpLndhLm15LmlkL3dzL3doYXRzYXV0aC9wdWJsaWM=";
    wauthparam.keyword="aHR0cHM6Ly93YS5tZS82MjgzMTMxODk1MDAwP3RleHQ9d2g0dDVhdXRoMA==";
@@ -224,9 +224,9 @@ Pada file index.html
 
 Pada file index.js
 ```js
-import {getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/cookie.js";
-import {getJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/api.js";
-import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/url.js";
+import {getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/cookie.js";
+import {getJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/api.js";
+import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/url.js";
 
 if (getCookie("login")){
     getJSON("https://asia-southeast2-awangga.cloudfunctions.net/florka/data/user",responseFunction,"login",getCookie("login"));

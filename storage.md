@@ -5,7 +5,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { setLocal, getLocal, deleteLocal } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/storage.js";
+import { setLocal, getLocal, deleteLocal } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/storage.js";
 ```
 
 ## localStorage

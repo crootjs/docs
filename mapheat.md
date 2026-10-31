@@ -7,8 +7,8 @@ Terpisah dari `map.js` supaya halaman yang tidak memakainya tidak ikut mengunduh
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/map.js";
-import { addHeatmap, addGridMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/mapheat.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/map.js";
+import { addHeatmap, addGridMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/mapheat.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` lebih dulu.
@@ -84,7 +84,7 @@ Tanpa `breaks`, rentang nilai petak dibagi rata ke `colors`. Batas otomatis dihi
 | `center` | `[lng, lat]` titik tengah petak |
 | `color`, `label` | Warna petak dan label legendanya |
 
-Mengembalikan `{ setData(data), setOptions(options), show(), hide(), remove() }`.
+Mengembalikan `{ setData(data), setOptions(options), show(), hide(), remove(), cellAt(position) }`. `cellAt([lng, lat])` memberi `cell` di titik itu pada level zoom yang sedang tampil, atau `null` kalau tidak ada petak di sana atau lapisannya disembunyikan. Pakai ini untuk menu klik kanan [`addContextMenu`](mapcontrol#addcontextmenuid-items-options), atau untuk menampilkan nilai petak di panel sendiri.
 
 ```javascript
 // Hasil drive test: setiap titik punya properti rsrp (dBm).

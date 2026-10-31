@@ -1,12 +1,12 @@
 # Dokumentasi Modul `mapcontrol.js`
 
-`mapcontrol.js` adalah modul tambahan untuk [`map.js`](map) berisi kontrol yang paling sering diminta dari sebuah peta: **garis skala**, **lokasi saya**, **live tracking** (mengikuti lokasi terus-menerus), **pilihan peta dasar** (daftar atau kartu bergambar), **daftar centang lapisan**, **koordinat kursor**, dan **layar penuh**. Terpisah dari `map.js` supaya halaman yang tidak memakainya tidak ikut mengunduhnya (sekitar 6 KB gzip).
+`mapcontrol.js` adalah modul tambahan untuk [`map.js`](map) berisi kontrol yang paling sering diminta dari sebuah peta: **garis skala**, **lokasi saya**, **live tracking** (mengikuti lokasi terus-menerus), **pilihan peta dasar** (daftar atau kartu bergambar), **daftar centang lapisan**, **koordinat kursor**, **menu klik kanan**, dan **layar penuh**. Terpisah dari `map.js` supaya halaman yang tidak memakainya tidak ikut mengunduhnya (sekitar 8 KB gzip).
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/map.js";
-import { addScaleBar, addLocateButton, locateUser, addTrackButton, trackUser, addBasemapControl, setBasemap, addLayerControl, addCoordinateControl, addFullscreenButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/mapcontrol.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/map.js";
+import { addScaleBar, addLocateButton, locateUser, addTrackButton, trackUser, addBasemapControl, setBasemap, addLayerControl, addCoordinateControl, addContextMenu, addFullscreenButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/mapcontrol.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` lebih dulu.
@@ -48,8 +48,8 @@ Menanyakan lokasi perangkat ke browser (sekali), lalu:
 | Izin ditolak, perangkat tidak mendukung, atau lewat 15 detik | `null` |
 
 ```javascript
-import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/mapcontrol.js";
-import { getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/geomeasure.js";
+import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/mapcontrol.js";
+import { getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/geomeasure.js";
 
 const kampus = [107.575914, -6.8732098];
 
@@ -86,8 +86,8 @@ Mengembalikan function `stop()` untuk menghentikan pelacakan.
 Kalau izin lokasi ditolak atau perangkat tidak mendukung, `responseFunction` dipanggil **sekali** dengan `null` dan pelacakan berhenti sendiri. Gangguan sementara seperti sinyal hilang tidak menghentikan pelacakan; browser mencoba lagi.
 
 ```javascript
-import { createMap, addGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/map.js";
-import { trackUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/mapcontrol.js";
+import { createMap, addGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/map.js";
+import { trackUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/mapcontrol.js";
 
 createMap("peta");
 
@@ -265,7 +265,7 @@ Tombol salin memakai Clipboard API, yang hanya tersedia di halaman HTTPS (atau `
 **Grid lokal (CAD).** Dengan [`createAffineTransform`](geomeasure#createaffinetransformfrom-to) dari `geomeasure.js`, koordinat bisa ditampilkan dalam grid proyek. Contohnya, tiga titik patok yang diketahui koordinat grid dan lng/lat-nya:
 
 ```javascript
-import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/geomeasure.js";
+import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/geomeasure.js";
 
 const grid = [[1000, 2000], [1500, 2000], [1000, 2400]];                  // meter, grid CAD
 const wgs84 = [[107.57520, -6.87410], [107.57974, -6.87407], [107.57517, -6.87048]];
@@ -278,6 +278,110 @@ addCoordinateControl("peta", {
     },
 });
 ```
+
+## `addContextMenu(id, items, options)`
+
+Menu klik kanan di peta, seperti di Google Maps atau QGIS. Muncul saat:
+
+- peta **diklik kanan** dengan mouse;
+- peta **ditekan lama** di layar sentuh (sekitar 0,5 detik tanpa menggeser jari) — juga di iPhone, yang tidak punya klik kanan;
+- tombol **Menu** atau **Shift+F10** ditekan saat peta difokus. Menunya muncul di tengah peta dan item pertamanya langsung difokus.
+
+Selama ada menu konteks, menu bawaan browser ("Simpan gambar", "Inspect", ...) tidak muncul di peta, kecuali di dalam popup dan kontrol, supaya teksnya tetap bisa disalin.
+
+`items` boleh berupa array item, atau **function `(position, feature) => array item`** yang dipanggil setiap kali menu dibuka:
+
+- `position` — `[lng, lat]` titik yang diklik kanan.
+- `feature` — fitur GeoJSON (`addGeoJSON`) di titik itu, atau `null` kalau yang diklik peta dasarnya.
+
+Dengan function, isi menu bisa berbeda untuk peta kosong dan untuk sebuah fitur. Array kosong berarti menu tidak muncul.
+
+Satu item adalah object:
+
+| Kunci | Keterangan |
+|---|---|
+| `label` | Teks item |
+| `onClick` | Function `(position, feature)` yang dipanggil saat item dipilih. Menunya tertutup lebih dulu |
+| `icon` | Opsional: teks pendek atau emoji, string `<svg ...>`, atau elemen DOM (misalnya ikon Lucide) |
+| `disabled` | `true` = tampil abu-abu dan tidak bisa dipilih |
+| `danger` | `true` = berwarna merah, untuk aksi seperti hapus |
+| `title` | Opsional: teks *tooltip* |
+| `items` | Array item: item ini menjadi **submenu**. Submenu terbuka saat kursor melayang di atasnya, saat diklik, atau dengan panah kanan |
+
+Selain object, item juga boleh berupa:
+
+| Item | Hasil |
+|---|---|
+| `"-"` | Garis pemisah. Garis di awal, di akhir, atau yang berturut-turut dibuang otomatis |
+| `false`, `null`, `undefined` | Dilewati, jadi item bersyarat cukup ditulis `feature && { ... }` |
+| `"coordinates"` | Menampilkan koordinat titik itu (`lat, lng`); dipilih = disalin ke clipboard |
+| `"center"` | "Pusatkan di sini" |
+| `"zoom-in"` | "Perbesar di sini" — satu level, berpusat di titik itu |
+| `"zoom-out"` | "Perkecil" — satu level |
+
+`options` (semuanya opsional):
+
+| Opsi | Bawaan | Keterangan |
+|---|---|---|
+| `precision` | `6` | Angka di belakang koma untuk item `"coordinates"` |
+| `format` | `"lat, lng"` | Function `(position) => teks` untuk item `"coordinates"`, sama seperti di `addCoordinateControl` |
+| `onOpen` | — | Function `(position, feature)` yang dipanggil setiap kali menu terbuka |
+
+Mengembalikan `{ close(), remove() }`. `remove()` menghapus menu konteksnya, dan menu bawaan browser kembali muncul.
+
+```javascript
+import { createMap, addGeoJSON, setMapView } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/map.js";
+import { addContextMenu } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.23/mapcontrol.js";
+
+createMap("peta", { center: [107.6, -6.9], zoom: 14 });
+addGeoJSON("peta", dataBTS, { name: "bts" });
+
+addContextMenu("peta", (position, feature) => [
+    "coordinates",
+    "center",
+    "-",
+    feature && { label: "Detail " + feature.properties.nama, onClick: () => bukaDetail(feature) },
+    feature && { label: "Hapus BTS", danger: true, onClick: () => hapusBTS(feature) },
+    "-",
+    { label: "Tambah di sini", items: [
+        { label: "Titik ukur", onClick: (position) => tambahTitikUkur(position) },
+        { label: "BTS baru", onClick: (position) => tambahBTS(position) },
+    ] },
+    "zoom-in",
+    "zoom-out",
+]);
+```
+
+**Petak `addGridMap`.** Petak heatmap bukan fitur GeoJSON, jadi `feature`-nya `null`. Ambil petaknya dengan `cellAt(position)` dari [`mapheat.js`](mapheat#addgridmapid-data-options):
+
+```javascript
+const cakupan = addGridMap("peta", hasilUkur, { value: "rsrp", shape: "hex", cellMeters: 100 });
+
+addContextMenu("peta", (position, feature) => {
+    const petak = feature ? null : cakupan.cellAt(position);
+    return [
+        "coordinates",
+        petak && { label: `RSRP ${petak.value.toFixed(1)} dBm (${petak.count} titik)`, disabled: true },
+        petak && { label: "Lihat pengukuran di petak ini", onClick: () => tampilkanPengukuran(petak) },
+    ];
+});
+```
+
+Menu tertutup saat sebuah item dipilih, saat Esc atau Tab ditekan, saat pengguna mengklik di luar menu, dan saat peta digeser atau di-zoom. Di dalam menu, panah atas/bawah, Home, dan End memindah fokus; Enter atau Spasi memilih; panah kanan/kiri membuka/menutup submenu. Posisinya dibalik ke kiri atau ke atas kalau tidak muat di layar.
+
+Hanya satu menu konteks yang terbuka di satu halaman. Kalau `addContextMenu` dipanggil dua kali untuk peta yang sama, keduanya membuka menu dan yang terakhir yang tampil, jadi cukup satu pemanggilan dengan function yang menyusun semua itemnya.
+
+Tampilannya bisa ditimpa dari CSS halaman tanpa `!important`. Tema gelap ikut `prefers-color-scheme`, dan di layar sentuh itemnya lebih tinggi supaya mudah di-*tap*.
+
+| Kelas | Elemen |
+|---|---|
+| `.crootjs-map-menu` | Kotak menu, dan juga setiap submenu (`role="menu"`, ditaruh di `<body>`) |
+| `.crootjs-map-menu-item` | Setiap item (`<button role="menuitem">`) |
+| `.crootjs-map-menu-danger` | Item dengan `danger: true` |
+| `.crootjs-map-menu-icon`, `.crootjs-map-menu-label`, `.crootjs-map-menu-arrow` | Ikon, teks, dan tanda `›` submenu di dalam item |
+| `.crootjs-map-menu-separator` | Garis pemisah |
+
+Untuk menu buatan sendiri, pakai [`onMapContextMenu`](map#onmapcontextmenuid-runfunction) dari `map.js`. Fungsi itu memberi titik, fitur, dan posisinya saja, tanpa tampilan menu.
 
 ## `addFullscreenButton(id, corner = "top-left")`
 
