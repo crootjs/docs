@@ -5,8 +5,8 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/map.js";
-import { addScaleBar, addLocateButton, locateUser, addTrackButton, trackUser, addBasemapControl, setBasemap, addLayerControl, addCoordinateControl, addFullscreenButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/mapcontrol.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/map.js";
+import { addScaleBar, addLocateButton, locateUser, addTrackButton, trackUser, addBasemapControl, setBasemap, addLayerControl, addCoordinateControl, addFullscreenButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/mapcontrol.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` lebih dulu.
@@ -48,8 +48,8 @@ Menanyakan lokasi perangkat ke browser (sekali), lalu:
 | Izin ditolak, perangkat tidak mendukung, atau lewat 15 detik | `null` |
 
 ```javascript
-import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/mapcontrol.js";
-import { getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/geomeasure.js";
+import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/mapcontrol.js";
+import { getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/geomeasure.js";
 
 const kampus = [107.575914, -6.8732098];
 
@@ -86,8 +86,8 @@ Mengembalikan function `stop()` untuk menghentikan pelacakan.
 Kalau izin lokasi ditolak atau perangkat tidak mendukung, `responseFunction` dipanggil **sekali** dengan `null` dan pelacakan berhenti sendiri. Gangguan sementara seperti sinyal hilang tidak menghentikan pelacakan; browser mencoba lagi.
 
 ```javascript
-import { createMap, addGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/map.js";
-import { trackUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/mapcontrol.js";
+import { createMap, addGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/map.js";
+import { trackUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/mapcontrol.js";
 
 createMap("peta");
 
@@ -192,14 +192,17 @@ addBasemapControl("peta", basemaps, {
 
 **Aksesibilitas.** Kartu pembuka adalah `<button>` dengan `aria-haspopup` dan `aria-expanded`; setiap kartu pilihan adalah `<button aria-pressed>`. Saat kisi dibuka dengan klik atau keyboard, fokus pindah ke kartu yang aktif; saat ditutup, fokus kembali ke kartu pembuka.
 
-**Tampilan.** Warna kartu mengikuti `prefers-color-scheme` (terang/gelap). Warna aksen bisa diganti lewat variabel CSS `--crootjs-map-accent`, dan semua kelasnya bisa ditimpa dari CSS halaman tanpa `!important`:
+**Tampilan.** Warna kartu mengikuti `prefers-color-scheme` (terang/gelap). Warna aksen dan lebar kartu bisa diganti lewat variabel CSS `--crootjs-map-accent` dan `--crootjs-map-card-width`, dan semua kelasnya bisa ditimpa dari CSS halaman tanpa `!important`:
 
 ```css
-#peta { --crootjs-map-accent: #16a34a; }
-.crootjs-map button.crootjs-map-card { width: 88px; }       /* lebar kartu */
-.crootjs-map-card-thumb { width: 76px; height: 76px; }      /* ukuran gambar */
-.crootjs-map-cards-grid { grid-template-columns: repeat(3, 88px); }
+#peta {
+    --crootjs-map-accent: #16a34a;     /* warna aksen */
+    --crootjs-map-card-width: 104px;   /* lebar kartu, bawaan 92px; kisi ikut menyesuaikan */
+}
+.crootjs-map-card-thumb { width: 84px; height: 84px; }   /* ukuran gambar, bawaan 72px */
 ```
+
+Lebar bawaan 92 px cukup untuk nama satu kata sepanjang "OpenStreetMap", juga saat bercetak tebal di kartu aktif. Nama yang lebih panjang turun ke baris berikutnya di antara kata; sebuah kata baru dipotong kalau tidak muat satu baris penuh (dengan tanda hubung di browser yang mendukung `hyphens`).
 
 | Kelas | Elemen |
 |---|---|
@@ -262,7 +265,7 @@ Tombol salin memakai Clipboard API, yang hanya tersedia di halaman HTTPS (atau `
 **Grid lokal (CAD).** Dengan [`createAffineTransform`](geomeasure#createaffinetransformfrom-to) dari `geomeasure.js`, koordinat bisa ditampilkan dalam grid proyek. Contohnya, tiga titik patok yang diketahui koordinat grid dan lng/lat-nya:
 
 ```javascript
-import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/geomeasure.js";
+import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/geomeasure.js";
 
 const grid = [[1000, 2000], [1500, 2000], [1000, 2400]];                  // meter, grid CAD
 const wgs84 = [[107.57520, -6.87410], [107.57974, -6.87407], [107.57517, -6.87048]];
