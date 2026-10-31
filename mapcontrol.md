@@ -1,12 +1,12 @@
 # Dokumentasi Modul `mapcontrol.js`
 
-`mapcontrol.js` adalah modul tambahan untuk [`map.js`](map) berisi kontrol yang paling sering diminta dari sebuah peta: **garis skala**, **lokasi saya**, **live tracking** (mengikuti lokasi terus-menerus), **pilihan peta dasar**, **daftar centang lapisan**, **koordinat kursor**, dan **layar penuh**. Terpisah dari `map.js` supaya halaman yang tidak memakainya tidak ikut mengunduhnya (sekitar 4 KB gzip).
+`mapcontrol.js` adalah modul tambahan untuk [`map.js`](map) berisi kontrol yang paling sering diminta dari sebuah peta: **garis skala**, **lokasi saya**, **live tracking** (mengikuti lokasi terus-menerus), **pilihan peta dasar** (daftar atau kartu bergambar), **daftar centang lapisan**, **koordinat kursor**, dan **layar penuh**. Terpisah dari `map.js` supaya halaman yang tidak memakainya tidak ikut mengunduhnya (sekitar 6 KB gzip).
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/map.js";
-import { addScaleBar, addLocateButton, locateUser, addTrackButton, trackUser, addBasemapControl, addLayerControl, addCoordinateControl, addFullscreenButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/mapcontrol.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/map.js";
+import { addScaleBar, addLocateButton, locateUser, addTrackButton, trackUser, addBasemapControl, setBasemap, addLayerControl, addCoordinateControl, addFullscreenButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/mapcontrol.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` lebih dulu.
@@ -48,8 +48,8 @@ Menanyakan lokasi perangkat ke browser (sekali), lalu:
 | Izin ditolak, perangkat tidak mendukung, atau lewat 15 detik | `null` |
 
 ```javascript
-import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/mapcontrol.js";
-import { getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/geomeasure.js";
+import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/mapcontrol.js";
+import { getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/geomeasure.js";
 
 const kampus = [107.575914, -6.8732098];
 
@@ -86,8 +86,8 @@ Mengembalikan function `stop()` untuk menghentikan pelacakan.
 Kalau izin lokasi ditolak atau perangkat tidak mendukung, `responseFunction` dipanggil **sekali** dengan `null` dan pelacakan berhenti sendiri. Gangguan sementara seperti sinyal hilang tidak menghentikan pelacakan; browser mencoba lagi.
 
 ```javascript
-import { createMap, addGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/map.js";
-import { trackUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/mapcontrol.js";
+import { createMap, addGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/map.js";
+import { trackUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/mapcontrol.js";
 
 createMap("peta");
 
@@ -131,21 +131,29 @@ addTrackButton("peta");
 
 ## `addBasemapControl(id, basemaps, options)`
 
-Menambahkan pilihan peta dasar (tombol radio) ke peta. Memilih salah satu memanggil [`setTiles`](map#settilesid-tiles-options) — lapisan, marker, popup, dan tampilan tetap di tempatnya.
+Menambahkan pilihan peta dasar ke peta. Memilih salah satu memanggil [`setTiles`](map#settilesid-tiles-options) — lapisan, marker, popup, dan tampilan tetap di tempatnya. Ada dua gaya:
 
-`basemaps` adalah array `{ name, tiles, labels, maxNativeZoom, subdomains, errorTiles, attribution, minZoom, maxZoom }`; semua kunci kecuali `name` sama dengan opsi `setTiles`. Dengan `maxZoom`, tiap peta dasar bisa punya batas zoom sendiri; peta langsung di-zoom keluar kalau sedang lebih dekat dari batas peta dasar yang dipilih.
+- **`"list"`** (bawaan): panel tombol radio.
+- **`"cards"`**: satu kartu bergambar berisi peta dasar yang sedang aktif, seperti pemilih lapisan Google Maps. Diarahkan kursor (atau diklik/diketuk) menjadi kisi kartu semua pilihan; kartu yang aktif berbingkai warna aksen.
+
+`basemaps` adalah array `{ name, tiles, labels, maxNativeZoom, subdomains, errorTiles, attribution, minZoom, maxZoom, thumbnail }`; semua kunci kecuali `name` dan `thumbnail` sama dengan opsi `setTiles`. Dengan `maxZoom`, tiap peta dasar bisa punya batas zoom sendiri; peta langsung di-zoom keluar kalau sedang lebih dekat dari batas peta dasar yang dipilih.
 
 `options` (semuanya opsional):
 
 | Opsi | Bawaan | Keterangan |
 |---|---|---|
+| `style` | `"list"` | `"list"` atau `"cards"` |
 | `selected` | `0` | Indeks atau `name` peta dasar yang langsung dipasang |
-| `title` | `"Peta dasar"` | Judul panel (`""` = tanpa judul) |
-| `corner` | `"top-right"` | Pojok peta |
-| `collapsed` | `false` | `true` = panel disimpan di balik tombol ikon lapisan, dibuka-tutup dengan klik — cocok untuk layar sempit |
-| `onChange` | — | Function `(basemap)` yang dipanggil setelah peta dasar diganti |
+| `title` | `"Peta dasar"` | Judul panel atau kisi (`""` = tanpa judul) |
+| `corner` | `"top-right"` | Pojok peta. Kisi kartu terbuka dari pojok yang sama |
+| `onChange` | — | Function `(basemap)` yang dipanggil setelah peta dasar diganti, termasuk lewat `setBasemap` |
+| `collapsed` | `false` | Khusus `"list"`: `true` = panel disimpan di balik tombol ikon lapisan, dibuka-tutup dengan klik |
+| `trigger` | otomatis | Khusus `"cards"`: `"hover"` (kisi terbuka saat diarahkan kursor) atau `"click"`. Bawaan `"hover"` di perangkat ber-mouse dan `"click"` di layar sentuh |
+| `columns` | `3` | Khusus `"cards"`: jumlah kolom kisi. Di layar 640 px ke bawah paling banyak 2 |
+| `thumbnailCenter` | pusat peta | Khusus `"cards"`: titik `[lng, lat]` yang ditampilkan di gambar kartu |
+| `thumbnailZoom` | zoom peta | Khusus `"cards"`: zoom gambar kartu |
 
-Mengembalikan function `remove()` untuk mencabut panelnya; peta dasar yang terakhir dipilih tetap terpasang.
+Mengembalikan function `remove()` untuk mencabut kontrolnya; peta dasar yang terakhir dipilih tetap terpasang.
 
 ```javascript
 addBasemapControl("peta", [
@@ -165,6 +173,52 @@ addBasemapControl("peta", [
     },
 ]);
 ```
+
+### Gaya kartu
+
+```javascript
+addBasemapControl("peta", basemaps, {
+    style: "cards",
+    thumbnailCenter: [125.8959, -9.014],
+    thumbnailZoom: 14,
+    selected: "Hybrid",
+    onChange: (basemap) => console.log("Peta dasar:", basemap.name),
+});
+```
+
+**Gambar kartu.** Isi `thumbnail` dengan URL gambar kalau ingin gambar sendiri. Tanpa `thumbnail`, gambarnya satu tile dari peta dasar itu sendiri: tile yang memuat `thumbnailCenter` pada `thumbnailZoom`, dengan pola URL yang sama seperti peta (`{z}`, `{x}`, `{y}`, `{-y}`, `{s}`, `{r}`, dan `maxNativeZoom` dihormati). Kalau peta dasarnya punya `labels`, tile label ditumpuk di atas gambar dasarnya — kartu Hybrid tampil sebagai citra beserta labelnya. Bawaan `thumbnailCenter` dan `thumbnailZoom` adalah pusat dan zoom peta saat kontrol dipasang, jadi pasang kontrolnya sesudah peta diarahkan ke lokasi kerja, atau isi keduanya.
+
+**Membuka dan menutup.** Kisi tertutup saat diklik di luar, saat Esc ditekan, setelah sebuah kartu dipilih, atau (dengan `"hover"`) saat kursor meninggalkannya. Dengan `"hover"`, kartu pembuka tetap bisa diklik, jadi pemakai keyboard tetap bisa membukanya.
+
+**Aksesibilitas.** Kartu pembuka adalah `<button>` dengan `aria-haspopup` dan `aria-expanded`; setiap kartu pilihan adalah `<button aria-pressed>`. Saat kisi dibuka dengan klik atau keyboard, fokus pindah ke kartu yang aktif; saat ditutup, fokus kembali ke kartu pembuka.
+
+**Tampilan.** Warna kartu mengikuti `prefers-color-scheme` (terang/gelap). Warna aksen bisa diganti lewat variabel CSS `--crootjs-map-accent`, dan semua kelasnya bisa ditimpa dari CSS halaman tanpa `!important`:
+
+```css
+#peta { --crootjs-map-accent: #16a34a; }
+.crootjs-map button.crootjs-map-card { width: 88px; }       /* lebar kartu */
+.crootjs-map-card-thumb { width: 76px; height: 76px; }      /* ukuran gambar */
+.crootjs-map-cards-grid { grid-template-columns: repeat(3, 88px); }
+```
+
+| Kelas | Elemen |
+|---|---|
+| `.crootjs-map-cards` | Pembungkus kontrol |
+| `.crootjs-map-cards-toggle` | Kartu pembuka (peta dasar aktif) |
+| `.crootjs-map-cards-grid` | Kisi pilihan |
+| `.crootjs-map-cards-title` | Judul kisi |
+| `.crootjs-map-card` | Setiap kartu, termasuk kartu pembuka; yang aktif `[aria-pressed="true"]` |
+| `.crootjs-map-card-thumb`, `.crootjs-map-card-name` | Gambar dan nama di dalam kartu |
+
+## `setBasemap(id, name)`
+
+Mengganti peta dasar dari kode lewat pemilih `addBasemapControl` yang terakhir dipasang di peta itu, sehingga radio atau kartunya ikut berpindah dan `onChange` ikut dipanggil. `name` adalah `name` atau indeks peta dasarnya. Mengembalikan `true` kalau berhasil, `false` kalau petanya belum punya pemilih atau nama peta dasarnya tidak ada.
+
+```javascript
+setBasemap("peta", "Satelit");
+```
+
+Untuk mengganti peta dasar tanpa pemilih, pakai [`setTiles`](map#settilesid-tiles-options) dari `map.js`.
 
 ## `addLayerControl(id, layers, options)`
 
@@ -208,7 +262,7 @@ Tombol salin memakai Clipboard API, yang hanya tersedia di halaman HTTPS (atau `
 **Grid lokal (CAD).** Dengan [`createAffineTransform`](geomeasure#createaffinetransformfrom-to) dari `geomeasure.js`, koordinat bisa ditampilkan dalam grid proyek. Contohnya, tiga titik patok yang diketahui koordinat grid dan lng/lat-nya:
 
 ```javascript
-import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/geomeasure.js";
+import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/geomeasure.js";
 
 const grid = [[1000, 2000], [1500, 2000], [1000, 2400]];                  // meter, grid CAD
 const wgs84 = [[107.57520, -6.87410], [107.57974, -6.87407], [107.57517, -6.87048]];

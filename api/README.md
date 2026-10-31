@@ -63,7 +63,7 @@ getJSON(target_url, responseFunction, tokenkey?, tokenvalue?)
 **Tanpa Token (Public API):**
 
 ```javascript
-import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/api.js';
+import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/api.js';
 
 // Ambil data dari API publik
 getJSON(
@@ -85,8 +85,8 @@ getJSON(
 **Dengan Token Autentikasi:**
 
 ```javascript
-import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/api.js';
-import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/cookie.js';
+import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/api.js';
+import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/cookie.js';
 
 // Ambil token dari cookie
 const token = getCookie('user_token');
@@ -138,7 +138,7 @@ postJSON(target_url, datajson, responseFunction, tokenkey?, tokenvalue?)
 **Membuat Data Baru (Tanpa Token):**
 
 ```javascript
-import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/api.js';
+import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/api.js';
 
 // Data yang akan dikirim ke server
 const dataMahasiswa = {
@@ -164,8 +164,8 @@ postJSON(
 **Dengan Token Autentikasi:**
 
 ```javascript
-import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/api.js';
-import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/cookie.js';
+import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/api.js';
+import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/cookie.js';
 
 const token = getCookie('user_token');
 
@@ -223,8 +223,8 @@ deleteJSON(target_url, datajson, responseFunction, tokenkey?, tokenvalue?)
 **Menghapus Data dengan Konfirmasi:**
 
 ```javascript
-import { deleteJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/api.js';
-import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/cookie.js';
+import { deleteJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/api.js';
+import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/cookie.js';
 
 const token = getCookie('user_token');
 
@@ -284,7 +284,7 @@ responseFunction({ status: number, data: object })
 **Example**
 
 ```javascript
-import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/api.js';
+import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/api.js';
 
 const payload = { name: "Alice", age: 30 };
 
@@ -322,7 +322,7 @@ insertHTML(target_url, id, runFunction, errorFunction?)
 **Example**
 
 ```javascript
-import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/api.js';
+import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/api.js';
 
 insertHTML(
   "https://example.com/partials/navbar.html",
@@ -353,7 +353,7 @@ getDomHTML(target_url, domFunction)
 **Example**
 
 ```javascript
-import { getDomHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/api.js';
+import { getDomHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/api.js';
 
 getDomHTML(
   "https://example.com/partials/card.html",
@@ -375,7 +375,7 @@ getDomHTML(
 ### Updating a resource with authentication
 
 ```javascript
-import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/api.js';
+import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/api.js';
 
 putJSON(
   "/api/products/42",
@@ -395,7 +395,7 @@ putJSON(
 ### Loading a page section dynamically
 
 ```javascript
-import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.19/api.js';
+import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.20/api.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   insertHTML("/components/footer.html", "footer", () => {
