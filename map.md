@@ -4,12 +4,12 @@
 
 CSS-nya di-*inject* otomatis oleh modul ini sendiri (seperti [`toast.js`](toast)), jadi tidak ada file CSS yang perlu ditautkan. Yang diunduh browser sekitar 13 KB (gzip): `map.min.js` beserta [`geo.js`](geo) yang dipakainya. Sebagai pembanding, Leaflet sekitar 46 KB (gzip) untuk JS dan CSS-nya.
 
-Marker ikon, skala, "lokasi saya", live tracking, koordinat, layar penuh, alat ukur, gambar overlay, ekspor PNG, pengelompokan titik, dan rute ada di [modul tambahan](#modul-tambahan) yang terpisah, masing-masing 1–6 KB, supaya halaman hanya mengunduh yang dipakainya.
+Marker ikon, skala, "lokasi saya", live tracking, koordinat, layar penuh, alat ukur, gambar overlay, ekspor PNG, pengelompokan titik, heatmap, dan rute ada di [modul tambahan](#modul-tambahan) yang terpisah, masing-masing 1–6 KB, supaya halaman hanya mengunduh yang dipakainya.
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/map.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/map.js";
 ```
 
 Semua fungsi [`geo.js`](geo) (`getGeoJSON`, `readGeoJSONFile`, `parseGeoJSON`, `getBBox`, dan lainnya) ikut diekspor dari `map.js`. Halaman yang menampilkan peta cukup mengimpor dari `map.js` saja.
@@ -34,7 +34,7 @@ Elemen tempat peta **wajib punya tinggi** dari CSS. Peta mengisi elemen itu sepe
 
 ```javascript
 // index.js
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/map.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/map.js";
 
 createMap("peta");
 
@@ -309,8 +309,8 @@ Nilai `center` yang dikembalikan bisa berbeda di digit-digit terakhir dari yang 
 Kegunaan paling umum: memilih lokasi untuk sebuah form.
 
 ```javascript
-import { createMap, addGeoJSON, onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/map.js";
-import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/element.js";
+import { createMap, addGeoJSON, onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/map.js";
+import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/element.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
 
@@ -334,8 +334,8 @@ onMapClick("peta", (position) => {
 Keduanya biasa dipakai bersama untuk meminta ke backend **hanya data di area yang tampak**. Karena `onMapMove` terpanggil sangat sering, bungkus dengan [`debounce`](debounce) supaya request baru dikirim setelah peta berhenti bergerak:
 
 ```javascript
-import { createMap, addGeoJSON, clearMap, onMapMove, getMapBounds, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/map.js";
-import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/debounce.js";
+import { createMap, addGeoJSON, clearMap, onMapMove, getMapBounds, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/map.js";
+import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/debounce.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 16 });
 
@@ -466,13 +466,14 @@ Fitur yang tidak dibutuhkan semua peta dipisahkan ke modul sendiri. Impor hanya 
 | [`mapcontrol.js`](mapcontrol) | Garis skala, "lokasi saya", live tracking, pilihan peta dasar (daftar atau kartu bergambar), daftar centang lapisan, koordinat kursor, dan layar penuh (`addScaleBar`, `addLocateButton`, `locateUser`, `addTrackButton`, `trackUser`, `addBasemapControl`, `setBasemap`, `addLayerControl`, `addCoordinateControl`, `addFullscreenButton`) |
 | [`maptools.js`](maptools) | Alat ukur jarak dan luas, gambar bergeoreferensi dengan rotasi, ekspor tampilan ke PNG (`addMeasureControl`, `measure`, `addImageOverlay`, `exportMapImage`, `downloadMapImage`) |
 | [`mapcluster.js`](mapcluster) | Pengelompokan titik untuk data titik yang sangat banyak (`addCluster`) |
+| [`mapheat.js`](mapheat) | Heatmap kepadatan titik, dan peta petak persegi/heksagon berwarna menurut nilai seperti peta cakupan sinyal (`addHeatmap`, `addGridMap`) |
 | [`geomeasure.js`](geomeasure) | Jarak, panjang, luas, titik-di-dalam-area, titik terdekat, lingkaran radius |
 | [`georoute.js`](georoute) | Rute terpendek di sepanjang garis-garis di dalam data GeoJSON (`findRoute`) |
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/map.js";
-import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/mapmarker.js";
-import { addScaleBar, addLocateButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/mapcontrol.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/map.js";
+import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/mapmarker.js";
+import { addScaleBar, addLocateButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/mapcontrol.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
 addMarker("peta", [107.575914, -6.8732098], { label: "ULBI", popup: "Kampus ULBI" });

@@ -15,7 +15,7 @@ import {
   connectws,
   sendMessagetoWebSocket, 
   closeWebSocket 
-} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.21/websocket.js";
+} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.22/websocket.js";
 ```
 ## 2. Membuka Koneksi & Menangkap Pesan
 
