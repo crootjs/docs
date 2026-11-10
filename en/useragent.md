@@ -7,7 +7,7 @@
 ## Usage (Import)
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/useragent.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/useragent.js";
 ```
 
 ## Function List
@@ -23,7 +23,7 @@ Returns `true` if `navigator.userAgent` matches a common mobile device pattern (
 **Usage Example:**
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/useragent.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/useragent.js";
 
 if (isMobile()) {
     console.log("Accessed from a mobile device");
@@ -35,8 +35,8 @@ if (isMobile()) {
 **Example: showing different buttons on mobile**
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/useragent.js";
-import { show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/element.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/useragent.js";
+import { show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
 
 if (isMobile()) {
     show("tombol-buka-app");

@@ -42,8 +42,8 @@ getJSON("https://api.example.com/data", (res) => {
 Since version 0.0.26, `getJSON`, `postJSON`, `putJSON`, and `deleteJSON` also **return a Promise** containing the same `{ status, data }` object. The callback still runs as usual; if you use `await`, pass `null` as `responseFunction`:
 
 ```javascript
-import { getJSON, postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/api.js";
-import { getCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/cookie.js";
+import { getJSON, postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js";
+import { getCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/cookie.js";
 
 const { status, data } = await getJSON("https://api.example.com/produk");
 if (status === 200) console.log(data);
@@ -82,7 +82,7 @@ getJSON(target_url, responseFunction, tokenkey?, tokenvalue?)
 **Without a Token (Public API):**
 
 ```javascript
-import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/api.js';
+import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
 
 // Fetch data from a public API
 getJSON(
@@ -104,8 +104,8 @@ getJSON(
 **With an Authentication Token:**
 
 ```javascript
-import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/api.js';
-import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/cookie.js';
+import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/cookie.js';
 
 // Get the token from a cookie
 const token = getCookie('user_token');
@@ -157,7 +157,7 @@ postJSON(target_url, datajson, responseFunction, tokenkey?, tokenvalue?)
 **Creating New Data (Without a Token):**
 
 ```javascript
-import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/api.js';
+import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
 
 // Data to be sent to the server
 const dataMahasiswa = {
@@ -183,8 +183,8 @@ postJSON(
 **With an Authentication Token:**
 
 ```javascript
-import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/api.js';
-import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/cookie.js';
+import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/cookie.js';
 
 const token = getCookie('user_token');
 
@@ -242,8 +242,8 @@ deleteJSON(target_url, datajson, responseFunction, tokenkey?, tokenvalue?)
 **Deleting Data with Confirmation:**
 
 ```javascript
-import { deleteJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/api.js';
-import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/cookie.js';
+import { deleteJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/cookie.js';
 
 const token = getCookie('user_token');
 
@@ -303,7 +303,7 @@ responseFunction({ status: number, data: object })
 **Example**
 
 ```javascript
-import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/api.js';
+import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
 
 const payload = { name: "Alice", age: 30 };
 
@@ -341,7 +341,7 @@ insertHTML(target_url, id, runFunction, errorFunction?)
 **Example**
 
 ```javascript
-import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/api.js';
+import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
 
 insertHTML(
   "https://example.com/partials/navbar.html",
@@ -372,7 +372,7 @@ getDomHTML(target_url, domFunction)
 **Example**
 
 ```javascript
-import { getDomHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/api.js';
+import { getDomHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
 
 getDomHTML(
   "https://example.com/partials/card.html",
@@ -394,7 +394,7 @@ getDomHTML(
 ### Updating a resource with authentication
 
 ```javascript
-import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/api.js';
+import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
 
 putJSON(
   "/api/products/42",
@@ -414,7 +414,7 @@ putJSON(
 ### Loading a page section dynamically
 
 ```javascript
-import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/api.js';
+import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   insertHTML("/components/footer.html", "footer", () => {

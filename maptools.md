@@ -7,8 +7,8 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
-import { addMeasureControl, measure, addImageOverlay, exportMapImage, downloadMapImage } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/maptools.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
+import { addMeasureControl, measure, addImageOverlay, exportMapImage, downloadMapImage } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/maptools.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` lebih dulu.
@@ -91,7 +91,7 @@ masterPlan.setOpacity(0.4);
 **Dari titik kontrol.** Kalau yang diketahui adalah beberapa titik di gambar (piksel) beserta lng/lat-nya, buat transformasinya dengan [`createAffineTransform`](geomeasure#createaffinetransformfrom-to) lalu hitung ketiga sudutnya:
 
 ```javascript
-import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/geomeasure.js";
+import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/geomeasure.js";
 
 // Gambar 2400 x 1600 piksel; tiga titik yang dikenali di gambar dan di peta.
 const piksel = [[310, 220], [2105, 260], [400, 1390]];

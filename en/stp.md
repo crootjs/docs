@@ -11,7 +11,7 @@ This module exports three main functions for interacting with the authentication
 ## Usage (Import)
 
 ```javascript
-import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/stp.js";
+import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/stp.js";
 ```
 
 ## Internal Function

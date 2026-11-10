@@ -4,7 +4,7 @@
 
 `mapoffline.js` is an add-on module for [`map.js`](map) that displays a base map from **a single [PMTiles](https://docs.protomaps.com/pmtiles/) file** — a single-file format for map tiles. That file can be:
 
-- placed on an ordinary server (GitHub Pages, S3, Cloudflare R2, nginx) without a tile server: the browser reads only the pieces it needs via HTTP Range; or
+- placed on an ordinary server (S3, Cloudflare R2, nginx) without a tile server: the browser reads only the pieces it needs via HTTP Range; or
 - picked from the device with `<input type="file">` — the map then runs **with no internet at all**, ideal for surveys in areas without signal.
 
 Only PMTiles version 3 containing **raster** tiles (PNG, JPEG, WebP, AVIF). Vector tiles (MVT) are not yet supported. Its size is about 2 KB gzip.
@@ -12,8 +12,8 @@ Only PMTiles version 3 containing **raster** tiles (PNG, JPEG, WebP, AVIF). Vect
 ## Usage (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
-import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/mapoffline.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
+import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapoffline.js";
 ```
 
 ## `openPMTiles(source, responseFunction)`
@@ -53,8 +53,8 @@ createMap("peta", {
 ```
 
 ```javascript
-import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/element.js";
-import { setTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
+import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
+import { setTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
 
 createMap("peta", { tiles: false, center: [107.6, -6.9], zoom: 12 });
 onChange("berkas", async () => {
@@ -74,5 +74,6 @@ A file from `<input type="file">` is read directly from the device, so once the 
 ## Notes
 
 - Supported directory compression: none and gzip (the `pmtiles` default). Brotli and zstd are not yet supported.
-- The server must allow the `Range` header and, for other domains, CORS. Servers that ignore `Range` still work — the whole file is downloaded once and then read from memory.
+- The server must allow the `Range` header and, for other domains, CORS. Servers that ignore `Range`, or serve it incorrectly, still work: the whole file is downloaded once and then read from memory (with a console warning).
+- **GitHub Pages** is one that gets it wrong: `.pmtiles` files are gzip-compressed and the range is cut from the compressed bytes, so the pieces are corrupt. There the file is downloaded whole — fine for small files like the example (about 700 KB), but put large files on Cloudflare R2, S3, or your own server.
 - Tiles are displayed via *object URLs* that are released again when a tile leaves the screen, so memory does not keep growing.

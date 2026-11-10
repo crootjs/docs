@@ -7,7 +7,7 @@ The `trace.js` module in the croot.js library is used to trace, or *track*, the 
 Import the function from `trace.js` via the jsDelivr CDN. Make sure it is called inside an HTML *script* of type `module`.
 
 ```javascript
-import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/trace.js";
+import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/trace.js";
 ```
 
 ## Function List
@@ -21,7 +21,7 @@ This function detects mouse interactions in the form of a click, or a *touch* on
 To use the `tapClick` function, attach it with an `EventListener` for the *events* you want to track, such as `click`, `touchstart`, or `touchmove`.
 
 ```javascript
-import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/trace.js";
+import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/trace.js";
 
 // Track click interactions (mouse)
 document.addEventListener('click', tapClick);

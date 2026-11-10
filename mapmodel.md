@@ -9,8 +9,8 @@ Peta CrootJS dilihat tegak dari atas, jadi setiap model digambar di kanvas WebGL
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
-import { addModel, setPartColor, highlightPart } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/mapmodel.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
+import { addModel, setPartColor, highlightPart } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapmodel.js";
 ```
 
 `mapmodel.js` **mengekspor ulang semua fungsi [`model3d.js`](model3d)**. Untuk model di peta, impor fungsi-fungsi itu (`setPartColor`, `highlightPart`, `setPartTransform`, ...) dari `mapmodel.js`, bukan dari `model3d.js` terpisah: modul yang diimpor dari URL lain (misalnya `model3d.min.js`) adalah salinan lain dengan daftar penampil sendiri, sehingga `viewerId` model di peta tidak dikenalnya.

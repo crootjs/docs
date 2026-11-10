@@ -4,7 +4,7 @@
 
 `mapoffline.js` adalah modul tambahan untuk [`map.js`](map) yang menampilkan peta dasar dari **satu file [PMTiles](https://docs.protomaps.com/pmtiles/)** — format satu-file untuk tile peta. File itu bisa:
 
-- ditaruh di server biasa (GitHub Pages, S3, Cloudflare R2, nginx) tanpa server tile: browser hanya membaca potongan yang dibutuhkan lewat HTTP Range; atau
+- ditaruh di server biasa (Cloudflare R2, S3, nginx) tanpa server tile: browser hanya membaca potongan yang dibutuhkan lewat HTTP Range; atau
 - dipilih dari perangkat dengan `<input type="file">` — peta lalu jalan **tanpa internet sama sekali**, cocok untuk survei di daerah tanpa sinyal.
 
 Hanya PMTiles versi 3 berisi tile **raster** (PNG, JPEG, WebP, AVIF). Tile vektor (MVT) belum didukung. Ukurannya sekitar 2 KB gzip.
@@ -12,8 +12,8 @@ Hanya PMTiles versi 3 berisi tile **raster** (PNG, JPEG, WebP, AVIF). Tile vekto
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
-import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/mapoffline.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
+import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapoffline.js";
 ```
 
 ## `openPMTiles(source, responseFunction)`
@@ -53,8 +53,8 @@ createMap("peta", {
 ```
 
 ```javascript
-import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/element.js";
-import { setTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
+import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
+import { setTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
 
 createMap("peta", { tiles: false, center: [107.6, -6.9], zoom: 12 });
 onChange("berkas", async () => {
@@ -74,5 +74,6 @@ File dari `<input type="file">` dibaca langsung dari perangkat, jadi setelah hal
 ## Catatan
 
 - Kompresi directory yang didukung: tanpa kompresi dan gzip (bawaan `pmtiles`). Brotli dan zstd belum.
-- Server harus mengizinkan header `Range` dan, untuk domain lain, CORS. Server yang mengabaikan `Range` tetap bisa dipakai — seluruh file diunduh sekali lalu dibaca dari memori.
+- Server harus mengizinkan header `Range` dan, untuk domain lain, CORS. Server yang mengabaikan `Range`, atau melayaninya dengan salah, tetap bisa dipakai: seluruh file diunduh sekali lalu dibaca dari memori (dengan peringatan di console).
+- **GitHub Pages** termasuk yang salah: file `.pmtiles` dikompres gzip lalu dipotong dari hasil kompresinya, sehingga potongannya rusak. Di sana file diunduh utuh — tidak masalah untuk file kecil seperti contoh (sekitar 700 KB), tetapi untuk file besar taruh di Cloudflare R2, S3, atau server sendiri.
 - Tile ditampilkan lewat *object URL* yang dilepas lagi saat tile keluar dari layar, jadi memori tidak terus bertambah.

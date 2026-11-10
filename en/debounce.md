@@ -7,7 +7,7 @@
 ## Usage (Import)
 
 ```javascript
-import { debounce, throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/debounce.js";
+import { debounce, throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/debounce.js";
 ```
 
 ## `debounce(fn, delay)`
@@ -17,9 +17,9 @@ Delays running `fn` until the user **stops** triggering it for `delay` milliseco
 **Most common use**: search-as-you-type — so a request is not sent to the server on every keystroke, only after the user stops typing.
 
 ```javascript
-import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/debounce.js";
-import { onInput, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/element.js";
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/api.js";
+import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/debounce.js";
+import { onInput, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js";
 
 const cariProduk = debounce(() => {
     const kata = getValue("kotakPencarian");
@@ -38,7 +38,7 @@ Limits `fn` so it runs **at most once** every `delay` milliseconds, even if it i
 **Most common use**: `scroll`/`resize`/`mousemove` events, which can fire dozens of times per second.
 
 ```javascript
-import { throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/debounce.js";
+import { throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/debounce.js";
 
 window.addEventListener("scroll", throttle(() => {
     console.log("scroll position:", window.scrollY);

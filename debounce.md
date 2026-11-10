@@ -7,7 +7,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { debounce, throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/debounce.js";
+import { debounce, throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/debounce.js";
 ```
 
 ## `debounce(fn, delay)`
@@ -17,9 +17,9 @@ Menunda eksekusi `fn` sampai user **berhenti** memicu selama `delay` milidetik. 
 **Kegunaan paling umum**: search-as-you-type — supaya tidak kirim request ke server di setiap ketikan, cuma setelah user berhenti mengetik.
 
 ```javascript
-import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/debounce.js";
-import { onInput, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/element.js";
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/api.js";
+import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/debounce.js";
+import { onInput, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js";
 
 const cariProduk = debounce(() => {
     const kata = getValue("kotakPencarian");
@@ -38,7 +38,7 @@ Membatasi `fn` supaya berjalan **maksimal sekali** setiap `delay` milidetik, wal
 **Kegunaan paling umum**: event `scroll`/`resize`/`mousemove` yang bisa terpicu puluhan kali per detik.
 
 ```javascript
-import { throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/debounce.js";
+import { throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/debounce.js";
 
 window.addEventListener("scroll", throttle(() => {
     console.log("posisi scroll:", window.scrollY);

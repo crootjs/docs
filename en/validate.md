@@ -7,7 +7,7 @@
 Import the functions from the jsDelivr CDN into your JavaScript file of type `module`.
 
 ```javascript
-import { validateUserName, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/validate.js";
+import { validateUserName, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/validate.js";
 
 // the functions are imported as a module, so they are attached with addEventListener, not an oninput attribute
 document.getElementById("uname").addEventListener("input", (event) => validateUserName(event.target));
@@ -45,7 +45,7 @@ Here is how to apply it to HTML elements using an Event Listener:
 ### JavaScript
 
 ```javascript
-import { validateUserName, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/validate.js";
+import { validateUserName, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/validate.js";
 
 // the functions are imported as a module, so they are attached with addEventListener, not an oninput attribute
 document.getElementById("uname").addEventListener("input", (event) => validateUserName(event.target));
