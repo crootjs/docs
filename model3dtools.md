@@ -4,15 +4,18 @@
 
 - **Hotspot** — label HTML yang menempel di sebuah titik atau bagian model, ikut bergerak saat model diputar, dan meredup kalau tertutup.
 - **Gizmo** — pegangan geser, putar, dan skala untuk mengubah bagian langsung di layar dengan mouse atau jari.
+- **Animasi** — memutar animasi yang tersimpan di file glTF, dengan kontrol putar/jeda/geser waktu.
+- **Tampilan meledak** — memisahkan bagian-bagian model menjauh dari pusatnya, seperti gambar perakitan.
+- **Potongan melintang** — membelah model dengan sebuah bidang untuk melihat bagian dalamnya.
 - **Ekspor GLB** — menyimpan model beserta semua perubahannya sebagai file `.glb` baru.
 
-Terpisah dari `model3d.js` supaya halaman yang hanya menampilkan model tidak ikut mengunduhnya (sekitar 5 KB gzip).
+Tiga di tengah itu cocok untuk materi pembelajaran: anatomi, mesin, bangunan, alat praktikum. Modul ini terpisah dari `model3d.js` supaya halaman yang hanya menampilkan model tidak ikut mengunduhnya (sekitar 7 KB gzip).
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.24/model3d.js";
-import { addHotspot, enableTransform, exportGLB, downloadGLB } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.24/model3dtools.js";
+import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/model3d.js";
+import { addHotspot, enableTransform, getAnimations, playAnimation, explodeModel, addSection, exportGLB, downloadGLB } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/model3dtools.js";
 ```
 
 Penampilnya harus sudah dibuat dengan `createViewer` lebih dulu. Hotspot dan gizmo yang menyebut nama bagian butuh modelnya sudah dimuat, jadi panggil di dalam `responseFunction` `loadModel`.
@@ -79,6 +82,86 @@ onModelClick("model", (hit) => {
 });
 
 onClick("mode-geser", () => gizmo && gizmo.setMode("translate"));
+```
+
+## `getAnimations(id)` dan `playAnimation(id, animation, options)`
+
+`getAnimations` memberi daftar animasi di file model: `[{ index, name, duration }]`, `duration` dalam detik. Model tanpa animasi memberi `[]`.
+
+`playAnimation` memutar sebuah animasi. `animation` = nama atau nomor urutnya (bawaan `0`, yang pertama).
+
+`options` (semuanya opsional):
+
+| Opsi | Bawaan | Keterangan |
+|---|---|---|
+| `loop` | `true` | `false` = berhenti di akhir |
+| `speed` | `1` | Kecepatan: `0.5` = setengah, `2` = dua kali, negatif = mundur |
+| `autoplay` | `true` | `false` = disiapkan tapi belum jalan, misalnya untuk dikendalikan slider |
+| `onUpdate` | — | Function `(time, duration)` setiap frame, misalnya untuk menggerakkan slider waktu |
+| `onEnd` | — | Function yang dipanggil saat animasi selesai (hanya kalau `loop: false`) |
+
+Mengembalikan pengendali:
+
+| Anggota | Kegunaan |
+|---|---|
+| `play()`, `pause()` | Jalan dan jeda |
+| `stop()` | Berhenti dan mengembalikan bagian-bagiannya ke posisi sebelum animasi |
+| `seek(seconds)` | Lompat ke detik tertentu, termasuk saat dijeda — untuk slider waktu |
+| `setSpeed(speed)`, `isPlaying()`, `time()`, `duration` | Kecepatan, sedang jalan atau tidak, waktu sekarang, dan panjang animasinya |
+
+```javascript
+loadModel("model", "models/mesin.glb", () => {
+    const animasi = playAnimation("model", "Langkah_Hisap", {
+        loop: false,
+        onUpdate: (time) => setValue("waktu", time),
+    });
+    onInput("waktu", () => animasi.seek(Number(getValue("waktu"))));
+});
+```
+
+Yang diputar adalah gerak **node** (posisi, rotasi, skala) dengan interpolasi `STEP`, `LINEAR`, dan `CUBICSPLINE` — cukup untuk mesin, roda gigi, pintu, perakitan, atau planet yang mengorbit. Animasi yang membengkokkan permukaan (*skinning*, misalnya karakter berjalan, dan *morph target*) belum didukung: tulangnya bergerak, tetapi permukaannya tetap diam.
+
+## `explodeModel(id, amount, options)`
+
+Memisahkan bagian-bagian model menjauh dari pusatnya. `amount`: `0` = rapat (posisi semula), `1` = terpisah penuh, nilai di antaranya boleh — cocok untuk slider.
+
+`options` (semuanya opsional):
+
+| Opsi | Bawaan | Keterangan |
+|---|---|---|
+| `part` | otomatis | Nama bagian yang **anak-anaknya** dipisahkan. Bawaan: tingkat pertama dari atas yang bercabang |
+| `distance` | `1` | Pengali jarak. Dengan `1`, pada `amount` 1 jarak tiap bagian dari pusat menjadi dua kali |
+| `animate` | `true` | `false` = langsung pindah. Pakai `false` untuk nilai dari slider, supaya mengikuti jari tanpa jeda |
+
+Tiap bagian bergerak lurus menjauhi pusat kelompoknya. Kembali ke `0` mengembalikan posisi semula persis; posisi saat itu juga menjadi acuan untuk pemisahan berikutnya.
+
+```javascript
+onInput("pisah", () => {
+    explodeModel("model", Number(getValue("pisah")), { part: "Mesin", animate: false });
+});
+```
+
+Animasi, gizmo, dan tampilan meledak sama-sama mengubah posisi bagian. Kembalikan tampilan meledak ke `0` sebelum memutar animasi atau memakai gizmo pada bagian yang sama.
+
+## `addSection(id, options)`
+
+Membelah model dengan sebuah bidang. Sisi yang terpotong tidak digambar dan tidak bisa diklik; permukaan potongnya diwarnai rata, sehingga benda yang berongga tampak seperti padat terbelah. Hotspot yang titiknya ikut terpotong disembunyikan.
+
+`options` (semuanya opsional):
+
+| Opsi | Bawaan | Keterangan |
+|---|---|---|
+| `axis` | `"x"` | `"x"` = bidang tegak membelah kiri-kanan, `"z"` = tegak depan-belakang, `"y"` = mendatar; atau `[x, y, z]` arah bidang miring |
+| `position` | `0.5` | Letak bidang di sepanjang sumbu itu: `0` = ujung bawah model (model utuh), `1` = ujung atas (model hilang) |
+| `flip` | `false` | `true` = sisi sebaliknya yang dibuang |
+| `color` | warna bagiannya, digelapkan | Warna CSS permukaan potong, misalnya `"#facc15"` supaya irisannya mencolok |
+
+Hanya satu potongan per penampil; memanggil lagi menggantikan yang lama. Mengembalikan `{ set(options), remove() }` — `set` mengubah sebagian opsi, misalnya dari slider:
+
+```javascript
+const potongan = addSection("model", { axis: "x", color: "#facc15" });
+onInput("letak", () => potongan.set({ position: Number(getValue("letak")) }));
+onClick("utuh", () => potongan.remove());
 ```
 
 ## `exportGLB(id, responseFunction)` dan `downloadGLB(id, filename, responseFunction)`

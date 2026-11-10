@@ -1,13 +1,13 @@
 # Dokumentasi Modul `model3d.js`
 
-`model3d.js` menampilkan model 3D **glTF 2.0** (`.glb` dan `.gltf`) langsung di browser: putar, zoom, klik sebuah bagian, ganti warnanya, sembunyikan, atau ubah posisi dan rotasinya lewat kode. Semuanya ditulis dari nol di atas WebGL — parser biner GLB, matriks, shader, dan kontrol orbit sendiri — tanpa Three.js (sekitar 600 KB) atau library lain. Ukurannya sekitar 13 KB gzip.
+`model3d.js` menampilkan model 3D **glTF 2.0** (`.glb` dan `.gltf`) langsung di browser: putar, zoom, klik sebuah bagian, ganti warnanya, sembunyikan, atau ubah posisi dan rotasinya lewat kode. Semuanya ditulis dari nol di atas WebGL — parser biner GLB, matriks, shader, dan kontrol orbit sendiri — tanpa Three.js (sekitar 600 KB) atau library lain. Ukurannya sekitar 14 KB gzip.
 
-Merender dengan **WebGL2**, dan otomatis turun ke **WebGL1** di browser lama. Gizmo geser/putar di layar, label HTML yang menempel di model, dan ekspor `.glb` ada di modul tambahan [`model3dtools.js`](model3dtools).
+Merender dengan **WebGL2**, dan otomatis turun ke **WebGL1** di browser lama. Gizmo geser/putar di layar, label HTML yang menempel di model, animasi, tampilan meledak, potongan melintang, dan ekspor `.glb` ada di modul tambahan [`model3dtools.js`](model3dtools).
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.24/model3d.js";
+import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/model3d.js";
 ```
 
 ## Contoh Minimal
@@ -27,8 +27,8 @@ import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib
 
 ```javascript
 // index.js
-import { createViewer, loadModel, onModelClick, highlightPart } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.24/model3d.js";
-import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.24/element.js";
+import { createViewer, loadModel, onModelClick, highlightPart } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/model3d.js";
+import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/element.js";
 
 createViewer("model");
 loadModel("model", "models/bts.glb", (info, error) => {
@@ -75,7 +75,7 @@ Kalau gagal, `info` = `null` dan `error` berisi alasannya (juga dicetak di conso
 
 ```javascript
 // Membuka file dari komputer pengguna
-import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.24/element.js";
+import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/element.js";
 
 onChange("file", () => {
     loadModel("model", document.getElementById("file").files[0], (info, error) => {
@@ -185,7 +185,8 @@ Pengguna yang mengaktifkan *reduce motion* di sistemnya mendapat perpindahan kam
 | Didukung | Belum didukung |
 |---|---|
 | `.glb` dan `.gltf` (buffer tertanam, `data:` URI, atau file `.bin` terpisah) | Kompresi Draco dan meshopt — ekspor ulang tanpa kompresi |
-| Node bertingkat dengan `matrix` atau translation/rotation/scale | Animasi dan *skinning* — model tampil dalam pose diamnya |
+| Node bertingkat dengan `matrix` atau translation/rotation/scale | *Skinning* (karakter yang permukaannya melentur) — tampil dalam pose diam |
+| Animasi node, diputar dengan [`playAnimation`](model3dtools#getanimationsid-dan-playanimationid-animation-options) di `model3dtools.js` | |
 | Warna dasar, tekstur warna (PNG/JPEG), warna per titik (`COLOR_0`) | Peta normal, *occlusion*, dan tekstur logam/kekasaran |
 | `metallicFactor`, `roughnessFactor`, `emissiveFactor` | *Morph target*, kamera dan lampu dari file |
 | Transparan (`BLEND`) dan potong (`MASK`), dua sisi | `KHR_texture_transform` dan ekstensi material lain |
@@ -220,6 +221,10 @@ Pencahayaannya sederhana: cahaya langit/tanah ditambah satu lampu searah yang ik
 | `findParts(name)`, `isShown(node)`, `boundsOf(nodes)` | Node bernama `name`, apakah tampil, dan kotak pembatasnya |
 | `getTransform(node)`, `setTransform(node, transform)` | Sama dengan `getPartTransform`/`setPartTransform`, untuk satu node |
 | `getModel()` | Model yang dimuat: `{ source: { json, buffers, images }, nodes, roots }` |
+| `readAccessor(index)` | Data accessor glTF: `{ array, size, componentType, normalized, count }` |
+| `update()` | Setelah `translation`/`rotation`/`scale` sebuah node diubah langsung (misalnya animasi), hitung ulang dan gambar |
+| `setClip(plane, cap)` | Bidang potong `[nx, ny, nz, w]` (titik dengan `n·p + w > 0` dibuang) dan warna permukaan potongnya; `null` = tanpa potongan |
+| `parseColor(color)` | Warna CSS → `[r, g, b, a]` linear |
 
 ## Catatan
 

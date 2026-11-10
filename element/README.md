@@ -371,8 +371,8 @@ Mengambil semua field yang punya atribut `name` di dalam form (text, email, chec
 ```
 
 ```javascript
-import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.24/element.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.24/api.js";
+import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/element.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/api.js";
 
 const data = serializeForm("formDaftar");
 // { nama: "...", email: "...", setuju: true/false }
