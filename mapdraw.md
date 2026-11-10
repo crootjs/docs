@@ -1,3 +1,5 @@
+*[English](en/mapdraw)*
+
 # Dokumentasi Modul `mapdraw.js`
 
 `mapdraw.js` adalah modul tambahan untuk [`map.js`](map) untuk **membuat data** di peta, bukan hanya menampilkannya: menggambar titik, garis, dan poligon dengan klik atau tap, lalu mengubah bentuknya — geser simpul, tambah simpul di tengah ruas, hapus simpul. Hasilnya GeoJSON biasa, siap dikirim ke server dengan [`postJSON`](api/) atau diukur dengan [`geomeasure.js`](geomeasure).
@@ -7,8 +9,8 @@ Cocok untuk survei lapangan, menandai area cakupan, menggambar rute, atau batas 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/map.js";
-import { addDrawControl, startDrawing, editFeature } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/mapdraw.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
+import { addDrawControl, startDrawing, editFeature } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/mapdraw.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` lebih dulu.
@@ -40,10 +42,10 @@ Panel di bawah tombol menampilkan petunjuk dan tombol **Selesai**, **Hapus titik
 Mengembalikan `{ getData(), setData(geojson), clear(), remove() }`. `getData()` memberi salinan FeatureCollection-nya.
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/map.js";
-import { addDrawControl } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/mapdraw.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/api.js";
-import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/element.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
+import { addDrawControl } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/mapdraw.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/api.js";
+import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/element.js";
 
 createMap("peta", { center: [107.6, -6.9], zoom: 16 });
 const gambar = addDrawControl("peta", {
@@ -82,7 +84,7 @@ Selama menggambar, klik peta tidak membuka popup dan tidak diteruskan ke `onMapC
 Mengembalikan `{ finish(), undo(), stop() }` untuk tombol Selesai, Hapus titik, dan Batal buatan sendiri.
 
 ```javascript
-import { getArea } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/geomeasure.js";
+import { getArea } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/geomeasure.js";
 
 onClick("gambar-kavling", () => {
     startDrawing("peta", "polygon", (feature) => {

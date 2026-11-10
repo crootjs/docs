@@ -1,3 +1,5 @@
+*[English](en/websocket)*
+
 # Dokumentasi & Panduan Penggunaan `websocket.js`
 
 bagian ini digunakan untuk mempermudah koneksi dan komunikasi dua arah antara aplikasi web (*client*) dengan server menggunakan protokol WebSocket. 
@@ -15,7 +17,7 @@ import {
   connectws,
   sendMessagetoWebSocket, 
   closeWebSocket 
-} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/websocket.js";
+} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/websocket.js";
 ```
 ## 2. Membuka Koneksi & Menangkap Pesan
 

@@ -1,13 +1,15 @@
+*[English](en/model3d)*
+
 # Dokumentasi Modul `model3d.js`
 
-`model3d.js` menampilkan model 3D **glTF 2.0** (`.glb` dan `.gltf`) langsung di browser: putar, zoom, klik sebuah bagian, ganti warnanya, sembunyikan, atau ubah posisi dan rotasinya lewat kode. Semuanya ditulis dari nol di atas WebGL — parser biner GLB, matriks, shader, dan kontrol orbit sendiri — tanpa Three.js (sekitar 600 KB) atau library lain. Ukurannya sekitar 14 KB gzip.
+`model3d.js` menampilkan model 3D **glTF 2.0** (`.glb` dan `.gltf`) langsung di browser: putar, zoom, klik sebuah bagian, ganti warnanya, sembunyikan, atau ubah posisi dan rotasinya lewat kode. Semuanya ditulis dari nol di atas WebGL — parser biner GLB, matriks, shader, dan kontrol orbit sendiri — tanpa Three.js (sekitar 600 KB) atau library lain. Ukurannya sekitar 16 KB gzip.
 
 Merender dengan **WebGL2**, dan otomatis turun ke **WebGL1** di browser lama. Gizmo geser/putar di layar, label HTML yang menempel di model, animasi, tampilan meledak, potongan melintang, dan ekspor `.glb` ada di modul tambahan [`model3dtools.js`](model3dtools).
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/model3d.js";
+import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/model3d.js";
 ```
 
 ## Contoh Minimal
@@ -27,8 +29,8 @@ import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib
 
 ```javascript
 // index.js
-import { createViewer, loadModel, onModelClick, highlightPart } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/model3d.js";
-import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/element.js";
+import { createViewer, loadModel, onModelClick, highlightPart } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/model3d.js";
+import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/element.js";
 
 createViewer("model");
 loadModel("model", "models/bts.glb", (info, error) => {
@@ -55,6 +57,7 @@ Membuat penampil di dalam elemen `id` (biasanya `<div>`). Elemennya harus punya 
 | `fov` | `45` | Sudut pandang vertikal kamera, derajat |
 | `controls` | `true` | `false` = tanpa putar/zoom/geser dari pengguna, misalnya untuk tampilan produk yang diam |
 | `webgl` | `2` | `1` = paksa WebGL1, untuk menguji tampilan di browser lama |
+| `dracoDecoder` | dari `www.gstatic.com` | Folder dekoder Draco (`draco_wasm_wrapper_gltf.js` + `draco_decoder_gltf.wasm`) untuk model terkompresi Draco. Isi dengan folder sendiri kalau aplikasinya tidak boleh bergantung pada server Google |
 
 Kalau browser tidak punya WebGL sama sekali, penampil menampilkan pesan dan semua fungsi lain tidak melakukan apa-apa.
 
@@ -75,7 +78,7 @@ Kalau gagal, `info` = `null` dan `error` berisi alasannya (juga dicetak di conso
 
 ```javascript
 // Membuka file dari komputer pengguna
-import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/element.js";
+import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/element.js";
 
 onChange("file", () => {
     loadModel("model", document.getElementById("file").files[0], (info, error) => {
@@ -184,14 +187,24 @@ Pengguna yang mengaktifkan *reduce motion* di sistemnya mendapat perpindahan kam
 
 | Didukung | Belum didukung |
 |---|---|
-| `.glb` dan `.gltf` (buffer tertanam, `data:` URI, atau file `.bin` terpisah) | Kompresi Draco dan meshopt — ekspor ulang tanpa kompresi |
-| Node bertingkat dengan `matrix` atau translation/rotation/scale | *Skinning* (karakter yang permukaannya melentur) — tampil dalam pose diam |
+| `.glb` dan `.gltf` (buffer tertanam, `data:` URI, atau file `.bin` terpisah) | Kompresi meshopt — ekspor ulang tanpa kompresi |
+| Kompresi **Draco** (`KHR_draco_mesh_compression`), lihat [catatan Draco](#draco) | |
+| Node bertingkat dengan `matrix` atau translation/rotation/scale | |
+| ***Skinning*** — karakter atau organ yang permukaannya melentur mengikuti tulang, sampai 64 tulang per mesh | Lebih dari 64 tulang (atau lebih dari kemampuan GPU) — tampil dalam pose diam, dengan peringatan |
 | Animasi node, diputar dengan [`playAnimation`](model3dtools#getanimationsid-dan-playanimationid-animation-options) di `model3dtools.js` | |
 | Warna dasar, tekstur warna (PNG/JPEG), warna per titik (`COLOR_0`) | Peta normal, *occlusion*, dan tekstur logam/kekasaran |
 | `metallicFactor`, `roughnessFactor`, `emissiveFactor` | *Morph target*, kamera dan lampu dari file |
 | Transparan (`BLEND`) dan potong (`MASK`), dua sisi | `KHR_texture_transform` dan ekstensi material lain |
 | Semua tipe accessor (Float32, Int8/16, Uint8/16/32), data berselang-seling, sparse | |
 | `KHR_materials_unlit`, `KHR_materials_emissive_strength`, `KHR_mesh_quantization` | |
+
+### Draco
+
+Model terkompresi Draco (banyak model dari Sketchfab dan alat ekspor yang mengecilkan file) diurai dengan **dekoder resmi Google** dalam WebAssembly. Dekoder itu (sekitar 300 KB) hanya diunduh saat model yang memakainya dimuat — halaman dengan model biasa tidak mengunduh apa pun tambahan. Bawaannya dari `www.gstatic.com`; untuk aplikasi yang harus jalan tanpa server Google, salin kedua file dekodernya ke server sendiri dan isi opsi `dracoDecoder`.
+
+### Skinning
+
+Mesh ber-*skin* digerakkan oleh tulang-tulangnya (node glTF), jadi animasi dari [`playAnimation`](model3dtools#getanimationsid-dan-playanimationid-animation-options) atau `setPartTransform` pada tulang langsung membengkokkan permukaannya. Klik dan kotak pembatas (`fitView`, hotspot) memakai posisi yang sudah digerakkan tulang.
 
 Pencahayaannya sederhana: cahaya langit/tanah ditambah satu lampu searah yang ikut kamera, dengan kilap menurut `roughness`. Cukup untuk melihat bentuk dan warna dengan jelas, tetapi bukan PBR penuh dengan peta lingkungan seperti Three.js atau `<model-viewer>`.
 

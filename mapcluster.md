@@ -1,3 +1,5 @@
+*[English](en/mapcluster)*
+
 # Dokumentasi Modul `mapcluster.js`
 
 `mapcluster.js` adalah modul tambahan untuk [`map.js`](map) yang membuat **data titik yang sangat banyak** tetap ringan di peta. Titik-titik yang berdekatan di layar digabung menjadi satu gelembung berangka; makin peta di-zoom, gelembungnya pecah menjadi kelompok yang lebih kecil, sampai akhirnya titik satuan.
@@ -7,8 +9,8 @@ Tanpa pengelompokan, 20.000 titik berarti 20.000 elemen di halaman dan peta yang
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/map.js";
-import { addCluster } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/mapcluster.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
+import { addCluster } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/mapcluster.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` lebih dulu.
@@ -20,8 +22,8 @@ Menggambar fitur-fitur titik (`Point` dan `MultiPoint`) di dalam `geojson` sebag
 Mengembalikan function `remove()` untuk menghapus semuanya dari peta.
 
 ```javascript
-import { createMap, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/map.js";
-import { addCluster } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/mapcluster.js";
+import { createMap, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
+import { addCluster } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/mapcluster.js";
 
 createMap("peta");
 

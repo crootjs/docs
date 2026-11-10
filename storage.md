@@ -1,3 +1,5 @@
+*[English](en/storage)*
+
 # Dokumentasi Modul `storage.js`
 
 `storage.js` adalah modul dari CrootJS untuk menyimpan, mengambil, dan menghapus data di `localStorage` dan `sessionStorage` browser. Berbeda dari `localStorage`/`sessionStorage` bawaan, modul ini otomatis melakukan `JSON.stringify`/`JSON.parse` (jadi bisa langsung simpan object/array, bukan cuma string), dan `localStorage` mendukung kadaluwarsa opsional (hari/jam/detik) — sesuatu yang tidak dimiliki `localStorage` bawaan.
@@ -5,7 +7,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { setLocal, getLocal, deleteLocal } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/storage.js";
+import { setLocal, getLocal, deleteLocal } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/storage.js";
 ```
 
 ## localStorage

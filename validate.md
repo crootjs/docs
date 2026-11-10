@@ -1,3 +1,5 @@
+*[English](en/validate)*
+
 # Dokumentasi Modul `validate.js`
 `validate.js` dalam library croot.js berfungsi sebagai input transformer. Berbeda dengan validasi biasa yang hanya memberikan pesan error, modul ini secara aktif memanipulasi input pengguna agar sesuai dengan standar format database (seperti memaksa huruf kecil, menghapus spasi, atau memformat mata uang).
 
@@ -5,7 +7,11 @@
 import fungsi dari CDN jsDelivr ke dalam file JavaScript kamu yang bertipe `module`.
 
 ```javascript
-import { validateUserName, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/validate.js";
+import { validateUserName, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/validate.js";
+
+// fungsi diimpor sebagai modul, jadi dipasang lewat addEventListener, bukan atribut oninput
+document.getElementById("uname").addEventListener("input", (event) => validateUserName(event.target));
+document.getElementById("harga").addEventListener("input", (event) => formatRupiah(event.target));
 ```
 
 # Daftar Fungsi
@@ -30,16 +36,20 @@ Berikut adalah cara menerapkannya pada elemen HTML menggunakan Event Listener:
 ### HTML
 
  ```html
-<label>Username:</label>
-<input type="text" id="uname" oninput="validateUserName(this)">
+<label for="uname">Username:</label>
+<input type="text" id="uname">
 
-<label>Harga Barang:</label>
-<input type="text" id="harga" oninput="formatRupiah(this)">
+<label for="harga">Harga Barang:</label>
+<input type="text" id="harga">
 ```
 ### JavaScript
 
 ```javascript
-import { validateUserName, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/validate.js";
+import { validateUserName, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/validate.js";
+
+// fungsi diimpor sebagai modul, jadi dipasang lewat addEventListener, bukan atribut oninput
+document.getElementById("uname").addEventListener("input", (event) => validateUserName(event.target));
+document.getElementById("harga").addEventListener("input", (event) => formatRupiah(event.target));
 ```
 
 # Kesimpulan

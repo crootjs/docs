@@ -1,15 +1,17 @@
+*[English](en/map)*
+
 # Dokumentasi Modul `map.js`
 
 `map.js` menampilkan peta interaktif dan menggambar data GeoJSON di atasnya — ditulis dari nol, tanpa Leaflet atau library peta lain. Peta dasarnya berupa tile raster (bawaan: OpenStreetMap), datanya digambar sebagai SVG, dan semuanya bisa digeser, di-zoom, dan diklik, baik dengan mouse maupun jari.
 
 CSS-nya di-*inject* otomatis oleh modul ini sendiri (seperti [`toast.js`](toast)), jadi tidak ada file CSS yang perlu ditautkan. Yang diunduh browser sekitar 13 KB (gzip): `map.min.js` beserta [`geo.js`](geo) yang dipakainya. Sebagai pembanding, Leaflet sekitar 46 KB (gzip) untuk JS dan CSS-nya.
 
-Marker ikon, skala, "lokasi saya", live tracking, koordinat, menu klik kanan, layar penuh, menggambar dan mengubah geometri, alat ukur, gambar overlay, ekspor PNG, pengelompokan titik, heatmap, dan rute ada di [modul tambahan](#modul-tambahan) yang terpisah, masing-masing 1–8 KB, supaya halaman hanya mengunduh yang dipakainya.
+Marker ikon, skala, "lokasi saya", live tracking, koordinat, menu klik kanan, layar penuh, menggambar dan mengubah geometri, pencarian alamat, peta offline, model 3D di peta, alat ukur, gambar overlay, ekspor PNG, pengelompokan titik, heatmap, dan rute ada di [modul tambahan](#modul-tambahan) yang terpisah, masing-masing 1–8 KB, supaya halaman hanya mengunduh yang dipakainya.
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/map.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
 ```
 
 Semua fungsi [`geo.js`](geo) (`getGeoJSON`, `readGeoJSONFile`, `parseGeoJSON`, `getBBox`, dan lainnya) ikut diekspor dari `map.js`. Halaman yang menampilkan peta cukup mengimpor dari `map.js` saja.
@@ -34,7 +36,7 @@ Elemen tempat peta **wajib punya tinggi** dari CSS. Peta mengisi elemen itu sepe
 
 ```javascript
 // index.js
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/map.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
 
 createMap("peta");
 
@@ -309,8 +311,8 @@ Nilai `center` yang dikembalikan bisa berbeda di digit-digit terakhir dari yang 
 Kegunaan paling umum: memilih lokasi untuk sebuah form.
 
 ```javascript
-import { createMap, addGeoJSON, onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/map.js";
-import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/element.js";
+import { createMap, addGeoJSON, onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
+import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/element.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
 
@@ -338,7 +340,7 @@ Selama ada pendengar, menu bawaan browser tidak muncul di peta, kecuali di dalam
 Untuk menu siap pakai lengkap dengan submenu, keyboard, dan tema gelap, pakai [`addContextMenu`](mapcontrol#addcontextmenuid-items-options) dari `mapcontrol.js`. `onMapContextMenu` untuk tampilan buatan sendiri:
 
 ```javascript
-import { createMap, onMapContextMenu, showPopup } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/map.js";
+import { createMap, onMapContextMenu, showPopup } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
 
 createMap("peta", { center: [107.6, -6.9], zoom: 14 });
 onMapContextMenu("peta", (position) => {
@@ -355,8 +357,8 @@ onMapContextMenu("peta", (position) => {
 Keduanya biasa dipakai bersama untuk meminta ke backend **hanya data di area yang tampak**. Karena `onMapMove` terpanggil sangat sering, bungkus dengan [`debounce`](debounce) supaya request baru dikirim setelah peta berhenti bergerak:
 
 ```javascript
-import { createMap, addGeoJSON, clearMap, onMapMove, getMapBounds, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/map.js";
-import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/debounce.js";
+import { createMap, addGeoJSON, clearMap, onMapMove, getMapBounds, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
+import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/debounce.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 16 });
 
@@ -438,6 +440,15 @@ createMap("peta", {
 });
 ```
 
+**Sumber tile buatan sendiri.** Selain pola URL, `tiles` (dan isi `labels`) boleh berupa object `{ getTile(z, x, y) }` yang mengembalikan Promise berisi `Blob` gambar, URL, atau `null` kalau tile itu tidak ada. Inilah cara [`mapoffline.js`](mapoffline) menampilkan peta dari satu file PMTiles, termasuk dari file di perangkat tanpa internet:
+
+```javascript
+import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/mapoffline.js";
+
+const arsip = await openPMTiles("peta-bandung.pmtiles");
+createMap("peta", { tiles: arsip, maxNativeZoom: arsip.maxZoom, center: arsip.center, zoom: 13 });
+```
+
 Atribusi selalu diawali tautan "CrootJS" ke situs ini, lalu sumber peta dasar, lalu `attribution` tiap lapisan data — sumber yang sama cukup ditulis sekali. Isinya diperbarui setiap kali peta dasar diganti atau lapisan ditambah/dihapus. `attributionPrefix: false` di `createMap` menghilangkan tautan "CrootJS"; atribusi penyedia tile tetap tampil.
 
 ### Pola URL Tile
@@ -488,15 +499,18 @@ Fitur yang tidak dibutuhkan semua peta dipisahkan ke modul sendiri. Impor hanya 
 | [`mapcontrol.js`](mapcontrol) | Garis skala, "lokasi saya", live tracking, pilihan peta dasar (daftar atau kartu bergambar), daftar centang lapisan, koordinat kursor, menu klik kanan, dan layar penuh (`addScaleBar`, `addLocateButton`, `locateUser`, `addTrackButton`, `trackUser`, `addBasemapControl`, `setBasemap`, `addLayerControl`, `addCoordinateControl`, `addContextMenu`, `addFullscreenButton`) |
 | [`maptools.js`](maptools) | Alat ukur jarak dan luas, gambar bergeoreferensi dengan rotasi, ekspor tampilan ke PNG (`addMeasureControl`, `measure`, `addImageOverlay`, `exportMapImage`, `downloadMapImage`) |
 | [`mapcluster.js`](mapcluster) | Pengelompokan titik untuk data titik yang sangat banyak (`addCluster`) |
+| [`mapsearch.js`](mapsearch) | Cari tempat dari nama/alamat dan alamat dari titik (Nominatim/OSM atau penyedia sendiri), plus kotak pencarian di peta (`searchPlace`, `reverseGeocode`, `addSearchControl`) |
+| [`mapoffline.js`](mapoffline) | Peta dasar dari satu file PMTiles raster — dari server, atau dari file di perangkat tanpa internet (`openPMTiles`) |
+| [`mapmodel.js`](mapmodel) | Model 3D glTF/GLB di lokasinya di peta, dengan ukuran sesuai meter (`addModel`) |
 | [`mapdraw.js`](mapdraw) | Menggambar dan mengubah titik, garis, dan poligon; hasilnya GeoJSON (`addDrawControl`, `startDrawing`, `editFeature`) |
 | [`mapheat.js`](mapheat) | Heatmap kepadatan titik, dan peta petak persegi/heksagon berwarna menurut nilai seperti peta cakupan sinyal (`addHeatmap`, `addGridMap`) |
 | [`geomeasure.js`](geomeasure) | Jarak, panjang, luas, titik-di-dalam-area, titik terdekat, lingkaran radius |
 | [`georoute.js`](georoute) | Rute terpendek di sepanjang garis-garis di dalam data GeoJSON (`findRoute`) |
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/map.js";
-import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/mapmarker.js";
-import { addScaleBar, addLocateButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/mapcontrol.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/map.js";
+import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/mapmarker.js";
+import { addScaleBar, addLocateButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/mapcontrol.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
 addMarker("peta", [107.575914, -6.8732098], { label: "ULBI", popup: "Kampus ULBI" });
@@ -566,4 +580,4 @@ export function addText(id, position, text) {
 - Peta tidak berulang ke kiri-kanan melewati garis bujur 180°.
 - Data digambar sebagai SVG, satu elemen per bentuk, kecuali lapisan `renderer: "canvas"`. SVG nyaman untuk ratusan sampai beberapa ribu fitur; untuk ribuan garis pakai canvas (lihat [Data Besar](#data-besar-canvas-dan-penyederhanaan)), dan untuk puluhan ribu titik pakai [`mapcluster.js`](mapcluster) yang mengelompokkannya.
 - Label fitur ditulis mendatar; label garis tidak mengikuti arah garisnya.
-- Belum ada alat untuk menggambar atau mengedit bentuk langsung di peta.
+- Menggambar dan mengedit bentuk langsung di peta ada di modul tambahan [`mapdraw.js`](mapdraw).

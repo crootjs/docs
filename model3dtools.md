@@ -1,3 +1,5 @@
+*[English](en/model3dtools)*
+
 # Dokumentasi Modul `model3dtools.js`
 
 `model3dtools.js` adalah modul tambahan untuk [`model3d.js`](model3d) berisi alat untuk aplikasi yang mengubah model, bukan sekadar menampilkannya:
@@ -7,15 +9,16 @@
 - **Animasi** — memutar animasi yang tersimpan di file glTF, dengan kontrol putar/jeda/geser waktu.
 - **Tampilan meledak** — memisahkan bagian-bagian model menjauh dari pusatnya, seperti gambar perakitan.
 - **Potongan melintang** — membelah model dengan sebuah bidang untuk melihat bagian dalamnya.
+- **AR** — membuka model di ruangan lewat kamera ponsel (Scene Viewer di Android, AR Quick Look di iPhone).
 - **Ekspor GLB** — menyimpan model beserta semua perubahannya sebagai file `.glb` baru.
 
-Tiga di tengah itu cocok untuk materi pembelajaran: anatomi, mesin, bangunan, alat praktikum. Modul ini terpisah dari `model3d.js` supaya halaman yang hanya menampilkan model tidak ikut mengunduhnya (sekitar 7 KB gzip).
+Tiga di tengah itu cocok untuk materi pembelajaran: anatomi, mesin, bangunan, alat praktikum. Modul ini terpisah dari `model3d.js` supaya halaman yang hanya menampilkan model tidak ikut mengunduhnya (sekitar 8 KB gzip).
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/model3d.js";
-import { addHotspot, enableTransform, getAnimations, playAnimation, explodeModel, addSection, exportGLB, downloadGLB } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/model3dtools.js";
+import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/model3d.js";
+import { addHotspot, enableTransform, getAnimations, playAnimation, explodeModel, addSection, addARButton, getARLink, exportGLB, downloadGLB } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.27/model3dtools.js";
 ```
 
 Penampilnya harus sudah dibuat dengan `createViewer` lebih dulu. Hotspot dan gizmo yang menyebut nama bagian butuh modelnya sudah dimuat, jadi panggil di dalam `responseFunction` `loadModel`.
@@ -164,6 +167,30 @@ onInput("letak", () => potongan.set({ position: Number(getValue("letak")) }));
 onClick("utuh", () => potongan.remove());
 ```
 
+## `addARButton(id, url, options)` dan `getARLink(url, options)`
+
+Tombol **"Lihat di AR"** di pojok penampil: model ditaruh di ruangan nyata lewat kamera ponsel, bisa digeser dan diputar dengan jari.
+
+| Perangkat | Yang terjadi |
+|---|---|
+| Android | Membuka **Scene Viewer** (aplikasi Google) dengan file `url` |
+| iPhone/iPad | Membuka **AR Quick Look** — hanya kalau `options.usdz` diisi, karena Quick Look tidak bisa membuka `.glb`. Ubah dulu ke `.usdz` (misalnya dengan Reality Converter dari Apple) |
+| Lainnya (desktop) | Tombolnya tidak ditambahkan |
+
+`url` harus file `.glb`/`.gltf` yang bisa diunduh publik lewat HTTPS — bukan file lokal atau `blob:` dari `exportGLB`, karena yang membukanya aplikasi lain.
+
+`options` (semuanya opsional): `title` (judul di Scene Viewer), `usdz` (file untuk iPhone/iPad), `label` (bawaan "Lihat di AR"), `mode` (`"ar_preferred"` bawaan, `"ar_only"`, `"3d_only"`), `fallback` (halaman kalau Scene Viewer tidak ada; bawaan halaman ini).
+
+Mengembalikan `{ supported, remove() }` — `supported` = `false` kalau tombolnya tidak ditambahkan di perangkat ini.
+
+`getARLink(url, options)` memberi tautan Scene Viewer-nya saja, untuk tombol atau kode QR buatan sendiri.
+
+```javascript
+loadModel("model", "https://contoh.id/models/bts.glb", () => {
+    addARButton("model", "https://contoh.id/models/bts.glb", { title: "Menara BTS", usdz: "https://contoh.id/models/bts.usdz" });
+});
+```
+
 ## `exportGLB(id, responseFunction)` dan `downloadGLB(id, filename, responseFunction)`
 
 Menyusun model yang sedang tampil menjadi satu file `.glb`, dengan semua perubahannya:
@@ -197,6 +224,7 @@ Semua bisa ditimpa dari CSS halaman tanpa `!important`.
 | `.crootjs-3d-hotspot` | Label hotspot. Titik biru di bawahnya adalah `::after` |
 | `.crootjs-3d-hotspot-hidden` | Hotspot yang titiknya tertutup model (bawaan: redup) |
 | `.crootjs-3d-hotspot-clickable` | Hotspot yang punya `onClick` |
+| `a.crootjs-3d-ar` | Tombol "Lihat di AR" |
 | `svg.crootjs-3d-gizmo` | Gizmo |
 | `.crootjs-3d-gizmo-x`, `-y`, `-z`, `-all` | Warna tiap sumbu (lewat `color`), dan pegangan skala seragam |
 | `.crootjs-3d-gizmo-line`, `-knob`, `-hit` | Garis/cincin yang terlihat, ujung pegangan, dan area klik yang lebih lebar dari garisnya |

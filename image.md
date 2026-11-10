@@ -1,3 +1,5 @@
+*[English](en/image)*
+
 # Manual Penggunaan Fungsi image
 
 ## Pendahuluan
