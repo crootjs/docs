@@ -20,6 +20,7 @@ Dokumentasi per-modul dari `crootjs/lib`:
 - [mapcontrol.js](mapcontrol) — modul tambahan `map.js`: garis skala, "lokasi saya", live tracking, pilihan peta dasar (daftar atau kartu bergambar), daftar centang lapisan, koordinat, menu klik kanan, dan layar penuh (`addScaleBar`, `addLocateButton`, `locateUser`, `addTrackButton`, `trackUser`, `addBasemapControl`, `setBasemap`, `addLayerControl`, `addCoordinateControl`, `addContextMenu`, `addFullscreenButton`)
 - [maptools.js](maptools) — modul tambahan `map.js`: alat ukur jarak dan luas, gambar bergeoreferensi dengan rotasi, ekspor PNG (`addMeasureControl`, `addImageOverlay`, `exportMapImage`)
 - [mapcluster.js](mapcluster) — modul tambahan `map.js`: pengelompokan titik untuk data titik yang sangat banyak (`addCluster`)
+- [mapdraw.js](mapdraw) — modul tambahan `map.js`: menggambar titik, garis, dan poligon, lalu mengubah bentuknya (geser, tambah, hapus simpul); hasilnya GeoJSON (`addDrawControl`, `startDrawing`, `editFeature`)
 - [mapheat.js](mapheat) — modul tambahan `map.js`: heatmap kepadatan titik dan peta petak persegi/heksagon berwarna menurut nilai, seperti peta cakupan sinyal (`addHeatmap`, `addGridMap`)
 - [model3d.js](model3d) — penampil model 3D glTF/GLB tanpa Three.js (WebGL2, cadangan WebGL1): putar/zoom, klik bagian, ganti warna, sembunyikan, posisi/rotasi lewat kode (`createViewer`, `loadModel`, `onModelClick`, `setPartColor`, `setPartVisible`, `setPartTransform`, `fitView`)
 - [model3dtools.js](model3dtools) — modul tambahan `model3d.js`: label HTML yang menempel di model, gizmo geser/putar/skala, animasi glTF, tampilan meledak, potongan melintang, ekspor `.glb` (`addHotspot`, `enableTransform`, `playAnimation`, `explodeModel`, `addSection`, `exportGLB`, `downloadGLB`)
@@ -158,8 +159,8 @@ API whatsauth dapat digunakan untuk pengembangan implementasi SSO, login menggun
    ```
 2. main.js : pengaturan login menggunakan crootjs
    ```js
-   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/auth.js";
-   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/config.js";
+   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/auth.js";
+   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/config.js";
    
    wauthparam.auth_ws="d3NzOi8vYXBpLndhLm15LmlkL3dzL3doYXRzYXV0aC9wdWJsaWM=";
    wauthparam.keyword="aHR0cHM6Ly93YS5tZS82MjgzMTMxODk1MDAwP3RleHQ9d2g0dDVhdXRoMA==";
@@ -226,9 +227,9 @@ Pada file index.html
 
 Pada file index.js
 ```js
-import {getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/cookie.js";
-import {getJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/api.js";
-import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/url.js";
+import {getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/cookie.js";
+import {getJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/api.js";
+import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/url.js";
 
 if (getCookie("login")){
     getJSON("https://asia-southeast2-awangga.cloudfunctions.net/florka/data/user",responseFunction,"login",getCookie("login"));

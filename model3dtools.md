@@ -14,8 +14,8 @@ Tiga di tengah itu cocok untuk materi pembelajaran: anatomi, mesin, bangunan, al
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/model3d.js";
-import { addHotspot, enableTransform, getAnimations, playAnimation, explodeModel, addSection, exportGLB, downloadGLB } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.25/model3dtools.js";
+import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/model3d.js";
+import { addHotspot, enableTransform, getAnimations, playAnimation, explodeModel, addSection, exportGLB, downloadGLB } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.26/model3dtools.js";
 ```
 
 Penampilnya harus sudah dibuat dengan `createViewer` lebih dulu. Hotspot dan gizmo yang menyebut nama bagian butuh modelnya sudah dimuat, jadi panggil di dalam `responseFunction` `loadModel`.
