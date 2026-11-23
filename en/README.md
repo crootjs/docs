@@ -12,6 +12,7 @@ Per-module documentation for `crootjs/lib`:
 
 - [api.js](api/) — `getJSON`, `postJSON`, `putJSON`, `deleteJSON` (callback or `await`, headers, timeout, cancellation, ETag cache), `uploadFile` with progress, `downloadFile`
 - [element.js](element/) — `onClick`, `setInner`, `getValue`, `serializeForm`, `fillForm`, and other DOM helpers
+- [croot.css](css) — small, green CSS framework (~2 KB gzipped): plain HTML looks finished without classes, plus layout (`.container`, `.stack`, `.cluster`, `.grid`), cards, badges, alerts, navigation, dark mode, and theming through CSS variables
 - [form.js](form) — form validation with a message under each field, screen-reader friendly (`handleForm`, `validateForm`, `clearFormErrors`)
 - [cookie.js](cookie) — set/get/delete cookies
 - [storage.js](storage) — set/get/delete data in localStorage & sessionStorage (with an optional expiry)

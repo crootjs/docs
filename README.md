@@ -12,6 +12,7 @@ Dokumentasi per-modul dari `crootjs/lib`:
 
 - [api.js](api/) — `getJSON`, `postJSON`, `putJSON`, `deleteJSON` (callback atau `await`, header, timeout, batal, cache ETag), `uploadFile` dengan kemajuan, `downloadFile`
 - [element.js](element/) — `onClick`, `setInner`, `getValue`, `serializeForm`, `fillForm`, dan helper DOM lainnya
+- [croot.css](css) — framework CSS kecil dan hijau (~2 KB gzip): HTML biasa langsung rapi tanpa kelas, plus tata letak (`.container`, `.stack`, `.cluster`, `.grid`), kartu, badge, alert, navigasi, mode gelap, dan tema lewat variabel CSS
 - [form.js](form) — validasi form dengan pesan di bawah setiap field, ramah pembaca layar (`handleForm`, `validateForm`, `clearFormErrors`)
 - [cookie.js](cookie) — simpan/ambil/hapus cookie
 - [storage.js](storage) — simpan/ambil/hapus data di localStorage & sessionStorage (dengan opsi kadaluwarsa)
