@@ -1,5 +1,7 @@
 # Dokumentasi Modul `mongo.js`
 
+*[English](en/mongo)*
+
 `mongo.js` adalah modul kecil untuk lingkungan **browser** yang membantu bekerja dengan MongoDB `ObjectId` di sisi client — tanpa perlu MongoDB driver dan tanpa koneksi database sama sekali. Modul ini murni fungsi utilitas string/date.
 
 ---
@@ -7,19 +9,19 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { generateObjectId, getDateFromObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mongo.js";
+import { generateObjectId, getDateFromObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/mongo.js";
 ```
 
 ## Daftar Fungsi
 
 ### `generateObjectId()`
 
-Membuat string 24-karakter yang menyerupai format MongoDB `ObjectId` (4 byte timestamp + 12 hex karakter acak), langsung di browser, tanpa perlu memanggil server atau library `mongodb`.
+Membuat string 24-karakter yang menyerupai format MongoDB `ObjectId` (8 karakter hex timestamp dalam detik + 16 karakter hex acak dari `Math.random()`, bukan counter seperti ObjectId asli), langsung di browser, tanpa perlu memanggil server atau library `mongodb`.
 
 **Contoh Penggunaan:**
 
 ```javascript
-import { generateObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mongo.js";
+import { generateObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/mongo.js";
 
 const id = generateObjectId();
 console.log(id); // contoh: "65f1a2b3c4d5e6f708192a3b"
@@ -35,7 +37,7 @@ Mengambil kembali waktu pembuatan (timestamp) yang tertanam di 8 karakter pertam
 **Contoh Penggunaan:**
 
 ```javascript
-import { getDateFromObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mongo.js";
+import { getDateFromObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/mongo.js";
 
 const tanggalDibuat = getDateFromObjectId("65f1a2b3c4d5e6f708192a3b");
 console.log(tanggalDibuat); // Date object sesuai 8 karakter pertama ObjectId

@@ -9,8 +9,8 @@ Useful for field surveys, marking coverage areas, drawing routes, or lot boundar
 ## Usage (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
-import { addDrawControl, startDrawing, editFeature } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapdraw.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/map.js";
+import { addDrawControl, startDrawing, editFeature } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/mapdraw.js";
 ```
 
 The map must already have been created with `createMap`.
@@ -42,10 +42,10 @@ The panel below the buttons shows instructions and the **Selesai** ("Done"), **H
 Returns `{ getData(), setData(geojson), clear(), remove() }`. `getData()` returns a copy of the FeatureCollection.
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
-import { addDrawControl } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapdraw.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
-import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/map.js";
+import { addDrawControl } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/mapdraw.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
+import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
 
 createMap("peta", { center: [107.6, -6.9], zoom: 16 });
 const gambar = addDrawControl("peta", {
@@ -72,6 +72,8 @@ Draws **one** geometry, for your own custom interface. `type`: `"point"`, `"line
 
 While drawing, map clicks do not open popups and are not passed on to `onMapClick`; panning the map still works.
 
+**With the keyboard** (since 0.0.30): when the map has focus (Tab to the map), a **+** mark appears at the center of the map and the guide line points to it. The arrow keys pan the map, **Space** places a point at the + mark, and **Enter** finishes. Every point added or removed is announced to screen readers. In `addDrawControl`, choosing the Point/Line/Area button from the keyboard moves focus straight to the map.
+
 `responseFunction(feature)` is called once: with the resulting GeoJSON Feature, or `null` if cancelled. Coordinates are rounded to 7 decimal places (about 1 cm), and polygons are always closed (last point = first point).
 
 `options` (all optional):
@@ -84,7 +86,7 @@ While drawing, map clicks do not open popups and are not passed on to `onMapClic
 Returns `{ finish(), undo(), stop() }` for your own Done, Remove point, and Cancel buttons.
 
 ```javascript
-import { getArea } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/geomeasure.js";
+import { getArea } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/geomeasure.js";
 
 onClick("gambar-kavling", () => {
     startDrawing("peta", "polygon", (feature) => {
@@ -130,12 +132,14 @@ Everything can be overridden from the page's CSS without `!important`.
 | `circle.crootjs-draw-point` | Points from `addDrawControl` |
 | `circle.crootjs-draw-vertex`, `-vertex-first` | Vertex; the polygon's first vertex (click to close) |
 | `circle.crootjs-draw-midpoint` | Segment midpoint |
+| `.crootjs-map-crosshair` | The + mark at the center of the map when drawing with the keyboard (also used by the measuring tools) |
 | `.crootjs-map-draw`, `.crootjs-map-draw-tool`, `.crootjs-map-draw-panel`, `.crootjs-map-draw-actions` | Control box, tool buttons (the active one has `aria-pressed="true"`), instruction panel, and its action buttons |
 
 On touch screens the handles are automatically larger.
 
 ## Notes
 
-- Drawings pan and zoom along with the map. The layers are SVG above the `addGeoJSON` data, so they are not yet included by `exportMapImage`.
+- Drawings pan and zoom along with the map, and are included in the PNG image from [`exportMapImage`](maptools#exportmapimageid-responsefunction-options-and-downloadmapimageid-filename-responsefunction-options).
+- Reshaping (`editFeature`) and deleting features still require a mouse or touch; drawing new geometry works with the keyboard.
 - To display finalized data with styles, popups, and labels, pass the result to [`addGeoJSON`](map#addgeojsonid-geojson-options). `mapdraw.js` is for creating and editing data.
 - The [`maptools.js`](maptools) measuring tools and `startDrawing` both "borrow" map clicks; only one is active at a time.

@@ -9,7 +9,8 @@
 - **Animasi** — memutar animasi yang tersimpan di file glTF, dengan kontrol putar/jeda/geser waktu.
 - **Tampilan meledak** — memisahkan bagian-bagian model menjauh dari pusatnya, seperti gambar perakitan.
 - **Potongan melintang** — membelah model dengan sebuah bidang untuk melihat bagian dalamnya.
-- **AR** — membuka model di ruangan lewat kamera ponsel (Scene Viewer di Android, AR Quick Look di iPhone).
+- **Alat ukur** — jarak dan sudut langsung di permukaan model.
+- **AR** — membuka model di ruangan lewat kamera ponsel: di dalam halaman (WebXR, Chrome Android), atau lewat Scene Viewer (Android) dan AR Quick Look (iPhone).
 - **Ekspor GLB** — menyimpan model beserta semua perubahannya sebagai file `.glb` baru.
 
 Tiga di tengah itu cocok untuk materi pembelajaran: anatomi, mesin, bangunan, alat praktikum. Modul ini terpisah dari `model3d.js` supaya halaman yang hanya menampilkan model tidak ikut mengunduhnya (sekitar 8 KB gzip).
@@ -17,8 +18,8 @@ Tiga di tengah itu cocok untuk materi pembelajaran: anatomi, mesin, bangunan, al
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/model3d.js";
-import { addHotspot, enableTransform, getAnimations, playAnimation, explodeModel, addSection, addARButton, getARLink, exportGLB, downloadGLB } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/model3dtools.js";
+import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/model3d.js";
+import { addHotspot, enableTransform, getAnimations, playAnimation, explodeModel, addSection, measureModel, addARButton, getARLink, isARSupported, startAR, exportGLB, downloadGLB } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/model3dtools.js";
 ```
 
 Penampilnya harus sudah dibuat dengan `createViewer` lebih dulu. Hotspot dan gizmo yang menyebut nama bagian butuh modelnya sudah dimuat, jadi panggil di dalam `responseFunction` `loadModel`.
@@ -167,6 +168,33 @@ onInput("letak", () => potongan.set({ position: Number(getValue("letak")) }));
 onClick("utuh", () => potongan.remove());
 ```
 
+## `measureModel(id, options)`
+
+Alat ukur di permukaan model (sejak 0.0.30): klik atau tap titik-titik di model, lalu garis dan hasilnya tampil di atasnya dan ikut bergerak saat model diputar. Klik di luar model diabaikan; klik sesudah ukuran lengkap memulai ukuran baru.
+
+| Opsi | Bawaan | Keterangan |
+|---|---|---|
+| `mode` | `"distance"` | `"distance"`: dua titik → jarak lurus. `"angle"`: tiga titik → sudut di titik kedua, misalnya sudut sendi atau kemiringan rangka |
+| `scale` | `1` | Meter per satuan model. glTF memakai meter; isi lain kalau modelnya dibuat dalam skala |
+| `onChange` | — | `function (result)` setiap titik ditambah |
+
+`result` = `{ mode, points, distance, angle, text, complete }`: `distance` dalam meter (mode jarak), `angle` dalam derajat (mode sudut), `text` siap tampil (`"12,5 cm"`, `"1,24 m"`, `"87,5°"`), dan `complete` = `true` kalau titiknya sudah lengkap.
+
+Mengembalikan `{ getResult(), clear(), remove() }`. Klik tetap diteruskan ke `onModelClick` selama mengukur.
+
+```javascript
+import { onClick, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+
+let alat = null;
+onClick("ukur-sudut", () => {
+    if (alat) alat.remove();
+    alat = measureModel("model", {
+        mode: "angle",
+        onChange: (hasil) => setInnerText("hasil", hasil.complete ? "Sudut: " + hasil.text : "Klik titik berikutnya"),
+    });
+});
+```
+
 ## `addARButton(id, url, options)` dan `getARLink(url, options)`
 
 Tombol **"Lihat di AR"** di pojok penampil: model ditaruh di ruangan nyata lewat kamera ponsel, bisa digeser dan diputar dengan jari.
@@ -179,7 +207,7 @@ Tombol **"Lihat di AR"** di pojok penampil: model ditaruh di ruangan nyata lewat
 
 `url` harus file `.glb`/`.gltf` yang bisa diunduh publik lewat HTTPS — bukan file lokal atau `blob:` dari `exportGLB`, karena yang membukanya aplikasi lain.
 
-`options` (semuanya opsional): `title` (judul di Scene Viewer), `usdz` (file untuk iPhone/iPad), `label` (bawaan "Lihat di AR"), `mode` (`"ar_preferred"` bawaan, `"ar_only"`, `"3d_only"`), `fallback` (halaman kalau Scene Viewer tidak ada; bawaan halaman ini).
+`options` (semuanya opsional): `title` (judul di Scene Viewer), `usdz` (file untuk iPhone/iPad), `label` (bawaan "Lihat di AR"), `mode` (`"ar_preferred"` bawaan, `"ar_only"`, `"3d_only"`), `fallback` (halaman kalau Scene Viewer tidak ada; bawaan halaman ini), dan `webxr` (sejak 0.0.30): `true` = di perangkat yang bisa, AR dibuka **di dalam halaman** dengan [`startAR`](#isarsupported-dan-startarid-options) (opsi `startAR` ikut dipakai); di perangkat lain tetap Scene Viewer/Quick Look.
 
 Mengembalikan `{ supported, remove() }` — `supported` = `false` kalau tombolnya tidak ditambahkan di perangkat ini.
 
@@ -190,6 +218,41 @@ loadModel("model", "https://contoh.id/models/bts.glb", () => {
     addARButton("model", "https://contoh.id/models/bts.glb", { title: "Menara BTS", usdz: "https://contoh.id/models/bts.usdz" });
 });
 ```
+
+## `isARSupported()` dan `startAR(id, options)`
+
+AR **di dalam halaman** lewat WebXR (sejak 0.0.30). Bedanya dengan Scene Viewer: pengguna tidak pindah aplikasi, dan model yang tampil adalah model di penampil apa adanya, termasuk warna, bagian tersembunyi, dan posisi yang diubah lewat kode. Karena itu juga bisa untuk model dari `blob:` atau file lokal.
+
+`isARSupported()` → Promise `true` kalau browser bisa membuka sesi AR WebXR. Saat ini Chrome di Android dengan Google Play Services for AR (ARCore); Safari di iPhone belum mendukung WebXR AR.
+
+`startAR(id, options)` membuka model yang sedang tampil di penampil `id`:
+
+1. Kamera ponsel menampilkan ruangan dan model mengikuti lantai/meja yang ditunjuk sebagai pratinjau.
+2. Ketukan menaruh model di sana; ketuk lagi untuk memindahkan.
+3. Tombol **Tutup** mengakhiri AR.
+
+Model tampil dengan ukuran sebenarnya (glTF memakai meter), alasnya di permukaan.
+
+Harus dipanggil dari klik/tap pengguna; browser menolak membuka AR tanpa itu.
+
+| Opsi | Bawaan | Keterangan |
+|---|---|---|
+| `scale` | `1` | Pengali ukuran, misalnya `0.1` untuk menara setinggi 30 m supaya muat di meja |
+| `hint` | "Arahkan kamera ke lantai, lalu ketuk untuk menaruh model." | Teks petunjuk di atas kamera |
+| `onPlace` | — | `function (position)` setiap model ditaruh |
+| `onEnd` | — | `function ()` saat AR ditutup |
+
+Mengembalikan Promise `{ supported, end() }`; `supported` = `false` (dengan alasan di console) kalau sesi AR tidak bisa dibuka.
+
+```javascript
+import { isARSupported, startAR } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/model3dtools.js";
+import { onClick, show } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+
+if (await isARSupported()) show("tombol-ar");
+onClick("tombol-ar", () => startAR("model", { scale: 0.1 }));
+```
+
+Belum ada: bayangan model di lantai, pencahayaan yang menyesuaikan ruangan, dan menggeser/memutar model dengan jari di dalam AR. Untuk itu, Scene Viewer dan Quick Look masih lebih lengkap.
 
 ## `exportGLB(id, responseFunction)` dan `downloadGLB(id, filename, responseFunction)`
 
@@ -225,6 +288,8 @@ Semua bisa ditimpa dari CSS halaman tanpa `!important`.
 | `.crootjs-3d-hotspot-hidden` | Hotspot yang titiknya tertutup model (bawaan: redup) |
 | `.crootjs-3d-hotspot-clickable` | Hotspot yang punya `onClick` |
 | `a.crootjs-3d-ar` | Tombol "Lihat di AR" |
+| `svg.crootjs-3d-measure`, `.crootjs-3d-measure-label` | Garis dan titik alat ukur (oranye), dan kotak hasilnya |
+| `.crootjs-3d-xr` | Lapisan petunjuk dan tombol Tutup di atas kamera saat `startAR` |
 | `svg.crootjs-3d-gizmo` | Gizmo |
 | `.crootjs-3d-gizmo-x`, `-y`, `-z`, `-all` | Warna tiap sumbu (lewat `color`), dan pegangan skala seragam |
 | `.crootjs-3d-gizmo-line`, `-knob`, `-hit` | Garis/cincin yang terlihat, ujung pegangan, dan area klik yang lebih lebar dari garisnya |

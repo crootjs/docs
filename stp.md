@@ -2,68 +2,68 @@
 
 *[English](en/stp)*
 
-Modul **`stp.js`** menyediakan kumpulan fungsi asinkron untuk mengelola alur otentikasi pengguna, meliputi pengiriman, verifikasi, dan pengiriman ulang kode STP. Modul ini secara otomatis memvalidasi format **nomor telepon** sebelum melakukan permintaan HTTP POST ke *endpoint* otentikasi eksternal.
+`stp.js` berisi tiga fungsi untuk alur login dengan nomor telepon: meminta kode STP dikirim ke nomor pengguna, memverifikasinya, dan meminta kode dikirim ulang. Setiap fungsi mengirim `POST` JSON ke endpoint yang **ditulis tetap di dalam modul** dan tidak bisa diganti:
 
----
+| Fungsi | Endpoint | Body |
+|---|---|---|
+| `sendSTP` | `https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/login` | `{ phonenumber, captcha }` |
+| `verifySTP` | `https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/verify` | `{ phonenumber, password }` |
+| `resendSTP` | `https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/resend` | `{ phonenumber }` |
 
-# Dokumentasi `stp.js`
-
-Modul ini mengekspor tiga fungsi utama untuk berinteraksi dengan API otentikasi. Semua fungsi bergantung pada fungsi validasi internal untuk memastikan integritas data sebelum mengirimkan permintaan jaringan.
+Jadi modul ini hanya berguna untuk aplikasi yang memakai backend tersebut. Untuk backend sendiri, pakai [`postJSON`](api/) dari `api.js`.
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/stp.js";
+import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/stp.js";
 ```
 
-## Fungsi Internal
+## Perilaku Bersama
 
-### `validatePhoneNumber(phoneNumber)`
+Ketiga fungsi bersifat `async` dan mengembalikan Promise berisi body respons yang sudah di-parse dari JSON. Promise **reject** (berbeda dari `api.js` yang tidak pernah melempar error) dalam keadaan berikut:
 
-Fungsi privat yang digunakan untuk memvalidasi format nomor telepon sebelum eksekusi fungsi utama.
+| Keadaan | Error |
+|---|---|
+| `phoneNumber` kosong | `Phone number is required` |
+| `phoneNumber` tidak cocok dengan `/^62\d{9,15}$/` (diawali `62`, lalu 9–15 digit, tanpa spasi atau `+`) | `Invalid phone number format. It should start with 62 and followed by 9 to 15 digits.` |
+| Status HTTP bukan 2xx | `Failed to send STP` / `Failed to verify STP` / `Failed to resend STP`; body respons dari server tidak diteruskan |
+| Jaringan gagal | `TypeError` dari `fetch` |
 
-* **Aturan Validasi**: Nomor telepon harus diawali dengan angka **62** dan diikuti oleh **9 hingga 15 digit** angka.
-* **Error**: Akan melemparkan `Error` jika parameter kosong atau format tidak sesuai dengan *regex* (`/^62\d{9,15}$/`).
+Pemeriksaan nomor terjadi sebelum request dikirim. Untuk mengubah input `08...` menjadi `628...` saat pengguna mengetik, pakai `validatePhoneNumber` dari [`validate.js`](validate).
 
-## Fungsi Ekspor (API)
+## `sendSTP(phoneNumber, captchaToken)`
 
-### 1. `sendSTP(phoneNumber, captchaToken)`
+Meminta kode dikirim ke `phoneNumber`. `captchaToken` adalah token CAPTCHA yang diperiksa oleh backend; modul tidak membuat token ini.
 
-Mengirimkan permintaan untuk mengirim kode otentikasi ke nomor telepon pengguna.
+## `verifySTP(phoneNumber, password)`
 
-* **Parameter**:
-* **`phoneNumber`** (*String*): Nomor telepon tujuan (wajib menggunakan format **62**).
-* **`captchaToken`** (*String*): Token CAPTCHA untuk memvalidasi sesi.
+Mengirim kode yang dimasukkan pengguna (`password`) untuk diverifikasi. Isi respons sepenuhnya ditentukan backend.
 
+## `resendSTP(phoneNumber)`
 
-* **Proses**: Melakukan permintaan **HTTP POST** ke `https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/login` dengan *payload* JSON berisi `phonenumber` dan `captcha`.
-* **Return**: Mengembalikan objek **JSON** dari respons server.
-* **Error Handling**: Melemparkan *error* **"Failed to send STP"** jika respons jaringan gagal.
+Meminta kode dikirim ulang ke `phoneNumber`.
 
-### 2. `verifySTP(phoneNumber, password)`
+## Contoh
 
-Memverifikasi kode STP atau kata sandi yang dimasukkan oleh pengguna.
+```javascript
+import { sendSTP, verifySTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/stp.js";
+import { getValue, onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
 
-* **Parameter**:
-* **`phoneNumber`** (*String*): Nomor telepon pengguna (wajib menggunakan format **62**).
-* **`password`** (*String*): Kode STP atau kata sandi yang akan diverifikasi.
+onClick("kirim-kode", async () => {
+    try {
+        await sendSTP(getValue("telepon"), getValue("captcha-token"));
+        console.log("Kode terkirim");
+    } catch (err) {
+        console.error(err.message);
+    }
+});
 
-
-* **Proses**: Melakukan permintaan **HTTP POST** ke `https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/verify` dengan *payload* JSON berisi `phonenumber` dan `password`.
-* **Return**: Mengembalikan objek **JSON** dari respons server yang berisi status verifikasi.
-* **Error Handling**: Melemparkan *error* **"Failed to verify STP"** jika respons jaringan gagal.
-
-### 3. resendSTP(phoneNumber)
-
-Meminta pengiriman ulang kode STP ke nomor telepon pengguna jika kode sebelumnya tidak diterima atau kedaluwarsa.
-
-* **Parameter**:
-* **`phoneNumber`** (*String*): Nomor telepon tujuan (wajib menggunakan format **62**).
-
-
-* **Proses**: Melakukan permintaan **HTTP POST** ke `https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/resend` dengan *payload* JSON berisi `phonenumber`.
-* **Return**: Mengembalikan objek **JSON** dari respons server.
-* **Error Handling**: Melemparkan *error* **"Failed to resend STP"** jika respons jaringan gagal.
-
-### Kesimpulan
-CrootJS menawarkan pendekatan modular; Anda hanya perlu mengimpor fungsi yang benar-benar Anda gunakan, menjaga ukuran bundle aplikasi Anda tetap kecil dan optimal. Dengan memisahkan logika boilerplate ke dalam fungsi utilitas seperti api.js, element.js, dan validate.js, kode utama Anda akan menjadi jauh lebih bersih, mudah dibaca, dan mudah dikelola.
+onClick("verifikasi", async () => {
+    try {
+        const hasil = await verifySTP(getValue("telepon"), getValue("kode"));
+        console.log(hasil);
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+```

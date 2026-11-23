@@ -2,50 +2,49 @@
 
 *[Bahasa Indonesia](../debounce)*
 
-`debounce.js` contains two wrapper functions (*higher-order functions*) that limit how often a function may run — useful for events that fire very frequently, such as typing, scroll, resize, or mousemove.
+`debounce.js` contains two wrapper functions that limit how often a function runs, useful for events that fire very often such as typing, scroll, resize, or mousemove.
 
 ## Usage (Import)
 
 ```javascript
-import { debounce, throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/debounce.js";
+import { debounce, throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/debounce.js";
 ```
 
 ## `debounce(fn, delay)`
 
-Delays running `fn` until the user **stops** triggering it for `delay` milliseconds. If it is called again before that time is up, the countdown restarts from the beginning. The result: `fn` runs only **once**, after the user is done (not in the middle).
+Returns a new function that holds off `fn` until there have been no calls for `delay` milliseconds. Each new call restarts the countdown, so `fn` runs once after the triggering stops, with the arguments of the last call.
 
-**Most common use**: search-as-you-type — so a request is not sent to the server on every keystroke, only after the user stops typing.
+The typical use is search-as-you-type: the request goes out after the user stops typing, not on every keystroke.
 
 ```javascript
-import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/debounce.js";
-import { onInput, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
+import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/debounce.js";
+import { onInput } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
 
-const cariProduk = debounce(() => {
-    const kata = getValue("kotakPencarian");
-    getJSON(`https://api.example.com/produk?q=${kata}`, (res) => {
-        console.log(res.data);
-    });
-}, 400); // wait 400ms after the user stops typing
+const searchProducts = debounce(async (input) => {
+    const { status, data } = await getJSON(`https://api.example.com/products?q=${encodeURIComponent(input.value)}`);
+    if (status === 200) console.log(data);
+}, 400);
 
-onInput("kotakPencarian", cariProduk);
+onInput("searchBox", searchProducts); // onInput passes the input element to the callback
 ```
 
 ## `throttle(fn, delay)`
 
-Limits `fn` so it runs **at most once** every `delay` milliseconds, even if it is triggered far more often than that. Unlike `debounce`, the first call runs immediately (*leading call*), and if there is a new trigger during the waiting period, the **last** call still runs after `delay` has passed (*trailing call*) — so the latest data is never lost.
+Returns a new function that runs `fn` at most once every `delay` milliseconds. The first call runs immediately; calls that arrive during the wait are merged, and the last one runs as soon as the wait is over, so the latest value is not lost.
 
-**Most common use**: `scroll`/`resize`/`mousemove` events, which can fire dozens of times per second.
+The typical use is `scroll`, `resize`, and `mousemove` events.
 
 ```javascript
-import { throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/debounce.js";
+import { throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/debounce.js";
 
 window.addEventListener("scroll", throttle(() => {
     console.log("scroll position:", window.scrollY);
-}, 200)); // runs at most every 200ms
+}, 200));
 ```
 
 ## Notes
 
-- Both functions return a new, already-wrapped function — call `debounce(fn, delay)`/`throttle(fn, delay)` **once** outside the handler, then register the result as the listener (as in the examples above). Do not call `debounce(...)`/`throttle(...)` inside the handler itself, because that creates a new wrapper every time and cancels out the effect.
-- `this` and all of the original call's arguments are passed through to `fn`.
+- Call `debounce(...)`/`throttle(...)` once and register the result as the listener, as in the examples above. Calling it inside the handler creates a new wrapper on every event, so nothing gets limited.
+- `this` and all arguments are passed through to `fn`. The return value of `fn` is not: the wrapped function always returns `undefined`.
+- There is no way to cancel a pending call.

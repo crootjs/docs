@@ -1,38 +1,38 @@
-# image Function Manual
+# `image.js` Module Documentation
 
 *[Bahasa Indonesia](../image)*
 
-## Introduction
-This file contains JavaScript functions used to generate random color values. These functions are very useful when you need dynamic colors for user interface (UI) elements, such as _background_ colors, text, or image _placeholders_.
+Despite its name, `image.js` doesn't process images. It contains two functions for picking a random color, for example for an initials avatar background or a category marker.
 
----
-
-## Functions and How to Use Them
-
-### 1. `getRandomColor()`
-**Description:**
-Returns a random 6-character hexadecimal color code (for example: `#3E2F1B` or `#FF5733`).
-
-**Usage:**
+## Usage (Import)
 
 ```javascript
-let hexColor = getRandomColor();
-console.log(hexColor); // Example output: "#7A2B9C" (the value will vary)
+import { getRandomColor, getRandomColorName } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/image.js";
 ```
 
----
+## `getRandomColor()`
 
-### 2. `getRandomColorName()`
-**Description:**
-Returns a random color name from a predefined list in the system (such as `yellow`, `blue`, `slate`, `emerald`, etc.). This function pairs very well with CSS frameworks such as Tailwind.
+Returns a 6-digit uppercase hex color string, for example `"#7A2B9C"`. Each digit is picked with `Math.random()`, so a color too light or too dark for the text on top of it can come up.
 
-**Usage:**
 ```javascript
-let colorName = getRandomColorName();
-console.log(colorName); // Example output: "emerald" (the value will vary)
+import { getRandomColor } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/image.js";
+
+document.getElementById("avatar").style.backgroundColor = getRandomColor();
 ```
 
----
+## `getRandomColorName()`
 
-## Closing
-These functions are very handy for adding instant visual variety to your web application. Make sure to call them at the right time to make your UI more attractive.
+Returns one random Tailwind CSS palette color name, **without** a prefix or shade. The list (22 names):
+
+`yellow`, `violet`, `green`, `red`, `rose`, `pink`, `fuchsia`, `purple`, `indigo`, `blue`, `sky`, `cyan`, `teal`, `emerald`, `lime`, `amber`, `orange`, `stone`, `neutral`, `zinc`, `gray`, `slate`
+
+Some of these names (e.g. `sky`, `emerald`, `zinc`) are not standard CSS color names, so don't use them directly as a `color` or `background-color` value. Build a Tailwind class name instead:
+
+```javascript
+import { getRandomColorName } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/image.js";
+
+const color = getRandomColorName();
+document.getElementById("category-label").classList.add(`bg-${color}-500`, "text-white");
+```
+
+A built Tailwind setup only generates classes written out in full in the source code, so classes assembled at runtime like this need to be added to the safelist.

@@ -2,56 +2,63 @@
 
 *[Bahasa Indonesia](../toast)*
 
-`toast.js` shows small notifications (*toasts*) in the top-right corner of the screen — with no external dependencies at all. Its CSS is *injected* automatically by the module itself, only once (not written by hand in your project's HTML/CSS), so importing this one file is all you need to start using it.
+`toast.js` shows short notifications (*toasts*) in the top-right corner of the screen, with no external dependencies. The module injects its own CSS when the first toast appears, so importing this one file is enough.
 
 ## Usage (Import)
 
 ```javascript
-import { toast, toastSuccess, toastError, toastWarning, toastInfo } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/toast.js";
+import { toast, toastSuccess, toastError, toastWarning, toastInfo } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/toast.js";
 ```
 
 ## `toast(message, type = "info", duration = 3000)`
 
-Shows one toast. `type` determines the color: `"info"` (blue, default), `"success"` (green), `"error"` (red), `"warning"` (yellow). `duration` is in milliseconds — the toast disappears automatically after it. If `duration` is set to `0`, the toast does **not** disappear automatically (it has to be dismissed manually).
+Shows one toast. New toasts stack below the ones still on screen.
 
-Returns a `dismiss()` function — call it at any time to close that toast manually, even before `duration` has elapsed.
+| Parameter | Default | Description |
+|---|---|---|
+| `message` | — | Message text. Set as `textContent`, so HTML tags are shown as text, not rendered |
+| `type` | `"info"` | `"info"` (blue), `"success"` (green), `"error"` (red), `"warning"` (yellow). Any other value gets no background color |
+| `duration` | `3000` | How long it stays, in milliseconds. `0` (or negative) means it never disappears on its own |
+
+Returns a `dismiss()` function that closes that toast at any time, including before `duration` is up. Calling it more than once has no effect.
 
 ```javascript
-toast("Data berhasil disimpan"); // info, disappears automatically after 3 seconds
-toast("Berhasil!", "success", 2000);
-toast("Gagal mengirim data", "error");
+toast("Data saved");                    // info, gone after 3 seconds
+toast("Profile updated", "success", 2000);
+toast("Failed to send data", "error");
 ```
 
-## Shortcut Functions
+## `toastSuccess(message, duration)`, `toastError(message, duration)`, `toastWarning(message, duration)`, `toastInfo(message, duration)`
 
-Same as `toast()` but with the type already set — you only need to provide `message` and (optionally) `duration`:
+Same as `toast()` with the `type` already set. `duration` is optional (default 3000 ms), and the return value is also `dismiss()`.
 
 ```javascript
-toastSuccess("Berhasil disimpan!");
-toastError("Terjadi kesalahan, coba lagi.");
-toastWarning("Koneksi lambat...");
-toastInfo("Memuat data...");
+toastSuccess("Saved");
+toastError("Something went wrong, please try again.");
+toastWarning("Slow connection");
+toastInfo("Loading data");
 ```
 
-## Manually dismissed toast (e.g. a loading state)
+### Example: a toast closed manually
+
+For work whose duration you can't predict, such as an upload, pass `duration` `0` and close it yourself when done:
 
 ```javascript
-import { toastInfo } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/toast.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
+import { toastInfo, toastSuccess, toastError } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/toast.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
 
-const tutupLoading = toastInfo("Mengunggah...", 0); // duration 0 = does not disappear on its own
+const close = toastInfo("Sending...", 0);
+const { status } = await postJSON("https://api.example.com/reports", { title: "Damaged road" }, null);
+close();
 
-postJSON("https://api.example.com/upload", data, (res) => {
-    tutupLoading(); // close the loading toast once finished
-    if (res.status === 200) {
-        toastSuccess("Berhasil diunggah!");
-    } else {
-        toastError("Gagal mengunggah.");
-    }
-});
+if (status === 200) {
+    toastSuccess("Report sent");
+} else {
+    toastError("Failed to send report");
+}
 ```
 
 ## Notes
 
-- The toast styles (colors, position, animation) are *injected* automatically as a single `<style id="crootjs-toast-style">` in `<head>` when the first toast is shown — this is part of how the module works, not a style you need to (or should) write by hand in your project's CSS file.
-- If you need a confirmation dialog (with OK/Cancel buttons), this module is not meant for that — `toast.js` is only for brief notifications that do not require user interaction.
+- The styles are injected once as `<style id="crootjs-toast-style">` in `<head>`, and the container is a `<div id="crootjs-toast-container">` at the end of `<body>`. This is part of how the module works, not CSS you need to write. Because that `<style>` is appended last in `<head>`, rules in your own CSS for `.crootjs-toast` and its color classes need a more specific selector to win.
+- Toasts have no buttons and can't be clicked to close. For a confirmation dialog (OK/Cancel) use a `<dialog>` element or another library.

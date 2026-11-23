@@ -2,56 +2,63 @@
 
 *[English](en/toast)*
 
-`toast.js` menampilkan notifikasi kecil (*toast*) di pojok kanan atas layar — tanpa dependency eksternal apa pun. CSS-nya di-*inject* otomatis oleh modul ini sendiri sekali saja (bukan ditulis manual di HTML/CSS proyekmu), jadi cukup import satu file ini untuk langsung bisa dipakai.
+`toast.js` menampilkan notifikasi singkat (*toast*) di pojok kanan atas layar, tanpa dependency eksternal. CSS-nya disisipkan oleh modul ini sendiri saat toast pertama muncul, jadi cukup import satu file ini.
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { toast, toastSuccess, toastError, toastWarning, toastInfo } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/toast.js";
+import { toast, toastSuccess, toastError, toastWarning, toastInfo } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/toast.js";
 ```
 
 ## `toast(message, type = "info", duration = 3000)`
 
-Menampilkan satu toast. `type` menentukan warna: `"info"` (biru, default), `"success"` (hijau), `"error"` (merah), `"warning"` (kuning). `duration` dalam milidetik — toast otomatis hilang setelahnya. Kalau `duration` diisi `0`, toast **tidak** otomatis hilang (harus di-dismiss manual).
+Menampilkan satu toast. Toast baru ditumpuk di bawah toast yang masih tampil.
 
-Mengembalikan function `dismiss()` — panggil kapan saja untuk menutup toast itu secara manual, walau sebelum `duration` habis.
+| Parameter | Bawaan | Keterangan |
+|---|---|---|
+| `message` | — | Teks pesan. Dipasang sebagai `textContent`, jadi tag HTML tampil apa adanya, tidak dijalankan |
+| `type` | `"info"` | `"info"` (biru), `"success"` (hijau), `"error"` (merah), `"warning"` (kuning). Nilai lain tidak punya warna latar |
+| `duration` | `3000` | Lama tampil dalam milidetik. `0` (atau negatif) berarti tidak hilang sendiri |
+
+Mengembalikan function `dismiss()` untuk menutup toast itu kapan saja, juga sebelum `duration` habis. Memanggilnya lebih dari sekali tidak berpengaruh.
 
 ```javascript
-toast("Data berhasil disimpan"); // info, hilang otomatis 3 detik
-toast("Berhasil!", "success", 2000);
+toast("Data tersimpan");                // info, hilang setelah 3 detik
+toast("Profil diperbarui", "success", 2000);
 toast("Gagal mengirim data", "error");
 ```
 
-## Fungsi Pintas
+## `toastSuccess(message, duration)`, `toastError(message, duration)`, `toastWarning(message, duration)`, `toastInfo(message, duration)`
 
-Sama seperti `toast()` tapi type-nya sudah ditentukan — cuma perlu isi `message` dan (opsional) `duration`:
+Sama dengan `toast()` dengan `type` yang sudah ditentukan. `duration` opsional (bawaan 3000 ms), dan nilai kembaliannya juga `dismiss()`.
 
 ```javascript
-toastSuccess("Berhasil disimpan!");
+toastSuccess("Berhasil disimpan");
 toastError("Terjadi kesalahan, coba lagi.");
-toastWarning("Koneksi lambat...");
-toastInfo("Memuat data...");
+toastWarning("Koneksi lambat");
+toastInfo("Memuat data");
 ```
 
-## Toast yang di-dismiss manual (misal loading state)
+### Contoh: toast yang ditutup manual
+
+Untuk proses yang lamanya tidak bisa ditebak, misalnya unggahan, pakai `duration` `0` lalu tutup sendiri setelah selesai:
 
 ```javascript
-import { toastInfo } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/toast.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
+import { toastInfo, toastSuccess, toastError } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/toast.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
 
-const tutupLoading = toastInfo("Mengunggah...", 0); // duration 0 = tidak hilang sendiri
+const tutup = toastInfo("Mengirim...", 0);
+const { status } = await postJSON("https://api.example.com/laporan", { judul: "Jalan rusak" }, null);
+tutup();
 
-postJSON("https://api.example.com/upload", data, (res) => {
-    tutupLoading(); // tutup toast loading setelah selesai
-    if (res.status === 200) {
-        toastSuccess("Berhasil diunggah!");
-    } else {
-        toastError("Gagal mengunggah.");
-    }
-});
+if (status === 200) {
+    toastSuccess("Laporan terkirim");
+} else {
+    toastError("Gagal mengirim laporan");
+}
 ```
 
 ## Catatan
 
-- Style toast (warna, posisi, animasi) di-*inject* otomatis sebagai satu `<style id="crootjs-toast-style">` di `<head>` saat toast pertama dipanggil — ini bagian dari cara kerja modul, bukan style yang perlu (atau boleh) kamu tulis manual di file CSS proyekmu.
-- Kalau butuh dialog konfirmasi (dengan tombol OK/Cancel), modul ini bukan untuk itu — `toast.js` cuma untuk notifikasi sekilas yang tidak butuh interaksi user.
+- Style toast disisipkan sekali sebagai `<style id="crootjs-toast-style">` di `<head>`, dan wadahnya `<div id="crootjs-toast-container">` di akhir `<body>`. Ini bagian dari cara kerja modul, bukan CSS yang perlu kamu tulis. Karena `<style>` itu ditambahkan paling akhir di `<head>`, aturan di CSS proyekmu untuk `.crootjs-toast` dan kelas warnanya perlu selektor yang lebih spesifik supaya menang.
+- Toast tidak punya tombol dan tidak bisa diklik untuk ditutup. Untuk dialog konfirmasi (OK/Batal) pakai elemen `<dialog>` atau library lain.

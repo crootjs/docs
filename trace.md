@@ -1,36 +1,32 @@
 # Dokumentasi Modul `trace.js`
 
 *[English](en/trace)*
-Modul `trace.js` pada library croot.js berfungsi untuk melakukan pelacakan atau *tracking* interaksi yang dilakukan pengguna pada halaman web. Fungsi utama yang ada dalam modul ini yaitu mendeteksi elemen apa yang diklik atau disentuh oleh pengguna. Fungsi lainnya yaitu mencatat koordinat posisinya di layar berupa koordinat (X, Y) dari klik mouse atau sentuhan jari jika pada layar perangkat mobile.
+
+`trace.js` berisi satu fungsi bantu debugging: pasang sebagai event listener, dan fungsi itu mencetak elemen yang diklik atau disentuh beserta koordinatnya ke console browser. Fungsi ini hanya menulis ke console — tidak menyimpan, tidak mengirim data ke mana pun, dan tidak mengembalikan nilai.
 
 ## Cara Penggunaan (Import)
-Import fungsi dari `trace.js` melalui CDN jsDelivr. Pastikan dipanggil di dalam *script* HTML kamu yang bertipe `module`.
 
 ```javascript
-import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/trace.js";
+import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/trace.js";
 ```
 
-## Daftar Fungsi
-### `tapClick(event)`
-Fungsi ini berfungsi untuk mendeteksi interaksi mouse berupa klik atau *touch* untuk sentuhan layar. Saat adanya interaksi pengguna, fungsi ini akan mencetak *log* data berikut ke dalam console browser:
-* **Target Element**: Menampilkan elemen HTML yang sedang diklik atau disentuh.
-* **Touch Event**: Jika diakses elalui layar sentuh, maka akan menampilkan jumlah sentuhan dan letak koordinat sentuhan pertama.
-* **Mouse Event**: Jika diklik menggunakan *mouse* di PC/Laptop, maka akan menampilkan koordinat `clientX` dan `clientY` dari kursor.
+## `tapClick(event)`
 
-## Contoh Implementasi
-Untuk menggunakan fungsi `tapClick`, pasangkan pada `EventListener` untuk *event* yang ingin dilacak, seperti `click`, `touchstart`, atau `touchmove`.
+Untuk setiap event, fungsi ini mencetak `Elemen yang dipicu:` diikuti `event.target`, lalu salah satu dari:
+
+| Jenis event | Yang dicetak |
+|---|---|
+| Event sentuh dengan minimal satu jari di layar (`touchstart`, `touchmove`) | `Jumlah sentuhan aktif:` dan `Koordinat sentuhan pertama:` (`clientX`, `clientY` dari `event.touches[0]`) |
+| Event mouse (`click`, `mousedown`, ...) | `Koordinat klik:` (`clientX`, `clientY`) |
+| Lainnya, misalnya `touchend` (tidak ada jari tersisa di layar) | Hanya elemen target |
+
+Koordinat adalah `clientX`/`clientY`, yaitu relatif terhadap viewport, bukan terhadap halaman atau elemen.
 
 ```javascript
-import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/trace.js";
+import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/trace.js";
 
-// Melacak interaksi klik (Mouse)
-document.addEventListener('click', tapClick);
-
-// Melacak interaksi sentuhan di layar (Touchscreen)
-document.addEventListener('touchstart', tapClick);
-document.addEventListener('touchmove', tapClick);
+document.addEventListener("click", tapClick);
+document.addEventListener("touchstart", tapClick);
 ```
 
-## Referensi Source Code
-Untuk melihat pengaplikasiannya, silakan klik tautan berikut:
-[Source Code trace.js di jsDelivr](https://www.jsdelivr.com/package/gh/crootjs/lib?tab=files)
+`touchmove` juga bisa dipasang, tetapi event itu terpicu terus-menerus selama jari bergerak dan akan memenuhi console. Lepas listener-nya (`removeEventListener`) setelah selesai debugging.

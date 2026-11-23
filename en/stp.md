@@ -2,68 +2,68 @@
 
 *[Bahasa Indonesia](../stp)*
 
-The **`stp.js`** module provides a set of asynchronous functions for managing the user authentication flow, covering sending, verifying, and resending STP codes. The module automatically validates the **phone number** format before making an HTTP POST request to the external authentication *endpoint*.
+`stp.js` contains three functions for a phone-number login flow: request an STP code to be sent to the user's number, verify it, and request it again. Each function sends a JSON `POST` to an endpoint that is **hard-coded in the module** and cannot be changed:
 
----
+| Function | Endpoint | Body |
+|---|---|---|
+| `sendSTP` | `https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/login` | `{ phonenumber, captcha }` |
+| `verifySTP` | `https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/verify` | `{ phonenumber, password }` |
+| `resendSTP` | `https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/resend` | `{ phonenumber }` |
 
-# `stp.js` Documentation
-
-This module exports three main functions for interacting with the authentication API. All functions rely on an internal validation function to ensure data integrity before sending network requests.
+So this module is only useful for applications that use that backend. For your own backend, use [`postJSON`](api/) from `api.js`.
 
 ## Usage (Import)
 
 ```javascript
-import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/stp.js";
+import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/stp.js";
 ```
 
-## Internal Function
+## Shared Behavior
 
-### `validatePhoneNumber(phoneNumber)`
+All three functions are `async` and return a Promise of the response body parsed from JSON. The Promise **rejects** (unlike `api.js`, which never throws) in these cases:
 
-A private function used to validate the phone number format before the main functions run.
+| Case | Error |
+|---|---|
+| `phoneNumber` is empty | `Phone number is required` |
+| `phoneNumber` doesn't match `/^62\d{9,15}$/` (starts with `62`, then 9–15 digits, no spaces or `+`) | `Invalid phone number format. It should start with 62 and followed by 9 to 15 digits.` |
+| HTTP status is not 2xx | `Failed to send STP` / `Failed to verify STP` / `Failed to resend STP`; the server's response body is not passed on |
+| Network failure | `TypeError` from `fetch` |
 
-* **Validation Rule**: The phone number must start with **62** followed by **9 to 15 digits**.
-* **Error**: Throws an `Error` if the parameter is empty or the format does not match the *regex* (`/^62\d{9,15}$/`).
+The number check happens before the request is sent. To turn `08...` input into `628...` as the user types, use `validatePhoneNumber` from [`validate.js`](validate).
 
-## Exported Functions (API)
+## `sendSTP(phoneNumber, captchaToken)`
 
-### 1. `sendSTP(phoneNumber, captchaToken)`
+Requests a code to be sent to `phoneNumber`. `captchaToken` is a CAPTCHA token checked by the backend; the module does not create it.
 
-Sends a request to deliver an authentication code to the user's phone number.
+## `verifySTP(phoneNumber, password)`
 
-* **Parameters**:
-* **`phoneNumber`** (*String*): The destination phone number (must use the **62** format).
-* **`captchaToken`** (*String*): A CAPTCHA token for validating the session.
+Sends the code the user entered (`password`) for verification. The response content is entirely up to the backend.
 
+## `resendSTP(phoneNumber)`
 
-* **Process**: Makes an **HTTP POST** request to `https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/login` with a JSON *payload* containing `phonenumber` and `captcha`.
-* **Return**: Returns the **JSON** object from the server response.
-* **Error Handling**: Throws the *error* **"Failed to send STP"** if the network response fails.
+Requests the code to be sent to `phoneNumber` again.
 
-### 2. `verifySTP(phoneNumber, password)`
+## Example
 
-Verifies the STP code or password entered by the user.
+```javascript
+import { sendSTP, verifySTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/stp.js";
+import { getValue, onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
 
-* **Parameters**:
-* **`phoneNumber`** (*String*): The user's phone number (must use the **62** format).
-* **`password`** (*String*): The STP code or password to verify.
+onClick("send-code", async () => {
+    try {
+        await sendSTP(getValue("phone"), getValue("captcha-token"));
+        console.log("Code sent");
+    } catch (err) {
+        console.error(err.message);
+    }
+});
 
-
-* **Process**: Makes an **HTTP POST** request to `https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/verify` with a JSON *payload* containing `phonenumber` and `password`.
-* **Return**: Returns the **JSON** object from the server response, which contains the verification status.
-* **Error Handling**: Throws the *error* **"Failed to verify STP"** if the network response fails.
-
-### 3. resendSTP(phoneNumber)
-
-Requests that the STP code be resent to the user's phone number if the previous code was not received or has expired.
-
-* **Parameters**:
-* **`phoneNumber`** (*String*): The destination phone number (must use the **62** format).
-
-
-* **Process**: Makes an **HTTP POST** request to `https://asia-southeast2-awangga.cloudfunctions.net/domyid/auth/resend` with a JSON *payload* containing `phonenumber`.
-* **Return**: Returns the **JSON** object from the server response.
-* **Error Handling**: Throws the *error* **"Failed to resend STP"** if the network response fails.
-
-### Conclusion
-CrootJS takes a modular approach: you only need to import the functions you actually use, keeping your application's bundle size small and optimal. By moving boilerplate logic into utility functions such as api.js, element.js, and validate.js, your main code becomes much cleaner, easier to read, and easier to maintain.
+onClick("verify", async () => {
+    try {
+        const result = await verifySTP(getValue("phone"), getValue("code"));
+        console.log(result);
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+```

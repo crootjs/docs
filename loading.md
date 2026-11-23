@@ -1,27 +1,40 @@
-## Dokumentasi: loading.js
+# Dokumentasi Modul `loading.js`
 
 *[English](en/loading)*
 
-Modul `loading.js`   menyediakan aset visual berupa animasi loading berbasis SVG yang ringan dan elegan. Modul ini dirancang untuk memberikan umpan balik visual (visual feedback) kepada pengguna saat aplikasi sedang melakukan proses asinkron (seperti pengambilan data dari API).
+`loading.js` tidak berisi fungsi. Modul ini mengekspor satu konstanta, `loading`, yaitu string HTML berisi sebuah `<svg>` animasi *spinner* (8 titik berwarna yang berputar mengelilingi pusat). Tempelkan string itu ke elemen mana pun selama proses asinkron berjalan, lalu ganti dengan konten aslinya setelah selesai.
 
-## Fitur Utama
--Vector Based: Animasi tetap tajam dan jernih pada resolusi layar apa pun (Retina/4K).
--Zero Dependencies: Tidak memerlukan file gambar eksternal (.gif/.png) atau library CSS tambahan.
--Microsoft Style: Menggunakan animasi 8 titik melingkar dengan transisi spline yang halus.
--Performance: Karena berupa string teks SVG, proses rendering hampir instan.
+## Cara Penggunaan (Import)
 
-## Struktur Variabel
-Variabel loading mengekspor string HTML yang berisi elemen <svg>.
-Spesifikasi Teknis
-ID: loading
--Dimensi Default: 80px x 80px
--ViewBox: 0 0 100 100
--Warna Lingkaran: Multi-warna (#e15b64, #f47e60, #f8b26a, #abbd81, #849b87).
+```javascript
+import { loading } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/loading.js";
+```
 
-## Mekanisme Animasi
-Animasi ini tidak menggunakan CSS Animation eksternal, melainkan menggunakan fitur SMIL (Synchronized Multimedia Integration Language) yang tertanam langsung di dalam SVG melalui tag <animateTransform>.
+## `loading`
 
--Tipe Gerakan: rotate (Rotasi 360 derajat).
--Durasi: 1.5 detik per siklus.
--Calc Mode: spline (Menghasilkan efek percepatan dan perlambatan yang halus/smooth, tidak kaku seperti linear).
--Interaktivitas: Animasi berjalan secara indefinite (terus-menerus) segera setelah elemen dimasukkan ke dalam DOM.
+| Properti SVG | Nilai |
+|---|---|
+| `id` | `loading` |
+| `class` | `lds-microsoft` |
+| `width` × `height` | `80px` × `80px` |
+| `viewBox` | `0 0 100 100` |
+| Warna titik | `#e15b64`, `#f47e60`, `#f8b26a`, `#abbd81`, `#849b87` |
+
+Animasinya memakai `<animateTransform>` (SMIL) di dalam SVG: rotasi satu putaran setiap 1,5 detik dengan `calcMode="spline"`, berulang terus. Tidak perlu CSS atau file gambar tambahan.
+
+```javascript
+import { loading } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/loading.js";
+import { setInner } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
+
+setInner("daftar-produk", loading);
+
+const { status, data } = await getJSON("https://api.example.com/produk", null);
+setInner("daftar-produk", status === 200 ? `${data.length} produk` : "Gagal memuat data");
+```
+
+## Catatan
+
+- Karena `id="loading"` tertulis tetap di string, memasang spinner di dua tempat sekaligus menghasilkan ID ganda di halaman. Pilih elemen lewat class `lds-microsoft` jika perlu menata atau menghapusnya.
+- Ukuran 80px ditulis sebagai atribut `width`/`height`; aturan CSS pada `.lds-microsoft` bisa menimpanya.
+- Spinner yang hanya berupa gambar tidak terbaca oleh pembaca layar. Tambahkan teks status, misalnya di elemen dengan `aria-live="polite"`, jika pengguna perlu tahu bahwa data sedang dimuat.

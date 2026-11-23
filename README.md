@@ -4,14 +4,15 @@
 
 [← croot.js.org](https://croot.js.org/) · [lib](https://croot.js.org/lib/) · [examples](https://croot.js.org/examples/)
 
-Dokumentasi Pemakaian CrootJS dengna AI Companion dan Human in the loop.
+Dokumentasi Pemakaian CrootJS dengan AI Companion dan Human in the loop.
 
 ## Referensi Modul
 
 Dokumentasi per-modul dari `crootjs/lib`:
 
-- [api.js](api/) — `getJSON`, `postJSON`, `putJSON`, `deleteJSON`, upload file
-- [element.js](element/) — `onClick`, `setInner`, `getValue`, dan helper DOM lainnya
+- [api.js](api/) — `getJSON`, `postJSON`, `putJSON`, `deleteJSON` (callback atau `await`, header, timeout, batal, cache ETag), `uploadFile` dengan kemajuan, `downloadFile`
+- [element.js](element/) — `onClick`, `setInner`, `getValue`, `serializeForm`, `fillForm`, dan helper DOM lainnya
+- [form.js](form) — validasi form dengan pesan di bawah setiap field, ramah pembaca layar (`handleForm`, `validateForm`, `clearFormErrors`)
 - [cookie.js](cookie) — simpan/ambil/hapus cookie
 - [storage.js](storage) — simpan/ambil/hapus data di localStorage & sessionStorage (dengan opsi kadaluwarsa)
 - [debounce.js](debounce) — `debounce`/`throttle` untuk membatasi frekuensi eksekusi function (search-as-you-type, scroll, dsb)
@@ -20,15 +21,17 @@ Dokumentasi per-modul dari `crootjs/lib`:
 - [map.js](map) — peta interaktif tanpa library eksternal: peta dasar tile (OpenStreetMap), gambar GeoJSON, popup, klik koordinat, klik kanan, lapisan bernama, label, hover, ganti peta dasar, renderer canvas (`createMap`, `addGeoJSON`, `fitMap`, `onMapClick`, `onMapContextMenu`, `showLayer`, `setTiles`)
 - [mapmarker.js](mapmarker) — modul tambahan `map.js`: marker pin, ikon, atau elemen sendiri, dengan label, popup, dan bisa digeser (`addMarker`)
 - [mapcontrol.js](mapcontrol) — modul tambahan `map.js`: garis skala, "lokasi saya", live tracking, pilihan peta dasar (daftar atau kartu bergambar), daftar centang lapisan, koordinat, menu klik kanan, dan layar penuh (`addScaleBar`, `addLocateButton`, `locateUser`, `addTrackButton`, `trackUser`, `addBasemapControl`, `setBasemap`, `addLayerControl`, `addCoordinateControl`, `addContextMenu`, `addFullscreenButton`)
-- [maptools.js](maptools) — modul tambahan `map.js`: alat ukur jarak dan luas, gambar bergeoreferensi dengan rotasi, ekspor PNG (`addMeasureControl`, `addImageOverlay`, `exportMapImage`)
+- [maptools.js](maptools) — modul tambahan `map.js`: alat ukur jarak dan luas (juga dengan keyboard), gambar bergeoreferensi dengan rotasi, ekspor PNG (`addMeasureControl`, `addImageOverlay`, `exportMapImage`)
 - [mapcluster.js](mapcluster) — modul tambahan `map.js`: pengelompokan titik untuk data titik yang sangat banyak (`addCluster`)
 - [mapsearch.js](mapsearch) — modul tambahan `map.js`: cari tempat dari nama/alamat dan alamat dari titik (Nominatim/OSM atau penyedia sendiri), plus kotak pencarian (`searchPlace`, `reverseGeocode`, `addSearchControl`)
-- [mapoffline.js](mapoffline) — modul tambahan `map.js`: peta dasar dari satu file PMTiles raster, dari server atau dari file di perangkat tanpa internet (`openPMTiles`)
+- [mapoffline.js](mapoffline) — modul tambahan `map.js`: peta dasar dari satu file PMTiles raster atau vektor, dari server atau dari file di perangkat tanpa internet (`openPMTiles`)
+- [mapcache.js](mapcache) — modul tambahan `map.js`: tile yang pernah dilihat tersimpan di browser dan tetap tampil saat offline, plus unduh area untuk server tile sendiri (`cachedTiles`)
+- [mapvector.js](mapvector) — tile vektor MVT digambar di browser, dengan gaya yang bisa diganti (`decodeMVT`, `renderVectorTile`, `DEFAULT_VECTOR_STYLE`)
 - [mapmodel.js](mapmodel) — modul tambahan `map.js`: model 3D glTF/GLB di lokasinya di peta, ukuran sesuai meter (`addModel`)
-- [mapdraw.js](mapdraw) — modul tambahan `map.js`: menggambar titik, garis, dan poligon, lalu mengubah bentuknya (geser, tambah, hapus simpul); hasilnya GeoJSON (`addDrawControl`, `startDrawing`, `editFeature`)
+- [mapdraw.js](mapdraw) — modul tambahan `map.js`: menggambar titik, garis, dan poligon (juga dengan keyboard), lalu mengubah bentuknya (geser, tambah, hapus simpul); hasilnya GeoJSON (`addDrawControl`, `startDrawing`, `editFeature`)
 - [mapheat.js](mapheat) — modul tambahan `map.js`: heatmap kepadatan titik dan peta petak persegi/heksagon berwarna menurut nilai, seperti peta cakupan sinyal (`addHeatmap`, `addGridMap`)
 - [model3d.js](model3d) — penampil model 3D glTF/GLB tanpa Three.js (WebGL2, cadangan WebGL1): putar/zoom, klik bagian, ganti warna, sembunyikan, posisi/rotasi lewat kode (`createViewer`, `loadModel`, `onModelClick`, `setPartColor`, `setPartVisible`, `setPartTransform`, `fitView`)
-- [model3dtools.js](model3dtools) — modul tambahan `model3d.js`: label HTML yang menempel di model, gizmo geser/putar/skala, animasi glTF, tampilan meledak, potongan melintang, tombol AR, ekspor `.glb` (`addHotspot`, `enableTransform`, `playAnimation`, `explodeModel`, `addSection`, `addARButton`, `exportGLB`, `downloadGLB`)
+- [model3dtools.js](model3dtools) — modul tambahan `model3d.js`: label HTML yang menempel di model, gizmo geser/putar/skala, animasi glTF, tampilan meledak, potongan melintang, ukur jarak dan sudut, AR di dalam halaman (WebXR) atau Scene Viewer/Quick Look, ekspor `.glb` (`addHotspot`, `enableTransform`, `playAnimation`, `explodeModel`, `addSection`, `measureModel`, `startAR`, `addARButton`, `exportGLB`, `downloadGLB`)
 - [geomeasure.js](geomeasure) — jarak, panjang, luas, titik-di-dalam-area, titik terdekat, lingkaran radius, konversi dari grid lokal (`getDistance`, `getArea`, `isInside`, `createCircle`, `createAffineTransform`, ...)
 - [georoute.js](georoute) — rute terpendek di sepanjang garis-garis di dalam data GeoJSON, dihitung di browser (`findRoute`)
 - [url.js](url) — protokol, host, path, query string, hash, redirect
@@ -39,7 +42,7 @@ Dokumentasi per-modul dari `crootjs/lib`:
 - [trace.js](trace) — lacak koordinat klik/sentuhan
 - [image.js](image) — warna acak (hex & nama warna)
 - [loading.js](loading) — aset SVG loading spinner
-- [mongo.js](mongo.js) — helper `ObjectId` MongoDB (browser-only, tanpa koneksi DB)
+- [mongo.js](mongo) — helper `ObjectId` MongoDB (browser-only, tanpa koneksi DB)
 
 Lihat juga: [source code lib](https://github.com/crootjs/lib) dan [contoh implementasi](https://github.com/crootjs/examples).
 
@@ -164,8 +167,8 @@ API whatsauth dapat digunakan untuk pengembangan implementasi SSO, login menggun
    ```
 2. main.js : pengaturan login menggunakan crootjs
    ```js
-   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/auth.js";
-   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/config.js";
+   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/auth.js";
+   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/config.js";
    
    wauthparam.auth_ws="d3NzOi8vYXBpLndhLm15LmlkL3dzL3doYXRzYXV0aC9wdWJsaWM=";
    wauthparam.keyword="aHR0cHM6Ly93YS5tZS82MjgzMTMxODk1MDAwP3RleHQ9d2g0dDVhdXRoMA==";
@@ -232,9 +235,9 @@ Pada file index.html
 
 Pada file index.js
 ```js
-import {getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js";
-import {getJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
-import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/url.js";
+import {getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/cookie.js";
+import {getJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
+import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/url.js";
 
 if (getCookie("login")){
     getJSON("https://asia-southeast2-awangga.cloudfunctions.net/florka/data/user",responseFunction,"login",getCookie("login"));

@@ -1,385 +1,328 @@
-# Module Documentation: element.js
+# `element.js` Module Documentation
 
 *[Bahasa Indonesia](../../element/)*
 
-## 1. Introduction
+`element.js` contains short functions for everyday DOM work by element ID: attaching events, reading and filling form values, changing element content and classes, loading HTML fragments from other files, and loading external JS/CSS files. Most functions call `document.getElementById(id)` and then do one thing.
 
-The `element.js` module is a core component of the CrootJS ecosystem, designed to bridge the interaction between JavaScript logic and the DOM (Document Object Model) structure. Its main focus is to provide an abstraction over element manipulation commands that are often repetitive and complex in Vanilla JavaScript.
-
-By using this module, developers can minimize the use of lengthy standard syntax such as:
-
-- Manual element selection (`document.getElementById`)
-- Repetitive event listener setup
-- Writing dynamic content that is prone to typos
-
-The goal is to create a more elegant web development workflow, speed up coding, and keep the code structure clean.
-
----
-
-## 2. Module Scope
-
-The `element.js` module covers a range of important utilities for managing the user interface programmatically:
-
-### 2.1 Structure and Content Management
-
-- Updating element contents instantly
-- Creating new nodes or elements without lengthy HTML syntax
-- Synchronizing element attributes with application logic
-
-### 2.2 Interaction System (Event Handling)
-
-- Simplifying events such as click, input, and change
-- More structured callback management
-
-### 2.3 Visual Dynamics Control
-
-- Showing and hiding elements
-- Manipulating CSS classes for animations and themes
-
-### 2.4 External Content Integration
-
-- Loading HTML asynchronously
-- Supporting simple Single Page Applications (SPA)
-
-One of the standout features is the `onClick` function.
-
----
-
-## 3. onClick Function Documentation
-
-### 3.1 Description
-
-The `onClick` function is used to attach an action that runs when an HTML element is clicked. It simplifies the use of `addEventListener("click")`.
-
-### 3.2 Syntax
+## Usage (Import)
 
 ```javascript
-onClick(id, action)
+import { onClick, getValue, setInner, serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
 ```
 
-### 3.3 Parameters
+Unless stated otherwise, the functions on this page throw a `TypeError` when no element has the given ID.
 
-- `id` : ID of the target HTML element  
-- `action` : callback function to run on click  
+| Group | Functions |
+|---|---|
+| Element | [`container`](#containerid) |
+| Events | [`onClick`](#onclickid-actionfunctionname), [`onClicks`](#onclicksclassname-actionfunctionname), [`onChange`](#onchangeid-actionfunctionname), [`onChanges`](#onchangesclassname-actionfunctionname), [`onInput`](#oninputid-actionfunctionname), [`onInputs`](#oninputsclassname-actionfunctionname), [`runAfterDOM`](#runafterdomrunfunctionevent), [`runAfterAll`](#runafterallrunfunctionevent) |
+| Forms | [`getValue`](#getvalueid), [`setValue`](#setvalueid-valuecontent), [`getAttributeValue`](#getattributevalueid-attribute), [`getValueRadio`](#getvalueradioname), [`getValueSelect`, `getTextSelect`](#getvalueselectid-gettextselectid), [`serializeForm`](#serializeformid), [`fillForm`](#fillformid-data), [`getFileSize`](#getfilesizeid), [`textFocus`, `textBlur`](#textfocusid-textblurid), [`disableInput`, `enableInput`](#disableinputid-enableinputid) |
+| Element content | [`setInner`](#setinnerid-content), [`setInnerText`](#setinnertextid-content), [`addInner`](#addinnerid-content), [`addChild`](#addchildid-tag-classvalue-content) |
+| Classes and visibility | [`addClassValue`](#addclassvalueid-classvalue), [`setClassValue`](#setclassvalueel-classvalue), [`show`, `hide`](#showid-hideid) |
+| Loading HTML | [`renderHTML`](#renderhtmlid-urlhtml-callback-errorcallback), [`replaceTag`](#replacetagid-urlhtml-callback) |
+| Loading JS/CSS | [`addJS`, `addCSS`](#addjssrc-addcsshref), [`addJSInHead`, `addCSSInHead`](#addjsinheadsrc-addcssinheadhref), [`isJSLoaded`, `isCSSLoaded`](#isjsloadedsrc-iscssloadedhref) |
 
----
+## `container(id)`
 
-### 3.4 How It Works
+Returns the element with ID `id`, the same as `document.getElementById(id)`. The result is `null` when it doesn't exist. Useful for things this module has no function for, e.g. `container("menu").classList.remove("open")`.
 
-1. Finds the element with `document.getElementById(id)`  
-2. Adds a `click` event listener  
-3. Waits for user interaction  
-4. Runs the callback when a click occurs  
-5. Shows a warning if the element is not found
+## `onClick(id, actionFunctionName)`
 
-### 3.5 Usage Example
+Attaches a `click` listener to element `id` with `addEventListener`. On every click, `actionFunctionName(target)` is called with `event.target`, the element actually clicked. If the button contains other elements (an `<i>` icon, for example), `target` can be that child element rather than the button.
 
-HTML:
-```html
-<button id="btn-alert">Klik Saya!</button>
-```
-
-JavaScript:
-```javascript
-onClick("btn-alert", () => {
-    alert("Tombol berhasil diklik menggunakan CrootJS");
-    console.log("Interaksi user terekam");
-});
-```
-
-### 3.6 Use Cases
-
-- Interactive buttons  
-- Navigation without reloading  
-- Form validation  
-- Clickable decorative elements  
-- Writing modular code  
-
----
-
-### 4. Conclusion
-
-The `element.js` module helps manage elements and events efficiently.
-
-The `onClick` function lets developers build interactions with minimal code without depending on a large framework.
-
-Contributor: AL YASMIN ASSA'DIYAH - 714240014
-
-# Additional element.js Function Documentation
-
-## 1. onChange(id, actionFunction)
-
-Adds a `change` event listener to the target element. The callback function runs when the user has finished changing the value and the element loses focus. The callback receives a reference to the target element directly. It is best called inside `runAfterDOM()`.
-
-**Usage Example:**
-```javascript
-import { onChange } from './element.js';
-
-onChange('pilihLevel', (target) => {
-    console.log('Terpilih:', target.value);
-});
-```
-
-## 2. getValue(id)
-
-Gets the value as text (a string) from form elements such as input, select, and textarea. Returns an empty string if there is no value. Important note: the returned value is always text; an explicit conversion with `Number()` is required for numeric fields.
-
-**Usage Example:**
-```javascript
-import { getValue } from './element.js';
-
-const usia = Number(getValue('fieldUmur'));
-const nama = getValue('fieldSiswa');
-```
-
-## 3. setInner(id, content)
-
-Directly replaces the contents (innerHTML) of the target HTML element with new content. Commonly used for dynamic display changes without reloading the page. Important: make sure the input text or HTML string has been sanitized to prevent Cross Site Scripting (XSS).
-
-**Usage Example:**
-```javascript
-import { setInner } from './element.js';
-
-setInner('boxStatus', 'Data berhasil diperbarui.');
-
-const infoList = dataMap.map(x => `<li>${x.teks}</li>`).join('');
-setInner('ulDaftar', infoList);
-```
-
----
-## Affifah Putri Deza
-# element.js Module Documentation
-
-## 1. Introduction
-
-`element.js` is one of the modules in CrootJS that helps with DOM manipulation and HTML element management in a simpler, more modular way.
-
-This module reduces repetitive DOM code such as:
-
-- `document.getElementById()`
-- `document.querySelector()`
-- `addEventListener()`
-- `innerHTML` manipulation
-- managing element classes and visibility
-
-With this module, website development becomes tidier, more efficient, and more structured.
-
----
-
-## 2. Module Scope
-
-In general, `element.js` provides the following features:
-
-### 2.1 Element Manipulation
-- Changing element contents (`innerHTML`, `innerText`)
-- Setting attributes
-- Managing classes
-
-### 2.2 Event Handling
-- Adding event listeners (click, input, change, and others)
-- Managing user interaction
-
-### 2.3 Visibility Control
-- Showing elements
-- Hiding elements
-- Toggling display
-
-### 2.4 Dynamic Content Rendering
-- Loading HTML files dynamically
-- Building a partial page system
-- Supporting a modular approach
-
-One of the functions in this category is `renderHTML`.
-
----
-
-# 3. renderHTML Function Documentation
-
-## 3.1 Description
-
-The `renderHTML` function is used to fetch an HTML file from a URL and then display it inside a specific element by ID.
-
-This function lets a web page load content dynamically without reloading the page.
-
----
-
-## 3.2 Syntax
-
-```javascript
-renderHTML(id, urlHTML, callback = null, errorCallback = null)
-```
-
----
-
-## 3.3 Parameters
-
-- **`id`**  
-  ID of the HTML element where the content is rendered.
-
-- **`urlHTML`**  
-  URL or path of the HTML file to load.
-
-- **`callback` (optional)**  
-  Function that runs after the content has loaded successfully.
-
-- **`errorCallback` (optional)**  
-  Function called with an `Error` if the element is not found, the server replies with a non-2xx status (e.g. 404), the network fails, or the request times out (15 seconds). On failure, the element's contents are not changed and `callback` is not called.
-
----
-
-## 3.4 How It Works
-
-1. Finds the element with `document.getElementById()`.
-2. If the element is not found, an error is shown in the console.
-3. Fetches the file using `fetch()`.
-4. Converts the response into HTML text.
-5. Inserts the HTML into the element using `innerHTML`.
-6. Runs `callback` if provided.
-
----
-
-## 3.5 Usage Example
-
-### HTML
+If the element is not found, a warning is logged and nothing throws. Calling `onClick` again for the same ID adds another listener rather than replacing the old one.
 
 ```html
-<div id="content"></div>
+<button id="saveButton" type="button">Save</button>
+<p id="status"></p>
+<script type="module" src="app.js"></script>
 ```
 
-### JavaScript
-
 ```javascript
-renderHTML("content", "about.html", () => {
-    console.log("Konten berhasil dimuat");
+// app.js
+import { onClick, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+
+onClick("saveButton", () => {
+    setInnerText("status", "Saved");
 });
 ```
 
-In the example above, the file `about.html` is loaded and displayed inside the element with ID `content`. Once the process finishes, the callback runs.
+## `onClicks(className, actionFunctionName)`
 
----
-
-## 3.6 Use Cases
-
-- Building a partial page system
-- Loading HTML components modularly
-- Reducing page reloads
-- Building dynamic websites based on ES6 Modules
-
----
-
-## 4. Conclusion
-
-The `element.js` module helps manage elements and events more efficiently.
-
-The `renderHTML` function enables dynamic loading of HTML content using asynchronous JavaScript and DOM manipulation, supporting website development that is modular, lightweight, and independent of complex frameworks.
-
-
--------------------------- 
-## Muhammad Rashid Al Savero (714240006)
-# 3. onInput Function Documentation
-
-## 3.1 Description
-
-The `onInput` function is used to add an event listener to an HTML element that runs every time the user changes the input.
-
-This event is typically used on elements such as:
-- `<input>`
-- `<textarea>`
-- `<select>`
-
-This function makes handling the `input` event easier without having to write `addEventListener` manually.
-
----
-
-## 3.2 Syntax
+Like `onClick`, for every element with class `className`. The handler is set through the `onclick` property, so it replaces any previous `onclick` handler on that element. Only elements that exist when the function is called are affected; elements added later need to be wired up again.
 
 ```javascript
-onInput(id, callback)
+onClicks("delete-button", (button) => {
+    console.log("delete item", button.dataset.id);
+});
 ```
 
----
+## `onChange(id, actionFunctionName)`
 
-## 3.3 Parameters
+Sets a `change` handler on element `id` through the `onchange` property (replacing any previous handler). `actionFunctionName(target)` receives the changed element. `change` fires when a `<select>`, checkbox, or radio selection changes, and on text inputs when the value was edited and focus moves away.
 
-- **`id`**  
-  ID of the HTML element to attach the input event to.
+```javascript
+onChange("classSelect", (select) => {
+    console.log("Selected:", select.value);
+});
+```
 
-- **`callback`**  
-  Function that runs every time the element's value changes.
+## `onChanges(className, actionFunctionName)`
 
----
+Like `onChange`, for every element with class `className` that exists when it is called.
 
-## 3.4 How It Works
+## `onInput(id, actionFunctionName)`
 
-1. Finds the element using `document.getElementById()`.
-2. If the element is not found, an error is shown in the console.
-3. Adds an `input` event listener to the element.
-4. Every time the user types or changes the value, the `callback` function runs.
-5. The latest input value can be accessed via `event.target.value`.
-
----
-
-## 3.5 Usage Example
-
-### HTML
+Sets an `input` handler on element `id` through the `oninput` property (replacing any previous handler). It fires on every value change, including every keystroke. `actionFunctionName(target)` receives **the element**, not the event, so the value is in `target.value`.
 
 ```html
-<input type="text" id="username" placeholder="Masukkan nama">
-<p id="output"></p>
+<label for="name">Name</label>
+<input id="name" type="text">
+<p id="preview"></p>
+<script type="module" src="app.js"></script>
 ```
 
-### JavaScript
-
 ```javascript
-onInput("username", (event) => {
-    const value = event.target.value;
-    document.getElementById("output").innerText = value;
+// app.js
+import { onInput, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+
+onInput("name", (input) => {
+    setInnerText("preview", input.value);
 });
 ```
 
-In the example above, every time the user types in the input, the text is immediately displayed in the `<p>` element.
+For a search that sends a request while typing, wrap the handler in [`debounce`](../debounce).
 
----
+## `onInputs(className, actionFunctionName)`
 
-## 3.6 Use Cases
+Like `onInput`, for every element with class `className` that exists when it is called.
 
-- Real-time input validation
-- Showing a live text preview
-- Building a live search feature
-- Improving user interface interactivity
+## `runAfterDOM(runFunctionEvent)`
 
----
+Calls `runFunctionEvent(event)` on the `DOMContentLoaded` event, i.e. after the HTML has been parsed. `type="module"` scripts already run after the HTML is parsed, so in ordinary module code this function isn't required. If it is called after `DOMContentLoaded` has passed (for example inside a callback or after an `await`), the function is never called.
 
-## 4. Conclusion
+## `runAfterAll(runFunctionEvent)`
 
-The `onInput` function makes handling input events on HTML elements more concise and structured.
+Calls `runFunctionEvent(event)` on the `load` event, i.e. after all images, stylesheets, and iframes have loaded. As with `runAfterDOM`, it is not called if the event has already passed.
 
-With this function, developers can build real-time interactions without repeatedly writing event listener code, making the code cleaner, more modular, and easier to understand.
+## `getValue(id)`
 
----
+Returns the `value` of element `id` (input, textarea, select). The result is always a string, so convert with `Number()` for numbers.
+
+```javascript
+const age = Number(getValue("age"));
+const name = getValue("name").trim();
+```
+
+For a single `<select>`, `getValue` gives the `value` of the selected option.
+
+## `setValue(id, valuecontent)`
+
+Sets the `value` of element `id` to `valuecontent` and returns that value.
+
+```javascript
+setValue("name", "Sari");
+```
+
+## `getAttributeValue(id, attribute)`
+
+Returns the value of attribute `attribute` on element `id`, or `null` when the attribute is absent.
+
+```javascript
+const productId = getAttributeValue("productCard", "data-id");
+```
+
+## `getValueRadio(name)`
+
+Returns the `value` of the checked radio among all elements sharing that `name`, or `undefined` when none is checked. The parameter is the `name` attribute, not an ID. Before 0.0.30 the function also logged `Selected Value: ...` to the console for each radio.
+
+```javascript
+const size = getValueRadio("size"); // "M", or undefined
+```
+
+## `getValueSelect(id)`, `getTextSelect(id)`
+
+Return the `value` and the text of the selected option of the `<select>` with ID `id` (if no element has that ID, it is looked up by its `name` attribute), or `""` when nothing is selected. Before 0.0.30 both always threw a `TypeError`; use 0.0.30 or later.
+
+```javascript
+const value = getValueSelect("citySelect"); // e.g. "bdg"
+const text = getTextSelect("citySelect");   // e.g. "Bandung"
+```
 
 ## `serializeForm(id)`
 
-Collects every field that has a `name` attribute inside a form (text, email, checkbox, the selected radio, select) and returns them as a single `{name: value}` object — so there's no need to call `getValue()` one by one before sending to the server. Fields that are `disabled` and `<input type="file">` are skipped automatically (files need `postFile`/`postFileJSON` from `api.js`, not plain JSON).
+Collects every field with a `name` attribute inside the form (text, email, checkbox, the checked radio, select) and returns them as one `{name: value}` object, so you don't have to call `getValue()` for each field before sending to a server. `disabled` fields and `<input type="file">` are skipped (files are sent with [`uploadFile`](../api/#uploadfile) from `api.js`, not as plain JSON).
 
-**Usage Example:**
+| Field | Value |
+|---|---|
+| Single checkbox | `true` / `false` |
+| Several checkboxes with the same `name` (since 0.0.30) | Array of the checked `value`s, e.g. `["reading", "running"]` |
+| Radio | The checked `value` (absent if none is checked) |
+| `<select multiple>` (since 0.0.30) | Array of the selected `value`s |
+| Anything else | `value` as text |
+
+**Example:**
 
 ```html
-<form id="formDaftar">
-  <input type="text" name="nama">
+<form id="signupForm">
+  <input type="text" name="name">
   <input type="email" name="email">
-  <input type="checkbox" name="setuju">
+  <input type="checkbox" name="agree">
 </form>
 ```
 
 ```javascript
-import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
+import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
 
-const data = serializeForm("formDaftar");
-// { nama: "...", email: "...", setuju: true/false }
+const data = serializeForm("signupForm");
+// { name: "...", email: "...", agree: true/false }
 
-postJSON("https://api.example.com/daftar", data, (res) => {
+postJSON("https://api.example.com/signup", data, (res) => {
     console.log(res);
 });
 ```
+
+For validation with messages below each field before sending, see [`form.js`](../form).
+
+## `fillForm(id, data)`
+
+The reverse of `serializeForm` (since 0.0.30): fills the form's fields from an object, for example data from the server for an edit form. Values have the same shape as `serializeForm`'s result, so `fillForm(id, serializeForm(id))` changes nothing. Only fields whose name is a key in `data` are changed; `<input type="file">` is skipped; `null`/`undefined` clears a field. If the form is not found, a warning is logged and nothing throws.
+
+```javascript
+import { fillForm, serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+import { getJSON, putJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
+
+const { status, data } = await getJSON("https://api.example.com/profile/7");
+if (status === 200) fillForm("profileForm", data); // { name: "Sari", hobbies: ["reading"], agree: true }
+
+// after the user edits it:
+await putJSON("https://api.example.com/profile/7", serializeForm("profileForm"), null);
+```
+
+## `getFileSize(id)`
+
+Returns the size of the first file selected in `<input type="file">` `id`, in KB (bytes ÷ 1024, not rounded). Throws a `TypeError` when no file is selected.
+
+```javascript
+onChange("attachment", () => {
+    if (getFileSize("attachment") > 2048) console.log("2 MB maximum");
+});
+```
+
+## `textFocus(id)`, `textBlur(id)`
+
+Moves keyboard focus to element `id` (`focus()`), or removes focus from it (`blur()`).
+
+## `disableInput(id)`, `enableInput(id)`
+
+Sets `disabled` on element `id` to `true` or `false`. Works for inputs, buttons, selects, and textareas. `disabled` fields are left out of `serializeForm`'s result.
+
+```javascript
+disableInput("sendButton"); // prevent a double click while the request runs
+```
+
+## `setInner(id, content)`
+
+Replaces the content of element `id` with `content` through `innerHTML`, so HTML tags in `content` are rendered. Don't insert text from users or the server without escaping it — that opens an XSS hole. For plain text use `setInnerText`.
+
+```javascript
+const items = ["Apple", "Orange"].map((fruit) => `<li>${fruit}</li>`).join("");
+setInner("fruitList", items);
+```
+
+## `setInnerText(id, content)`
+
+Replaces the content of element `id` with `content` as text (`innerText`). HTML tags are shown as-is, so it is safe for user text.
+
+## `addInner(id, content)`
+
+Appends `content` to the end of element `id`'s content (`innerHTML += content`). The whole content is rebuilt, so listeners attached to its child elements are lost and inputs inside it are reset. The XSS warning for `setInner` applies here too.
+
+## `addChild(id, tag, classvalue, content)`
+
+Creates a new `<tag>` element, gives it the classes in `classvalue` (several classes separated by spaces; pass `""` for none), sets its `innerHTML` to `content`, and appends it as the last child of element `id`. Does not return the new element.
+
+```javascript
+addChild("taskList", "li", "task done", "Send the report");
+// <li class="task done">Send the report</li>
+```
+
+## `addClassValue(id, classValue)`
+
+Adds one class to element `id`. Leading and trailing spaces are removed; a class with a space in the middle (`"a b"`) makes the browser throw a `DOMException`. This module has no function to remove a class; use `container(id).classList.remove(...)`.
+
+## `setClassValue(el, classvalue)`
+
+Adds one class to the **element** `el` (an element object, not an ID). Does nothing when `classvalue` is empty. `addChild` uses it to apply classes.
+
+## `show(id)`, `hide(id)`
+
+`hide` sets `style.display = "none"`; `show` sets `style.display = "block"`. Because `show` always uses `block`, an element meant to be `flex`, `grid`, or `inline` changes its layout. For such elements, toggle a class that hides them, or use the `hidden` attribute.
+
+## `renderHTML(id, urlHTML, callback, errorCallback)`
+
+Fetches an HTML file from `urlHTML` and puts its content into element `id` through `innerHTML`. Useful for splitting a page into fragments (header, menu, body) or building a simple SPA.
+
+| Parameter | Description |
+|---|---|
+| `id` | ID of the target element |
+| `urlHTML` | URL or path of the HTML file |
+| `callback` | Optional. Called with no arguments after the content is in place |
+| `errorCallback` | Optional. Called with an `Error` when the element isn't found, the server answers with a non-2xx status (e.g. 404), the network fails, or the request times out (15 seconds). On failure the element's content is not changed and `callback` is not called |
+
+Errors are always logged to the console as well. `<script>` tags inside the loaded HTML do not run (that is how `innerHTML` works), so attach listeners for the new content in `callback`.
+
+```html
+<nav id="menu"></nav>
+<main id="content"></main>
+<script type="module" src="app.js"></script>
+```
+
+```javascript
+// app.js
+import { renderHTML, onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+
+renderHTML("menu", "parts/menu.html");
+renderHTML("content", "parts/home.html", () => {
+    onClick("startButton", () => console.log("start"));
+}, (error) => {
+    console.log("Could not load home:", error.message);
+});
+```
+
+## `replaceTag(id, urlHTML, callback)`
+
+Like `renderHTML`, but element `id` itself is **replaced** by the first element of the loaded HTML (rather than filled). Any elements after the first one in that file are ignored. `callback` is called with no arguments afterwards, also when the file contains no element at all.
+
+There is no `errorCallback`: a missing element, a non-2xx status, a network failure, and a timeout (15 seconds) are only logged to the console, and `callback` is not called.
+
+```javascript
+replaceTag("footer", "parts/footer.html");
+```
+
+## `addJS(src)`, `addCSS(href)`
+
+Loads an external JS or CSS file into `<head>` if it isn't on the page yet. Both are `async`; `await` them before using what the file provides. The "already there" check uses [`isJSLoaded`/`isCSSLoaded`](#isjsloadedsrc-iscssloadedhref), and when the file is already there the Promise resolves immediately, even if that file is still loading. If the file fails to load, the Promise rejects with an `Error`.
+
+Scripts are loaded as classic scripts (not `type="module"`), which suits third-party libraries that set a global variable.
+
+```javascript
+import { addJS, addCSS } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+
+await addCSS("https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css");
+await addJS("https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.js");
+Swal.fire("Saved");
+```
+
+## `addJSInHead(src)`, `addCSSInHead(href)`
+
+`addJS`/`addCSS` without the check: they always add a new `<script src>` or `<link rel="stylesheet">` to `<head>`. They return a Promise that resolves when the file has loaded and rejects with an `Error` when it fails.
+
+## `isJSLoaded(src)`, `isCSSLoaded(href)`
+
+Return `true` when the page has a `<script>` (or `<link rel="stylesheet">`) whose full URL **contains** `src` (or `href`). Because this is a substring check, `isJSLoaded("app.js")` is also `true` for `vendor-app.js`; use a long enough piece of the URL.
+
+---
+
+Earlier contributors to this page: Al Yasmin Assa'diyah (714240014), Affifah Putri Deza, Muhammad Rashid Al Savero (714240006).

@@ -2,41 +2,21 @@
 
 *[English](en/useragent)*
 
-`useragent.js` adalah modul kecil dari CrootJS untuk mendeteksi apakah pengunjung mengakses halaman dari perangkat mobile, berdasarkan `navigator.userAgent` bawaan browser. Modul ini **tidak** memakai library pihak ketiga (bukan UAParser.js atau sejenisnya) — murni satu fungsi regex.
+`useragent.js` berisi satu fungsi untuk menebak apakah halaman dibuka dari perangkat mobile, dengan mencocokkan `navigator.userAgent` terhadap sebuah regex. Tidak ada library pihak ketiga.
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/useragent.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/useragent.js";
 ```
 
-## Daftar Fungsi
+## `isMobile()`
 
-### `isMobile()`
-
-Mengembalikan `true` jika `navigator.userAgent` cocok dengan pola perangkat mobile umum (Android, webOS, iPhone, iPad, iPod, BlackBerry, IEMobile, Opera Mini), dan `false` jika tidak.
-
-**Parameter:** Tidak ada.
-
-**Nilai Kembalian:** `Boolean`.
-
-**Contoh Penggunaan:**
+Mengembalikan `true` jika `navigator.userAgent` mengandung salah satu dari `Android`, `webOS`, `iPhone`, `iPad`, `iPod`, `BlackBerry`, `IEMobile`, atau `Opera Mini` (tanpa membedakan huruf besar/kecil), dan `false` jika tidak. Tidak menerima parameter.
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/useragent.js";
-
-if (isMobile()) {
-    console.log("Diakses dari perangkat mobile");
-} else {
-    console.log("Diakses dari desktop");
-}
-```
-
-**Contoh: menampilkan tombol berbeda untuk mobile**
-
-```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/useragent.js";
-import { show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/useragent.js";
+import { show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
 
 if (isMobile()) {
     show("tombol-buka-app");
@@ -46,4 +26,5 @@ if (isMobile()) {
 
 ## Catatan
 
-- Deteksi berbasis `navigator.userAgent` bisa saja tidak akurat 100% (user agent dapat dipalsukan/diubah oleh pengguna atau ekstensi browser), jadi jangan dipakai untuk kebutuhan keamanan — cocoknya untuk penyesuaian tampilan (progressive enhancement) saja.
+- iPad dengan iPadOS 13 ke atas secara bawaan memakai user agent Safari desktop (Mac), sehingga `isMobile()` mengembalikan `false`.
+- User agent bisa diubah oleh pengguna atau ekstensi browser. Pakai hasilnya hanya untuk menyesuaikan tampilan, bukan untuk keamanan. Untuk tata letak, media query CSS biasanya lebih tepat.

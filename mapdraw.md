@@ -9,8 +9,8 @@ Cocok untuk survei lapangan, menandai area cakupan, menggambar rute, atau batas 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
-import { addDrawControl, startDrawing, editFeature } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapdraw.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/map.js";
+import { addDrawControl, startDrawing, editFeature } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/mapdraw.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` lebih dulu.
@@ -42,10 +42,10 @@ Panel di bawah tombol menampilkan petunjuk dan tombol **Selesai**, **Hapus titik
 Mengembalikan `{ getData(), setData(geojson), clear(), remove() }`. `getData()` memberi salinan FeatureCollection-nya.
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
-import { addDrawControl } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapdraw.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
-import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/map.js";
+import { addDrawControl } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/mapdraw.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
+import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
 
 createMap("peta", { center: [107.6, -6.9], zoom: 16 });
 const gambar = addDrawControl("peta", {
@@ -72,6 +72,8 @@ Menggambar **satu** geometri, untuk antarmuka buatan sendiri. `type`: `"point"`,
 
 Selama menggambar, klik peta tidak membuka popup dan tidak diteruskan ke `onMapClick`; menggeser peta tetap bisa.
 
+**Dengan keyboard** (sejak 0.0.30): saat peta terfokus (Tab ke peta), tanda **+** tampil di tengah peta dan garis bantu mengarah ke sana. Panah menggeser peta, **Spasi** menaruh titik di tanda +, **Enter** selesai. Setiap titik yang ditambah atau dihapus dibacakan pembaca layar. Di `addDrawControl`, tombol Titik/Garis/Area yang dipilih dari keyboard langsung memindahkan fokus ke peta.
+
 `responseFunction(feature)` dipanggil sekali: Feature GeoJSON hasilnya, atau `null` kalau dibatalkan. Koordinat dibulatkan ke 7 angka di belakang koma (sekitar 1 cm), dan poligon selalu ditutup (titik terakhir = titik pertama).
 
 `options` (semuanya opsional):
@@ -84,7 +86,7 @@ Selama menggambar, klik peta tidak membuka popup dan tidak diteruskan ke `onMapC
 Mengembalikan `{ finish(), undo(), stop() }` untuk tombol Selesai, Hapus titik, dan Batal buatan sendiri.
 
 ```javascript
-import { getArea } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/geomeasure.js";
+import { getArea } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/geomeasure.js";
 
 onClick("gambar-kavling", () => {
     startDrawing("peta", "polygon", (feature) => {
@@ -130,12 +132,14 @@ Semua bisa ditimpa dari CSS halaman tanpa `!important`.
 | `circle.crootjs-draw-point` | Titik hasil `addDrawControl` |
 | `circle.crootjs-draw-vertex`, `-vertex-first` | Simpul; simpul pertama poligon (klik untuk menutup) |
 | `circle.crootjs-draw-midpoint` | Titik tengah ruas |
+| `.crootjs-map-crosshair` | Tanda + di tengah peta saat menggambar dengan keyboard (juga dipakai alat ukur) |
 | `.crootjs-map-draw`, `.crootjs-map-draw-tool`, `.crootjs-map-draw-panel`, `.crootjs-map-draw-actions` | Kotak kontrol, tombol alat (`aria-pressed="true"` yang aktif), panel petunjuk, dan tombol aksinya |
 
 Di layar sentuh pegangannya otomatis lebih besar.
 
 ## Catatan
 
-- Gambar ikut bergeser dan di-zoom bersama peta. Lapisannya SVG di atas data `addGeoJSON`, sehingga belum ikut terekspor oleh `exportMapImage`.
+- Gambar ikut bergeser dan di-zoom bersama peta, dan ikut di gambar PNG dari [`exportMapImage`](maptools#exportmapimageid-responsefunction-options-dan-downloadmapimageid-filename-responsefunction-options).
+- Mengubah bentuk (`editFeature`) dan menghapus fitur masih memakai mouse atau sentuhan; menggambar baru bisa dengan keyboard.
 - Untuk menampilkan data yang sudah final dengan gaya, popup, dan label, kirim hasilnya ke [`addGeoJSON`](map#addgeojsonid-geojson-options). `mapdraw.js` untuk membuat dan mengubah data.
 - Alat ukur [`maptools.js`](maptools) dan `startDrawing` sama-sama "meminjam" klik peta; hanya satu yang aktif pada satu waktu.

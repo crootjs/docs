@@ -7,8 +7,8 @@
 ## Usage (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
-import { addMeasureControl, measure, addImageOverlay, exportMapImage, downloadMapImage } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/maptools.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/map.js";
+import { addMeasureControl, measure, addImageOverlay, exportMapImage, downloadMapImage } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/maptools.js";
 ```
 
 The map must already have been created with `createMap`.
@@ -38,6 +38,8 @@ addMeasureControl("peta", {
 ## `measure(id, type, responseFunction, options)`
 
 A measuring tool without buttons, for your own custom interface. `type` is `"distance"` (distance along the points) or `"area"` (area of the polygon formed by those points). It is used on the map the same way as `addMeasureControl`.
+
+**With the keyboard** (since 0.0.30): when the map has focus (Tab to the map), a **+** mark appears at the center of the map. The arrow keys pan the map, **Space** places a point at the + mark, **Enter** finishes, **Backspace** removes the last point, and **Esc** cancels. Every point and the result are announced to screen readers. Choosing an `addMeasureControl` button from the keyboard moves focus straight to the map.
 
 `responseFunction` (optional) is called once when the measurement finishes, with:
 
@@ -91,7 +93,7 @@ masterPlan.setOpacity(0.4);
 **From control points.** If what you know is a few points on the image (pixels) along with their lng/lat, build the transformation with [`createAffineTransform`](geomeasure#createaffinetransformfrom-to) and then compute the three corners:
 
 ```javascript
-import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/geomeasure.js";
+import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/geomeasure.js";
 
 // A 2400 x 1600 pixel image; three points recognized on both the image and the map.
 const piksel = [[310, 220], [2105, 260], [400, 1390]];
@@ -129,6 +131,7 @@ exportMapImage("peta", (blob, info) => {
 | `attribution` | `true` | `false` = no attribution text. The OpenStreetMap license requires attribution on published images |
 
 **Included**: the basemap, overlay images, all GeoJSON layers (SVG and canvas), feature labels, markers (default pin, image icon, or custom element) with their labels, [`mapcluster.js`](mapcluster) bubbles, [`mapheat.js`](mapheat) heatmaps and grid maps, the location marker, measuring tool results, the scale bar, and attribution.
+[`mapdraw.js`](mapdraw) drawings are included too, including the vertex handles while a shape is being edited.
 **Not included**: popups, and control buttons and panels.
 
 Labels and HTML elements are drawn from the **browser's computed CSS**, so labels with a box background look the same as on screen: `background-color`, `border`, `border-radius`, `padding`, alignment, multi-line text (`white-space: pre`), `opacity`, and `::before`/`::after` content (for example a 📷 icon). `text-shadow` becomes a halo around the text; if its color is too similar to the text color (for example white text with a white shadow), the halo is replaced with a contrasting color so it stays legible. Not yet drawn: `box-shadow`, gradient or image backgrounds, and elements rotated with `transform`.

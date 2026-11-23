@@ -9,7 +9,8 @@
 - **Animation** — plays the animations stored in the glTF file, with play/pause/scrub controls.
 - **Exploded view** — spreads the model's parts away from their center, like an assembly drawing.
 - **Cross-section** — slices the model with a plane to see its inside.
-- **AR** — opens the model in the room through the phone camera (Scene Viewer on Android, AR Quick Look on iPhone).
+- **Measuring tool** — distances and angles directly on the model's surface.
+- **AR** — opens the model in the room through the phone camera: inside the page (WebXR, Chrome on Android), or via Scene Viewer (Android) and AR Quick Look (iPhone).
 - **GLB export** — saves the model with all its changes as a new `.glb` file.
 
 The middle three suit learning materials well: anatomy, engines, buildings, lab equipment. This module is separate from `model3d.js` so pages that only display a model don't have to download it (about 8 KB gzip).
@@ -17,8 +18,8 @@ The middle three suit learning materials well: anatomy, engines, buildings, lab 
 ## Usage (Import)
 
 ```javascript
-import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/model3d.js";
-import { addHotspot, enableTransform, getAnimations, playAnimation, explodeModel, addSection, addARButton, getARLink, exportGLB, downloadGLB } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/model3dtools.js";
+import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/model3d.js";
+import { addHotspot, enableTransform, getAnimations, playAnimation, explodeModel, addSection, measureModel, addARButton, getARLink, isARSupported, startAR, exportGLB, downloadGLB } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/model3dtools.js";
 ```
 
 The viewer must already be created with `createViewer`. Hotspots and gizmos that refer to a part name need the model to be loaded, so call them inside `loadModel`'s `responseFunction`.
@@ -167,6 +168,33 @@ onInput("letak", () => potongan.set({ position: Number(getValue("letak")) }));
 onClick("utuh", () => potongan.remove());
 ```
 
+## `measureModel(id, options)`
+
+A measuring tool on the model's surface (since 0.0.30): click or tap points on the model, and the lines and result appear on top of it and move with it as the model rotates. Clicks outside the model are ignored; a click after a measurement is complete starts a new one.
+
+| Option | Default | Description |
+|---|---|---|
+| `mode` | `"distance"` | `"distance"`: two points → straight-line distance. `"angle"`: three points → the angle at the second point, e.g. a joint angle or the slope of a frame member |
+| `scale` | `1` | Meters per model unit. glTF uses meters; set something else if the model was built to scale |
+| `onChange` | — | `function (result)` each time a point is added |
+
+`result` = `{ mode, points, distance, angle, text, complete }`: `distance` in meters (distance mode), `angle` in degrees (angle mode), `text` ready to display (`"12,5 cm"`, `"1,24 m"`, `"87,5°"`), and `complete` = `true` once all points are in place.
+
+Returns `{ getResult(), clear(), remove() }`. Clicks are still passed on to `onModelClick` while measuring.
+
+```javascript
+import { onClick, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+
+let alat = null;
+onClick("ukur-sudut", () => {
+    if (alat) alat.remove();
+    alat = measureModel("model", {
+        mode: "angle",
+        onChange: (hasil) => setInnerText("hasil", hasil.complete ? "Angle: " + hasil.text : "Click the next point"),
+    });
+});
+```
+
 ## `addARButton(id, url, options)` and `getARLink(url, options)`
 
 A **"Lihat di AR"** ("View in AR") button in the corner of the viewer: the model is placed in the real room through the phone camera, and can be moved and rotated with a finger.
@@ -179,7 +207,7 @@ A **"Lihat di AR"** ("View in AR") button in the corner of the viewer: the model
 
 `url` must be a `.glb`/`.gltf` file publicly downloadable over HTTPS — not a local file or a `blob:` from `exportGLB`, because another app opens it.
 
-`options` (all optional): `title` (title in Scene Viewer), `usdz` (file for iPhone/iPad), `label` (default "Lihat di AR"), `mode` (`"ar_preferred"` default, `"ar_only"`, `"3d_only"`), `fallback` (page to use if Scene Viewer is not available; default this page).
+`options` (all optional): `title` (title in Scene Viewer), `usdz` (file for iPhone/iPad), `label` (default "Lihat di AR"), `mode` (`"ar_preferred"` default, `"ar_only"`, `"3d_only"`), `fallback` (page to use if Scene Viewer is not available; default this page), and `webxr` (since 0.0.30): `true` = on devices that support it, AR opens **inside the page** with [`startAR`](#isarsupported-and-startarid-options) (the `startAR` options are used as well); on other devices it is still Scene Viewer/Quick Look.
 
 Returns `{ supported, remove() }` — `supported` = `false` if the button was not added on this device.
 
@@ -190,6 +218,41 @@ loadModel("model", "https://contoh.id/models/bts.glb", () => {
     addARButton("model", "https://contoh.id/models/bts.glb", { title: "Menara BTS", usdz: "https://contoh.id/models/bts.usdz" });
 });
 ```
+
+## `isARSupported()` and `startAR(id, options)`
+
+AR **inside the page** via WebXR (since 0.0.30). The difference from Scene Viewer: the user does not switch apps, and the model shown is the model in the viewer as it is, including colors, hidden parts, and positions changed from code. That is also why it works for models from `blob:` or local files.
+
+`isARSupported()` → Promise of `true` if the browser can open a WebXR AR session. Currently that is Chrome on Android with Google Play Services for AR (ARCore); Safari on iPhone does not support WebXR AR yet.
+
+`startAR(id, options)` opens the model currently shown in viewer `id`:
+
+1. The phone camera shows the room, and the model follows the floor/table being pointed at as a preview.
+2. A tap places the model there; tap again to move it.
+3. The **Tutup** ("Close") button ends AR.
+
+The model is shown at its real size (glTF uses meters), with its base on the surface.
+
+It must be called from a user click/tap; browsers refuse to open AR without one.
+
+| Option | Default | Description |
+|---|---|---|
+| `scale` | `1` | Size multiplier, e.g. `0.1` for a 30 m tower so it fits on a table |
+| `hint` | "Arahkan kamera ke lantai, lalu ketuk untuk menaruh model." ("Point the camera at the floor, then tap to place the model.") | Instruction text above the camera view |
+| `onPlace` | — | `function (position)` each time the model is placed |
+| `onEnd` | — | `function ()` when AR is closed |
+
+Returns a Promise of `{ supported, end() }`; `supported` = `false` (with the reason in the console) if the AR session could not be opened.
+
+```javascript
+import { isARSupported, startAR } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/model3dtools.js";
+import { onClick, show } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+
+if (await isARSupported()) show("tombol-ar");
+onClick("tombol-ar", () => startAR("model", { scale: 0.1 }));
+```
+
+Not yet available: a model shadow on the floor, lighting that adapts to the room, and moving/rotating the model with a finger inside AR. For those, Scene Viewer and Quick Look are still more complete.
 
 ## `exportGLB(id, responseFunction)` and `downloadGLB(id, filename, responseFunction)`
 
@@ -225,6 +288,8 @@ Everything can be overridden from the page's CSS without `!important`.
 | `.crootjs-3d-hotspot-hidden` | A hotspot whose point is hidden by the model (default: dimmed) |
 | `.crootjs-3d-hotspot-clickable` | A hotspot that has `onClick` |
 | `a.crootjs-3d-ar` | The "Lihat di AR" button |
+| `svg.crootjs-3d-measure`, `.crootjs-3d-measure-label` | The measuring tool's lines and points (orange), and its result box |
+| `.crootjs-3d-xr` | The instruction layer and Tutup button over the camera view during `startAR` |
 | `svg.crootjs-3d-gizmo` | The gizmo |
 | `.crootjs-3d-gizmo-x`, `-y`, `-z`, `-all` | Color of each axis (via `color`), and the uniform-scale handle |
 | `.crootjs-3d-gizmo-line`, `-knob`, `-hit` | The visible line/ring, the handle tip, and the click area wider than the line |

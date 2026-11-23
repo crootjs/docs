@@ -2,48 +2,29 @@
 
 *[Bahasa Indonesia](../useragent)*
 
-`useragent.js` is a small CrootJS module for detecting whether a visitor is accessing the page from a mobile device, based on the browser's built-in `navigator.userAgent`. The module does **not** use any third-party library (not UAParser.js or similar) — it is just a single regex function.
+`useragent.js` contains one function that guesses whether the page is opened on a mobile device, by matching `navigator.userAgent` against a regex. No third-party library is involved.
 
 ## Usage (Import)
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/useragent.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/useragent.js";
 ```
 
-## Function List
+## `isMobile()`
 
-### `isMobile()`
-
-Returns `true` if `navigator.userAgent` matches a common mobile device pattern (Android, webOS, iPhone, iPad, iPod, BlackBerry, IEMobile, Opera Mini), and `false` otherwise.
-
-**Parameters:** None.
-
-**Return Value:** `Boolean`.
-
-**Usage Example:**
+Returns `true` if `navigator.userAgent` contains any of `Android`, `webOS`, `iPhone`, `iPad`, `iPod`, `BlackBerry`, `IEMobile`, or `Opera Mini` (case-insensitive), and `false` otherwise. Takes no parameters.
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/useragent.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/useragent.js";
+import { show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
 
 if (isMobile()) {
-    console.log("Accessed from a mobile device");
-} else {
-    console.log("Accessed from a desktop");
-}
-```
-
-**Example: showing different buttons on mobile**
-
-```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/useragent.js";
-import { show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
-
-if (isMobile()) {
-    show("tombol-buka-app");
-    hide("tombol-download-desktop");
+    show("open-app-button");
+    hide("desktop-download-button");
 }
 ```
 
 ## Notes
 
-- Detection based on `navigator.userAgent` may not be 100% accurate (the user agent can be spoofed/changed by the user or by browser extensions), so do not rely on it for security purposes — it is suitable only for display adjustments (progressive enhancement).
+- iPads running iPadOS 13 or later use a desktop Safari (Mac) user agent by default, so `isMobile()` returns `false` on them.
+- The user agent can be changed by the user or by browser extensions. Use the result only to adjust the interface, not for security. For layout, a CSS media query is usually the better tool.

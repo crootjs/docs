@@ -10,8 +10,9 @@ Documentation for using CrootJS with an AI Companion and a human in the loop.
 
 Per-module documentation for `crootjs/lib`:
 
-- [api.js](api/) — `getJSON`, `postJSON`, `putJSON`, `deleteJSON`, file upload
-- [element.js](element/) — `onClick`, `setInner`, `getValue`, and other DOM helpers
+- [api.js](api/) — `getJSON`, `postJSON`, `putJSON`, `deleteJSON` (callback or `await`, headers, timeout, cancellation, ETag cache), `uploadFile` with progress, `downloadFile`
+- [element.js](element/) — `onClick`, `setInner`, `getValue`, `serializeForm`, `fillForm`, and other DOM helpers
+- [form.js](form) — form validation with a message under each field, screen-reader friendly (`handleForm`, `validateForm`, `clearFormErrors`)
 - [cookie.js](cookie) — set/get/delete cookies
 - [storage.js](storage) — set/get/delete data in localStorage & sessionStorage (with an optional expiry)
 - [debounce.js](debounce) — `debounce`/`throttle` to limit how often a function runs (search-as-you-type, scroll, etc.)
@@ -20,12 +21,17 @@ Per-module documentation for `crootjs/lib`:
 - [map.js](map) — interactive maps with no external library: tile basemaps (OpenStreetMap), GeoJSON drawing, popups, coordinate clicks, right-click, named layers, labels, hover, basemap switching, canvas renderer (`createMap`, `addGeoJSON`, `fitMap`, `onMapClick`, `onMapContextMenu`, `showLayer`, `setTiles`)
 - [mapmarker.js](mapmarker) — `map.js` add-on: pin markers, icons, or your own element, with labels, popups, and dragging (`addMarker`)
 - [mapcontrol.js](mapcontrol) — `map.js` add-on: scale bar, "my location", live tracking, basemap picker (list or picture cards), layer checklist, coordinates, right-click menu, and fullscreen (`addScaleBar`, `addLocateButton`, `locateUser`, `addTrackButton`, `trackUser`, `addBasemapControl`, `setBasemap`, `addLayerControl`, `addCoordinateControl`, `addContextMenu`, `addFullscreenButton`)
-- [maptools.js](maptools) — `map.js` add-on: distance and area measuring tools, georeferenced images with rotation, PNG export (`addMeasureControl`, `addImageOverlay`, `exportMapImage`)
+- [maptools.js](maptools) — `map.js` add-on: distance and area measuring tools (keyboard included), georeferenced images with rotation, PNG export (`addMeasureControl`, `addImageOverlay`, `exportMapImage`)
 - [mapcluster.js](mapcluster) — `map.js` add-on: point clustering for very large point datasets (`addCluster`)
-- [mapdraw.js](mapdraw) — `map.js` add-on: draw points, lines, and polygons, then reshape them (move, add, delete vertices); the result is GeoJSON (`addDrawControl`, `startDrawing`, `editFeature`)
+- [mapsearch.js](mapsearch) — `map.js` add-on: find places by name/address and the address at a point (Nominatim/OSM or your own provider), plus a search box (`searchPlace`, `reverseGeocode`, `addSearchControl`)
+- [mapoffline.js](mapoffline) — `map.js` add-on: basemap from a single raster or vector PMTiles file, from a server or from a file on the device with no internet (`openPMTiles`)
+- [mapcache.js](mapcache) — `map.js` add-on: tiles you have viewed are stored in the browser and keep showing while offline, plus area download for your own tile server (`cachedTiles`)
+- [mapvector.js](mapvector) — MVT vector tiles drawn in the browser, with a replaceable style (`decodeMVT`, `renderVectorTile`, `DEFAULT_VECTOR_STYLE`)
+- [mapmodel.js](mapmodel) — `map.js` add-on: a glTF/GLB 3D model at its location on the map, true to scale in meters (`addModel`)
+- [mapdraw.js](mapdraw) — `map.js` add-on: draw points, lines, and polygons (keyboard included), then reshape them (move, add, delete vertices); the result is GeoJSON (`addDrawControl`, `startDrawing`, `editFeature`)
 - [mapheat.js](mapheat) — `map.js` add-on: point-density heatmaps and square/hexagon grid maps colored by value, like signal coverage maps (`addHeatmap`, `addGridMap`)
 - [model3d.js](model3d) — glTF/GLB 3D model viewer without Three.js (WebGL2, WebGL1 fallback): rotate/zoom, click parts, change colors, hide, position/rotate from code (`createViewer`, `loadModel`, `onModelClick`, `setPartColor`, `setPartVisible`, `setPartTransform`, `fitView`)
-- [model3dtools.js](model3dtools) — `model3d.js` add-on: HTML labels pinned to the model, move/rotate/scale gizmo, glTF animation, exploded view, cross-sections, `.glb` export (`addHotspot`, `enableTransform`, `playAnimation`, `explodeModel`, `addSection`, `exportGLB`, `downloadGLB`)
+- [model3dtools.js](model3dtools) — `model3d.js` add-on: HTML labels pinned to the model, move/rotate/scale gizmo, glTF animation, exploded view, cross-sections, distance and angle measurement, AR inside the page (WebXR) or Scene Viewer/Quick Look, `.glb` export (`addHotspot`, `enableTransform`, `playAnimation`, `explodeModel`, `addSection`, `measureModel`, `startAR`, `addARButton`, `exportGLB`, `downloadGLB`)
 - [geomeasure.js](geomeasure) — distance, length, area, point-in-area, nearest point, radius circle, conversion from a local grid (`getDistance`, `getArea`, `isInside`, `createCircle`, `createAffineTransform`, ...)
 - [georoute.js](georoute) — shortest route along the lines in GeoJSON data, computed in the browser (`findRoute`)
 - [url.js](url) — protocol, host, path, query string, hash, redirect
@@ -36,7 +42,7 @@ Per-module documentation for `crootjs/lib`:
 - [trace.js](trace) — track click/touch coordinates
 - [image.js](image) — random colors (hex & color names)
 - [loading.js](loading) — loading spinner SVG asset
-- [mongo.js](../mongo.js) — MongoDB `ObjectId` helpers (browser-only, no DB connection)
+- [mongo.js](mongo) — MongoDB `ObjectId` helpers (browser-only, no DB connection)
 
 See also: [lib source code](https://github.com/crootjs/lib) and [implementation examples](https://github.com/crootjs/examples).
 
@@ -161,8 +167,8 @@ The WhatsAuth API can be used to implement SSO, QR login, and Google Sign-In. Cr
    ```
 2. main.js: login setup using crootjs
    ```js
-   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/auth.js";
-   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/config.js";
+   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/auth.js";
+   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/config.js";
    
    wauthparam.auth_ws="d3NzOi8vYXBpLndhLm15LmlkL3dzL3doYXRzYXV0aC9wdWJsaWM=";
    wauthparam.keyword="aHR0cHM6Ly93YS5tZS82MjgzMTMxODk1MDAwP3RleHQ9d2g0dDVhdXRoMA==";
@@ -229,9 +235,9 @@ In the index.html file
 
 In the index.js file
 ```js
-import {getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js";
-import {getJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
-import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/url.js";
+import {getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/cookie.js";
+import {getJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
+import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/url.js";
 
 if (getCookie("login")){
     getJSON("https://asia-southeast2-awangga.cloudfunctions.net/florka/data/user",responseFunction,"login",getCookie("login"));

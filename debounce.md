@@ -2,50 +2,49 @@
 
 *[English](en/debounce)*
 
-`debounce.js` berisi dua fungsi pembungkus (*higher-order function*) untuk membatasi seberapa sering sebuah function boleh dijalankan — berguna untuk event yang terpicu sangat sering seperti mengetik, scroll, resize, atau mousemove.
+`debounce.js` berisi dua function pembungkus untuk membatasi seberapa sering sebuah function dijalankan, berguna untuk event yang terpicu sangat sering seperti mengetik, scroll, resize, atau mousemove.
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { debounce, throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/debounce.js";
+import { debounce, throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/debounce.js";
 ```
 
 ## `debounce(fn, delay)`
 
-Menunda eksekusi `fn` sampai user **berhenti** memicu selama `delay` milidetik. Kalau dipanggil lagi sebelum waktu itu habis, hitungan mundur diulang dari awal. Hasilnya: `fn` cuma jalan **sekali**, setelah user selesai (bukan di tengah-tengah).
+Mengembalikan function baru yang menunda `fn` sampai tidak ada panggilan lagi selama `delay` milidetik. Setiap panggilan baru mengulang hitungan dari awal, jadi `fn` hanya jalan sekali setelah pemicunya berhenti, dengan argumen dari panggilan terakhir.
 
-**Kegunaan paling umum**: search-as-you-type — supaya tidak kirim request ke server di setiap ketikan, cuma setelah user berhenti mengetik.
+Contoh umumnya pencarian saat mengetik: request dikirim setelah pengguna berhenti mengetik, bukan di setiap ketikan.
 
 ```javascript
-import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/debounce.js";
-import { onInput, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
+import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/debounce.js";
+import { onInput } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
 
-const cariProduk = debounce(() => {
-    const kata = getValue("kotakPencarian");
-    getJSON(`https://api.example.com/produk?q=${kata}`, (res) => {
-        console.log(res.data);
-    });
-}, 400); // tunggu 400ms setelah user berhenti mengetik
+const cariProduk = debounce(async (input) => {
+    const { status, data } = await getJSON(`https://api.example.com/produk?q=${encodeURIComponent(input.value)}`);
+    if (status === 200) console.log(data);
+}, 400);
 
-onInput("kotakPencarian", cariProduk);
+onInput("kotakPencarian", cariProduk); // onInput memberi elemen input ke callback
 ```
 
 ## `throttle(fn, delay)`
 
-Membatasi `fn` supaya berjalan **maksimal sekali** setiap `delay` milidetik, walau dipicu berkali-kali lebih sering dari itu. Beda dengan `debounce`, panggilan pertama langsung jalan (*leading call*), dan kalau ada pemicu baru selama periode tunggu, panggilan **terakhir** tetap dijalankan setelah `delay` selesai (*trailing call*) — jadi data terbaru tidak pernah hilang.
+Mengembalikan function baru yang menjalankan `fn` paling sering sekali setiap `delay` milidetik. Panggilan pertama langsung jalan; panggilan yang datang selama masa tunggu digabung, dan yang terakhir dijalankan begitu masa tunggu habis, jadi nilai terbaru tidak hilang.
 
-**Kegunaan paling umum**: event `scroll`/`resize`/`mousemove` yang bisa terpicu puluhan kali per detik.
+Contoh umumnya event `scroll`, `resize`, dan `mousemove`.
 
 ```javascript
-import { throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/debounce.js";
+import { throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/debounce.js";
 
 window.addEventListener("scroll", throttle(() => {
     console.log("posisi scroll:", window.scrollY);
-}, 200)); // paling sering jalan tiap 200ms
+}, 200));
 ```
 
 ## Catatan
 
-- Kedua fungsi mengembalikan function baru yang sudah dibungkus — panggil `debounce(fn, delay)`/`throttle(fn, delay)` **sekali** di luar handler, lalu daftarkan hasilnya sebagai listener (seperti contoh di atas). Jangan panggil `debounce(...)`/`throttle(...)` di dalam handler itu sendiri, karena itu akan membuat wrapper baru setiap kali dan menghilangkan efeknya.
-- `this` dan semua argumen pemanggilan asli tetap diteruskan ke `fn`.
+- Panggil `debounce(...)`/`throttle(...)` sekali, lalu daftarkan hasilnya sebagai listener seperti contoh di atas. Memanggilnya di dalam handler membuat pembungkus baru di setiap event sehingga tidak membatasi apa-apa.
+- `this` dan semua argumen diteruskan ke `fn`. Nilai kembalian `fn` tidak diteruskan: function hasil pembungkus selalu mengembalikan `undefined`.
+- Tidak ada cara membatalkan panggilan yang sedang ditunda.

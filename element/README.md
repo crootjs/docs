@@ -1,366 +1,165 @@
-# Dokumentasi Module: element.js
+# Dokumentasi Modul `element.js`
 
 *[English](../en/element/)*
 
-## 1. Pendahuluan
+`element.js` berisi function pendek untuk pekerjaan DOM sehari-hari berdasarkan ID elemen: memasang event, membaca dan mengisi nilai form, mengubah isi dan class elemen, memuat potongan HTML dari file lain, dan memuat file JS/CSS eksternal. Sebagian besar function memanggil `document.getElementById(id)` lalu melakukan satu hal.
 
-Modul `element.js` merupakan komponen inti dalam ekosistem CrootJS yang dirancang untuk menjembatani interaksi antara logika JavaScript dan struktur DOM (Document Object Model). Fokus utama modul ini adalah memberikan abstraksi pada perintah-perintah manipulasi elemen yang seringkali repetitif dan kompleks dalam Vanilla JavaScript.
-
-Dengan menggunakan modul ini, pengembang dapat meminimalisir penggunaan sintaks standar yang panjang seperti:
-
-- Seleksi elemen manual (`document.getElementById`)
-- Pengaturan event listener yang berulang
-- Penulisan konten dinamis yang rawan kesalahan pengetikan
-
-Tujuannya adalah menciptakan alur kerja pengembangan web yang lebih elegan, mempercepat proses coding, dan memastikan struktur kode tetap bersih.
-
----
-
-## 2. Ruang Lingkup Modul
-
-Modul `element.js` mencakup berbagai utilitas penting untuk mengelola antarmuka pengguna secara programatik:
-
-### 2.1 Pengelolaan Struktur dan Konten
-
-- Memperbarui isi elemen secara instan
-- Membuat node atau elemen baru tanpa sintaks HTML panjang
-- Sinkronisasi atribut elemen dengan logika aplikasi
-
-### 2.2 Sistem Interaksi (Event Handling)
-
-- Penyederhanaan event seperti klik, input, dan perubahan
-- Manajemen callback yang lebih terstruktur
-
-### 2.3 Kontrol Dinamika Visual
-
-- Menampilkan dan menyembunyikan elemen
-- Manipulasi class CSS untuk animasi dan tema
-
-### 2.4 Integrasi Konten Eksternal
-
-- Memuat HTML secara asynchronous
-- Mendukung Single Page Application (SPA) sederhana
-
-Salah satu fitur unggulan adalah fungsi `onClick`.
-
----
-
-## 3. Dokumentasi Fungsi onClick
-
-### 3.1 Deskripsi
-
-Fungsi `onClick` digunakan untuk memberikan aksi ketika elemen HTML diklik. Fungsi ini menyederhanakan penggunaan `addEventListener("click")`.
-
-### 3.2 Sintaks
+## Cara Penggunaan (Import)
 
 ```javascript
-onClick(id, action)
+import { onClick, getValue, setInner, serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
 ```
 
-### 3.3 Parameter
+Kecuali disebut lain, function di halaman ini melempar `TypeError` kalau tidak ada elemen dengan ID tersebut.
 
-- `id` : ID elemen HTML target  
-- `action` : fungsi callback yang dijalankan saat klik  
+| Kelompok | Function |
+|---|---|
+| Elemen | [`container`](#containerid) |
+| Event | [`onClick`](#onclickid-actionfunctionname), [`onClicks`](#onclicksclassname-actionfunctionname), [`onChange`](#onchangeid-actionfunctionname), [`onChanges`](#onchangesclassname-actionfunctionname), [`onInput`](#oninputid-actionfunctionname), [`onInputs`](#oninputsclassname-actionfunctionname), [`runAfterDOM`](#runafterdomrunfunctionevent), [`runAfterAll`](#runafterallrunfunctionevent) |
+| Form | [`getValue`](#getvalueid), [`setValue`](#setvalueid-valuecontent), [`getAttributeValue`](#getattributevalueid-attribute), [`getValueRadio`](#getvalueradioname), [`getValueSelect`, `getTextSelect`](#getvalueselectid-gettextselectid), [`serializeForm`](#serializeformid), [`fillForm`](#fillformid-data), [`getFileSize`](#getfilesizeid), [`textFocus`, `textBlur`](#textfocusid-textblurid), [`disableInput`, `enableInput`](#disableinputid-enableinputid) |
+| Isi elemen | [`setInner`](#setinnerid-content), [`setInnerText`](#setinnertextid-content), [`addInner`](#addinnerid-content), [`addChild`](#addchildid-tag-classvalue-content) |
+| Class dan tampilan | [`addClassValue`](#addclassvalueid-classvalue), [`setClassValue`](#setclassvalueel-classvalue), [`show`, `hide`](#showid-hideid) |
+| Memuat HTML | [`renderHTML`](#renderhtmlid-urlhtml-callback-errorcallback), [`replaceTag`](#replacetagid-urlhtml-callback) |
+| Memuat JS/CSS | [`addJS`, `addCSS`](#addjssrc-addcsshref), [`addJSInHead`, `addCSSInHead`](#addjsinheadsrc-addcssinheadhref), [`isJSLoaded`, `isCSSLoaded`](#isjsloadedsrc-iscssloadedhref) |
 
----
+## `container(id)`
 
-### 3.4 Cara Kerja
+Mengembalikan elemen dengan ID `id`, sama dengan `document.getElementById(id)`. Hasilnya `null` kalau tidak ada. Berguna untuk hal yang tidak punya function sendiri di modul ini, misalnya `container("menu").classList.remove("terbuka")`.
 
-1. Mencari elemen dengan `document.getElementById(id)`  
-2. Menambahkan event listener `click`  
-3. Menunggu interaksi pengguna  
-4. Menjalankan callback saat klik terjadi  
-5. Memberikan peringatan jika elemen tidak ditemukan
+## `onClick(id, actionFunctionName)`
 
-### 3.5 Contoh Penggunaan
+Memasang listener `click` pada elemen `id` dengan `addEventListener`. Setiap kali diklik, `actionFunctionName(target)` dipanggil dengan `event.target`, yaitu elemen yang benar-benar diklik. Kalau tombolnya berisi elemen lain (misalnya ikon `<i>`), `target` bisa berupa elemen anak itu, bukan tombolnya.
 
-HTML:
-```html
-<button id="btn-alert">Klik Saya!</button>
-```
-
-JavaScript:
-```javascript
-onClick("btn-alert", () => {
-    alert("Tombol berhasil diklik menggunakan CrootJS");
-    console.log("Interaksi user terekam");
-});
-```
-
-### 3.6 Kegunaan
-
-- Tombol interaktif  
-- Navigasi tanpa reload  
-- Validasi form  
-- Elemen dekoratif yang dapat diklik  
-- Penulisan kode modular  
-
----
-
-### 4. Kesimpulan
-
-Modul `element.js` membantu pengelolaan elemen dan event secara efisien.
-
-Fungsi `onClick` memungkinkan pengembang membangun interaksi dengan kode minimalis tanpa bergantung pada framework besar.
-
-Kontributor: AL YASMIN ASSA'DIYAH - 714240014
-
-# Dokumentasi Fungsi Tambahan element.js
-
-## 1. onChange(id, actionFunction)
-
-Menambahkan event listener `change` pada elemen target. Fungsi callback akan dieksekusi saat pengguna selesai mengubah nilai dan elemen kehilangan fokus. Callback langsung menerima referensi elemen target. Sebaiknya dipanggil di dalam `runAfterDOM()`.
-
-**Contoh Penggunaan:**
-```javascript
-import { onChange } from './element.js';
-
-onChange('pilihLevel', (target) => {
-    console.log('Terpilih:', target.value);
-});
-```
-
-## 2. getValue(id)
-
-Mengambil nilai berupa teks (string) dari elemen formulir seperti input, select, dan textarea. Mengembalikan string kosong jika nilai tidak ada. Catatan penting: nilai yang dikembalikan selalu berjenis teks, diperlukan konversi eksplisit dengan `Number()` untuk isian bertipe angka.
-
-**Contoh Penggunaan:**
-```javascript
-import { getValue } from './element.js';
-
-const usia = Number(getValue('fieldUmur'));
-const nama = getValue('fieldSiswa');
-```
-
-## 3. setInner(id, content)
-
-Secara langsung mengganti isi (innerHTML) dari elemen HTML target dengan konten baru. Biasa dimanfaatkan untuk proses perubahan tampilan dinamis tanpa me-muat ulang halaman. Penting: Pastikan bahwa teks atau string HTML masukan telah melalui tahap sanitasi guna mencegah bahaya Cross Site Scripting (XSS).
-
-**Contoh Penggunaan:**
-```javascript
-import { setInner } from './element.js';
-
-setInner('boxStatus', 'Data berhasil diperbarui.');
-
-const infoList = dataMap.map(x => `<li>${x.teks}</li>`).join('');
-setInner('ulDaftar', infoList);
-```
-
----
-## Affifah Putri Deza
-# Dokumentasi Modul element.js
-
-## 1. Pendahuluan
-
-`element.js` merupakan salah satu modul dalam CrootJS yang berfungsi untuk membantu manipulasi DOM dan pengelolaan elemen HTML secara lebih sederhana dan modular.
-
-Modul ini mengurangi penulisan kode DOM yang berulang seperti:
-
-- `document.getElementById()`
-- `document.querySelector()`
-- `addEventListener()`
-- manipulasi `innerHTML`
-- pengaturan class dan visibilitas elemen
-
-Dengan adanya modul ini, proses pengembangan website menjadi lebih rapi, efisien, dan terstruktur.
-
----
-
-## 2. Ruang Lingkup Modul
-
-Secara umum, `element.js` menyediakan fitur berikut:
-
-### 2.1 Manipulasi Elemen
-- Mengubah isi elemen (`innerHTML`, `innerText`)
-- Mengatur atribut
-- Mengelola class
-
-### 2.2 Event Handling
-- Menambahkan event listener (click, input, change, dan lainnya)
-- Mengelola interaksi pengguna
-
-### 2.3 Kontrol Visibilitas
-- Menampilkan elemen
-- Menyembunyikan elemen
-- Toggle tampilan
-
-### 2.4 Render Konten Dinamis
-- Memuat file HTML secara dinamis
-- Membuat sistem partial page
-- Mendukung pendekatan modular
-
-Salah satu fungsi dalam kategori ini adalah `renderHTML`.
-
----
-
-# 3. Dokumentasi Fungsi renderHTML
-
-## 3.1 Deskripsi
-
-Fungsi `renderHTML` digunakan untuk mengambil file HTML dari sebuah URL, lalu menampilkannya ke dalam elemen tertentu berdasarkan ID.
-
-Fungsi ini memungkinkan halaman web memuat konten secara dinamis tanpa perlu melakukan reload halaman.
-
----
-
-## 3.2 Sintaks
-
-```javascript
-renderHTML(id, urlHTML, callback = null, errorCallback = null)
-```
-
----
-
-## 3.3 Parameter
-
-- **`id`**  
-  ID elemen HTML yang menjadi tempat render konten.
-
-- **`urlHTML`**  
-  URL atau path file HTML yang ingin dimuat.
-
-- **`callback` (opsional)**  
-  Fungsi yang dijalankan setelah konten berhasil dimuat.
-
-- **`errorCallback` (opsional)**  
-  Fungsi yang dipanggil dengan sebuah `Error` kalau elemen tidak ditemukan, server membalas status non-2xx (misal 404), jaringan gagal, atau request timeout (15 detik). Saat gagal, isi elemen tidak diubah dan `callback` tidak dipanggil.
-
----
-
-## 3.4 Cara Kerja
-
-1. Mencari elemen dengan `document.getElementById()`.
-2. Jika elemen tidak ditemukan, sistem menampilkan error di console.
-3. Mengambil file menggunakan `fetch()`.
-4. Mengubah response menjadi teks HTML.
-5. Memasukkan HTML ke elemen menggunakan `innerHTML`.
-6. Menjalankan `callback` jika tersedia.
-
----
-
-## 3.5 Contoh Penggunaan
-
-### HTML
+Kalau elemen tidak ditemukan, muncul peringatan di console dan tidak ada error. Memanggil `onClick` lagi untuk ID yang sama menambah listener baru, bukan mengganti yang lama.
 
 ```html
-<div id="content"></div>
+<button id="tombolSimpan" type="button">Simpan</button>
+<p id="status"></p>
+<script type="module" src="app.js"></script>
 ```
 
-### JavaScript
-
 ```javascript
-renderHTML("content", "about.html", () => {
-    console.log("Konten berhasil dimuat");
+// app.js
+import { onClick, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+
+onClick("tombolSimpan", () => {
+    setInnerText("status", "Tersimpan");
 });
 ```
 
-Pada contoh di atas, file `about.html` akan dimuat dan ditampilkan di dalam elemen dengan ID `content`. Setelah proses selesai, callback akan dijalankan.
+## `onClicks(className, actionFunctionName)`
 
----
-
-## 3.6 Kegunaan
-
-- Membuat sistem partial page
-- Memuat komponen HTML secara modular
-- Mengurangi reload halaman
-- Membangun website dinamis berbasis ES6 Modules
-
----
-
-## 4. Kesimpulan
-
-Modul `element.js` membantu pengelolaan elemen dan event secara lebih efisien.
-
-Fungsi `renderHTML` memungkinkan pemuatan konten HTML secara dinamis menggunakan asynchronous JavaScript dan manipulasi DOM, sehingga mendukung pengembangan website yang modular, ringan, dan tidak bergantung pada framework kompleks.
-
-
--------------------------- 
-## Muhammad Rashid Al Savero (714240006)
-# 3. Dokumentasi Fungsi onInput
-
-## 3.1 Deskripsi
-
-Fungsi `onInput` digunakan untuk menambahkan event listener pada elemen HTML yang akan dijalankan setiap kali terjadi perubahan input dari pengguna.
-
-Event ini biasanya digunakan pada elemen seperti:
-- `<input>`
-- `<textarea>`
-- `<select>`
-
-Fungsi ini mempermudah penanganan event `input` tanpa perlu menuliskan `addEventListener` secara manual.
-
----
-
-## 3.2 Sintaks
+Seperti `onClick`, untuk semua elemen dengan class `className`. Handler dipasang lewat properti `onclick`, jadi menimpa handler `onclick` sebelumnya di elemen itu. Hanya elemen yang sudah ada saat function ini dipanggil yang kena; elemen yang ditambahkan belakangan perlu dipasang ulang.
 
 ```javascript
-onInput(id, callback)
+onClicks("tombol-hapus", (tombol) => {
+    console.log("hapus item", tombol.dataset.id);
+});
 ```
 
----
+## `onChange(id, actionFunctionName)`
 
-## 3.3 Parameter
+Memasang handler `change` pada elemen `id` lewat properti `onchange` (menimpa handler sebelumnya). `actionFunctionName(target)` menerima elemen yang berubah. Event `change` terpicu saat pilihan `<select>`, checkbox, atau radio berubah, dan pada input teks saat nilainya diubah lalu fokus pindah.
 
-- **`id`**  
-  ID elemen HTML yang ingin dipasangkan event input.
+```javascript
+onChange("pilihKelas", (select) => {
+    console.log("Terpilih:", select.value);
+});
+```
 
-- **`callback`**  
-  Fungsi yang akan dijalankan setiap kali terjadi perubahan nilai pada elemen.
+## `onChanges(className, actionFunctionName)`
 
----
+Seperti `onChange`, untuk semua elemen dengan class `className` yang sudah ada saat dipanggil.
 
-## 3.4 Cara Kerja
+## `onInput(id, actionFunctionName)`
 
-1. Mencari elemen menggunakan `document.getElementById()`.
-2. Jika elemen tidak ditemukan, sistem akan menampilkan error di console.
-3. Menambahkan event listener `input` ke elemen tersebut.
-4. Setiap kali pengguna mengetik atau mengubah nilai, fungsi `callback` akan dijalankan.
-5. Nilai terbaru dari input dapat diakses melalui `event.target.value`.
-
----
-
-## 3.5 Contoh Penggunaan
-
-### HTML
+Memasang handler `input` pada elemen `id` lewat properti `oninput` (menimpa handler sebelumnya). Terpicu di setiap perubahan nilai, termasuk setiap ketikan. `actionFunctionName(target)` menerima **elemennya**, bukan event, jadi nilainya ada di `target.value`.
 
 ```html
-<input type="text" id="username" placeholder="Masukkan nama">
-<p id="output"></p>
+<label for="nama">Nama</label>
+<input id="nama" type="text">
+<p id="pratinjau"></p>
+<script type="module" src="app.js"></script>
 ```
 
-### JavaScript
-
 ```javascript
-onInput("username", (event) => {
-    const value = event.target.value;
-    document.getElementById("output").innerText = value;
+// app.js
+import { onInput, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+
+onInput("nama", (input) => {
+    setInnerText("pratinjau", input.value);
 });
 ```
 
-Pada contoh di atas, setiap kali pengguna mengetik pada input, teks akan langsung ditampilkan di elemen `<p>`.
+Untuk pencarian yang mengirim request saat mengetik, bungkus handler-nya dengan [`debounce`](../debounce).
 
----
+## `onInputs(className, actionFunctionName)`
 
-## 3.6 Kegunaan
+Seperti `onInput`, untuk semua elemen dengan class `className` yang sudah ada saat dipanggil.
 
-- Validasi input secara real-time
-- Menampilkan preview teks secara langsung
-- Membuat fitur pencarian live (live search)
-- Meningkatkan interaktivitas user interface
+## `runAfterDOM(runFunctionEvent)`
 
----
+Memanggil `runFunctionEvent(event)` saat event `DOMContentLoaded`, yaitu setelah HTML selesai di-parse. Script `type="module"` sudah dijalankan setelah HTML di-parse, jadi di kode module biasa function ini tidak wajib. Kalau dipanggil setelah `DOMContentLoaded` lewat (misalnya di dalam callback atau setelah `await`), function-nya tidak pernah dipanggil.
 
-## 4. Kesimpulan
+## `runAfterAll(runFunctionEvent)`
 
-Fungsi `onInput` mempermudah pengelolaan event input pada elemen HTML dengan cara yang lebih ringkas dan terstruktur.
+Memanggil `runFunctionEvent(event)` saat event `load`, yaitu setelah semua gambar, stylesheet, dan iframe selesai dimuat. Sama seperti `runAfterDOM`, tidak dipanggil kalau event-nya sudah lewat.
 
-Dengan fungsi ini, developer dapat membuat interaksi real-time tanpa harus menulis kode event listener secara berulang, sehingga kode menjadi lebih bersih, modular, dan mudah dipahami.
+## `getValue(id)`
 
----
+Mengembalikan `value` elemen `id` (input, textarea, select). Hasilnya selalu string, jadi ubah dulu dengan `Number()` untuk angka.
+
+```javascript
+const umur = Number(getValue("umur"));
+const nama = getValue("nama").trim();
+```
+
+Untuk `<select>` biasa, `getValue` memberi `value` dari pilihan yang terpilih.
+
+## `setValue(id, valuecontent)`
+
+Mengisi `value` elemen `id` dengan `valuecontent` dan mengembalikan nilai itu.
+
+```javascript
+setValue("nama", "Sari");
+```
+
+## `getAttributeValue(id, attribute)`
+
+Mengembalikan nilai atribut `attribute` dari elemen `id`, atau `null` kalau atributnya tidak ada.
+
+```javascript
+const idProduk = getAttributeValue("kartuProduk", "data-id");
+```
+
+## `getValueRadio(name)`
+
+Mengembalikan `value` radio yang terpilih di antara semua elemen dengan `name` yang sama, atau `undefined` kalau belum ada yang dipilih. Parameternya atribut `name`, bukan ID. Sebelum 0.0.30 function ini juga menulis `Selected Value: ...` ke console untuk setiap radio.
+
+```javascript
+const ukuran = getValueRadio("ukuran"); // "M", atau undefined
+```
+
+## `getValueSelect(id)`, `getTextSelect(id)`
+
+Mengembalikan `value` dan teks pilihan yang terpilih di `<select>` dengan ID `id` (kalau tidak ada elemen dengan ID itu, dicari lewat atribut `name`), atau `""` kalau belum ada yang dipilih. Sebelum 0.0.30 keduanya selalu melempar `TypeError`; pakai versi 0.0.30 ke atas.
+
+```javascript
+const nilai = getValueSelect("pilihKota"); // misalnya "bdg"
+const teks = getTextSelect("pilihKota");   // misalnya "Bandung"
+```
 
 ## `serializeForm(id)`
 
-Mengambil semua field yang punya atribut `name` di dalam form (text, email, checkbox, radio yang terpilih, select) dan mengembalikannya sebagai satu object `{nama: nilai}` — jadi tidak perlu memanggil `getValue()` satu per satu sebelum kirim ke server. Field yang `disabled` dan `<input type="file">` otomatis dilewati (file butuh `postFile`/`postFileJSON` dari `api.js`, bukan JSON biasa).
+Mengambil semua field yang punya atribut `name` di dalam form (text, email, checkbox, radio yang terpilih, select) dan mengembalikannya sebagai satu object `{nama: nilai}` — jadi tidak perlu memanggil `getValue()` satu per satu sebelum kirim ke server. Field yang `disabled` dan `<input type="file">` otomatis dilewati (file dikirim dengan [`uploadFile`](../api/#uploadfile) dari `api.js`, bukan JSON biasa).
+
+| Field | Nilai |
+|---|---|
+| Checkbox tunggal | `true` / `false` |
+| Beberapa checkbox dengan `name` sama (sejak 0.0.30) | Array `value` yang dicentang, misalnya `["baca", "lari"]` |
+| Radio | `value` yang terpilih (tidak ada kalau belum dipilih) |
+| `<select multiple>` (sejak 0.0.30) | Array `value` yang dipilih |
+| Lainnya | `value` berupa teks |
 
 **Contoh Penggunaan:**
 
@@ -373,8 +172,8 @@ Mengambil semua field yang punya atribut `name` di dalam form (text, email, chec
 ```
 
 ```javascript
-import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
+import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
 
 const data = serializeForm("formDaftar");
 // { nama: "...", email: "...", setuju: true/false }
@@ -383,3 +182,147 @@ postJSON("https://api.example.com/daftar", data, (res) => {
     console.log(res);
 });
 ```
+
+Untuk validasi dengan pesan di bawah field sebelum dikirim, lihat [`form.js`](../form).
+
+## `fillForm(id, data)`
+
+Kebalikan `serializeForm` (sejak 0.0.30): mengisi field form dari sebuah object, misalnya data dari server untuk form edit. Bentuk nilainya sama dengan hasil `serializeForm`, jadi `fillForm(id, serializeForm(id))` tidak mengubah apa-apa. Hanya field yang namanya ada di `data` yang diubah; `<input type="file">` dilewati; `null`/`undefined` mengosongkan field. Kalau form tidak ditemukan, muncul peringatan di console dan tidak ada error.
+
+```javascript
+import { fillForm, serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+import { getJSON, putJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
+
+const { status, data } = await getJSON("https://api.example.com/profil/7");
+if (status === 200) fillForm("formProfil", data); // { nama: "Sari", hobi: ["baca"], setuju: true }
+
+// setelah diubah pengguna:
+await putJSON("https://api.example.com/profil/7", serializeForm("formProfil"), null);
+```
+
+## `getFileSize(id)`
+
+Mengembalikan ukuran file pertama yang dipilih di `<input type="file">` `id`, dalam KB (byte ÷ 1024, tidak dibulatkan). Melempar `TypeError` kalau belum ada file yang dipilih.
+
+```javascript
+onChange("berkas", () => {
+    if (getFileSize("berkas") > 2048) console.log("Maksimal 2 MB");
+});
+```
+
+## `textFocus(id)`, `textBlur(id)`
+
+Memindahkan fokus keyboard ke elemen `id` (`focus()`), atau melepas fokus darinya (`blur()`).
+
+## `disableInput(id)`, `enableInput(id)`
+
+Mengatur `disabled` elemen `id` menjadi `true` atau `false`. Berlaku untuk input, button, select, dan textarea. Field yang `disabled` tidak ikut di hasil `serializeForm`.
+
+```javascript
+disableInput("tombolKirim"); // cegah klik dua kali selama request berjalan
+```
+
+## `setInner(id, content)`
+
+Mengganti isi elemen `id` dengan `content` lewat `innerHTML`, jadi tag HTML di `content` ikut dirender. Jangan masukkan teks dari pengguna atau server tanpa di-*escape* — itu membuka celah XSS. Untuk teks biasa pakai `setInnerText`.
+
+```javascript
+const daftar = ["Apel", "Jeruk"].map((buah) => `<li>${buah}</li>`).join("");
+setInner("daftarBuah", daftar);
+```
+
+## `setInnerText(id, content)`
+
+Mengganti isi elemen `id` dengan `content` sebagai teks (`innerText`). Tag HTML ditampilkan apa adanya, jadi aman untuk teks dari pengguna.
+
+## `addInner(id, content)`
+
+Menambahkan `content` di akhir isi elemen `id` (`innerHTML += content`). Seluruh isi elemen dibuat ulang, jadi listener yang dipasang pada elemen anaknya hilang dan nilai input di dalamnya kembali ke awal. Peringatan XSS di `setInner` juga berlaku.
+
+## `addChild(id, tag, classvalue, content)`
+
+Membuat elemen `<tag>` baru, memberinya class dari `classvalue` (beberapa class dipisah spasi; isi `""` kalau tidak ada), mengisi `innerHTML`-nya dengan `content`, lalu menambahkannya sebagai anak terakhir elemen `id`. Tidak mengembalikan elemen baru itu.
+
+```javascript
+addChild("daftarTugas", "li", "tugas selesai", "Kirim laporan");
+// <li class="tugas selesai">Kirim laporan</li>
+```
+
+## `addClassValue(id, classValue)`
+
+Menambahkan satu class ke elemen `id`. Spasi di awal dan akhir dibuang; class dengan spasi di tengah (`"a b"`) membuat browser melempar `DOMException`. Modul ini tidak punya function untuk menghapus class; pakai `container(id).classList.remove(...)`.
+
+## `setClassValue(el, classvalue)`
+
+Menambahkan satu class ke **elemen** `el` (objek elemen, bukan ID). Tidak melakukan apa-apa kalau `classvalue` kosong. Dipakai `addChild` untuk memasang class.
+
+## `show(id)`, `hide(id)`
+
+`hide` mengatur `style.display = "none"`; `show` mengatur `style.display = "block"`. Karena `show` selalu memakai `block`, elemen yang seharusnya `flex`, `grid`, atau `inline` berubah tata letaknya. Untuk elemen seperti itu, tambah/hapus class yang menyembunyikannya, atau pakai atribut `hidden`.
+
+## `renderHTML(id, urlHTML, callback, errorCallback)`
+
+Mengambil file HTML dari `urlHTML` dengan `fetch`, lalu memasang isinya ke elemen `id` lewat `innerHTML`. Berguna untuk memecah halaman menjadi potongan (header, menu, isi) atau membuat SPA sederhana.
+
+| Parameter | Keterangan |
+|---|---|
+| `id` | ID elemen tujuan |
+| `urlHTML` | URL atau path file HTML |
+| `callback` | Opsional. Dipanggil tanpa argumen setelah isi terpasang |
+| `errorCallback` | Opsional. Dipanggil dengan sebuah `Error` kalau elemen tidak ditemukan, server membalas status non-2xx (misal 404), jaringan gagal, atau request timeout (15 detik). Saat gagal, isi elemen tidak diubah dan `callback` tidak dipanggil |
+
+Error juga selalu ditulis ke console. `<script>` di dalam HTML yang dimuat tidak dijalankan (begitulah `innerHTML` bekerja), jadi pasang listener untuk isi baru di `callback`.
+
+```html
+<nav id="menu"></nav>
+<main id="konten"></main>
+<script type="module" src="app.js"></script>
+```
+
+```javascript
+// app.js
+import { renderHTML, onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+
+renderHTML("menu", "bagian/menu.html");
+renderHTML("konten", "bagian/beranda.html", () => {
+    onClick("tombolMulai", () => console.log("mulai"));
+}, (error) => {
+    console.log("Gagal memuat beranda:", error.message);
+});
+```
+
+## `replaceTag(id, urlHTML, callback)`
+
+Seperti `renderHTML`, tapi elemen `id` itu sendiri **diganti** dengan elemen pertama dari HTML yang dimuat (bukan diisi). Elemen lain sesudah elemen pertama di file itu diabaikan. `callback` dipanggil tanpa argumen setelahnya, juga ketika file tidak berisi elemen apa pun.
+
+Tidak ada `errorCallback`: elemen yang tidak ditemukan, status non-2xx, jaringan gagal, dan timeout (15 detik) hanya ditulis ke console, dan `callback` tidak dipanggil.
+
+```javascript
+replaceTag("footer", "bagian/footer.html");
+```
+
+## `addJS(src)`, `addCSS(href)`
+
+Memuat file JS atau CSS eksternal ke `<head>` kalau belum ada di halaman. Keduanya `async`; tunggu dengan `await` sebelum memakai isi file itu. Pengecekan "sudah ada" memakai [`isJSLoaded`/`isCSSLoaded`](#isjsloadedsrc-iscssloadedhref), dan kalau sudah ada, Promise langsung selesai walaupun file itu masih dalam proses dimuat. Kalau file gagal dimuat, Promise ditolak dengan `Error`.
+
+Script dimuat sebagai script klasik (bukan `type="module"`), jadi cocok untuk library pihak ketiga yang memasang variabel global.
+
+```javascript
+import { addJS, addCSS } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+
+await addCSS("https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css");
+await addJS("https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.js");
+Swal.fire("Tersimpan");
+```
+
+## `addJSInHead(src)`, `addCSSInHead(href)`
+
+Versi `addJS`/`addCSS` tanpa pengecekan: selalu menambah `<script src>` atau `<link rel="stylesheet">` baru ke `<head>`. Mengembalikan Promise yang selesai saat file termuat dan ditolak dengan `Error` kalau gagal.
+
+## `isJSLoaded(src)`, `isCSSLoaded(href)`
+
+Mengembalikan `true` kalau ada `<script>` (atau `<link rel="stylesheet">`) di halaman yang URL lengkapnya **mengandung** `src` (atau `href`). Karena yang dicek potongan teks, `isJSLoaded("app.js")` juga `true` untuk `vendor-app.js`; pakai potongan URL yang cukup panjang.
+
+---
+
+Kontributor halaman ini sebelumnya: Al Yasmin Assa'diyah (714240014), Affifah Putri Deza, Muhammad Rashid Al Savero (714240006).

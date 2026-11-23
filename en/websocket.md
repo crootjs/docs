@@ -1,114 +1,59 @@
-# `websocket.js` Documentation & Usage Guide
+# `websocket.js` Module Documentation
 
 *[Bahasa Indonesia](../websocket)*
 
-This module makes it easier to connect and communicate bidirectionally between a web application (*client*) and a server using the WebSocket protocol. 
+`websocket.js` opens a WebSocket connection that sends an ID as soon as it connects, passes every incoming message to a callback, and provides small functions to send messages and close the connection. It suits servers that expect the client's first message to be the user's identity.
 
-Below is a detailed explanation of each function, along with step-by-step instructions on how to use it:
+Things to know before using this module:
 
----
+- The server URL **must** be Base64-encoded (`btoa("wss://...")`); the module decodes it with `atob()`.
+- The module logs to the console: `connected and set id`, `socket error rejected`, `connection closed`, and `incoming message` for **every** incoming message.
+- There is no automatic reconnect. When the connection drops, only the `connection closed` log appears.
 
-## 1. Setup: Importing the Module
-The first step before using the functions below is to import them into your main JavaScript file.
+## Usage (Import)
 
 ```javascript
-import { 
-  openWebSocketSetId, 
-  connectws,
-  sendMessagetoWebSocket, 
-  closeWebSocket 
-} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/websocket.js";
+import { openWebSocketSetId, connectws, sendMessagetoWebSocket, closeWebSocket } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/websocket.js";
 ```
-## 2. Opening a Connection & Receiving Messages
 
-To open a connection, this module uses two interconnected functions: `openWebSocketSetId` and `connectws`.
+## `openWebSocketSetId(id, url_ws, onMessage)`
 
-### Function Reference:
+Checks that the browser supports WebSocket, then calls `connectws`. Returns a Promise that resolves with the `WebSocket` object once the connection is open and `id` has been sent.
 
-* **`openWebSocketSetId(id, url_ws, onMessage?)`**: The main function for opening a connection. It checks browser support, then calls `connectws()`. It returns a **Promise** that resolves with the `WebSocket` object as soon as the connection is open (WebSocket connections are always asynchronous, so it cannot be returned directly/synchronously).
-  * **`id`** *(String/Number)*: The user's unique identifier, sent when connecting.
-  * **`url_ws`** *(String)*: The WebSocket endpoint URL, which **must** be Base64-encoded.
-  * **`onMessage`** *(Function, optional)*: Callback invoked for every incoming message, receiving the message data (`onMessage(pesan)`). If omitted, the module automatically calls `window.catcher(pesan)` if you have defined it (see option B below) — for compatibility with older code.
-* **`connectws(id, url_ws, onMessage?)`**: The behind-the-scenes *Promise* function that decodes the URL (`atob()`) and opens the connection. Its parameters are the same as `openWebSocketSetId`.
+If the browser doesn't support WebSocket, it calls `alert("Please Update Your browser to the latest version.")` and returns a Promise that rejects with `Error("WebSocket not supported")`.
 
-### Usage:
-
-**Option A — Explicit callback (recommended):**
+| Parameter | Description |
+|---|---|
+| `id` | Sent as is with `send()` as the first message after the connection opens |
+| `url_ws` | The WebSocket URL, Base64-encoded |
+| `onMessage` | Optional. `function (data)` called with `event.data` for every incoming message. If omitted, the module calls `window.catcher(data)` if that function exists (legacy style); if neither exists, messages are ignored |
 
 ```javascript
-// A. Prepare the connection data
-const idPengguna = "User_714240001";
-const urlServer = btoa("wss://contoh-server-websocket.com"); // Must be Base64-encoded
+import { openWebSocketSetId, sendMessagetoWebSocket, closeWebSocket } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/websocket.js";
+import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
 
-// B. Open the connection and receive messages via the callback
-openWebSocketSetId(idPengguna, urlServer, (pesanMasuk) => {
-    console.log("Pesan baru dari server: ", pesanMasuk);
-    // Write your logic here (e.g. display it in the HTML)
-}).then((koneksiWs) => {
-    // koneksiWs is only available after this Promise resolves —
-    // store it for later use with sendMessagetoWebSocket/closeWebSocket
-    window.koneksiWs = koneksiWs;
+const ws = await openWebSocketSetId("user-714240001", btoa("wss://chat.example.com/ws"), (data) => {
+    const message = JSON.parse(data);
+    console.log(message.from, message.text);
 });
+
+sendMessagetoWebSocket(JSON.stringify({ text: "Hello" }), ws);
+onClick("logout", () => closeWebSocket(ws));
 ```
 
-**Option B — Global `window.catcher` (legacy style, still supported):**
+The Promise rejects (with the WebSocket `error` event) if the connection fails to open. Errors that happen after the connection is open are not reported to your code.
 
-```javascript
-// A. Create a message catcher for messages from the server
-window.catcher = function(pesanMasuk) {
-    console.log("Pesan baru dari server: ", pesanMasuk);
-};
+## `connectws(id, url_ws, onMessage)`
 
-// B. Prepare the connection data
-const idPengguna = "User_714240001";
-const urlServer = btoa("wss://contoh-server-websocket.com"); // Must be Base64-encoded
+The function `openWebSocketSetId` uses to open the connection. Same parameters and return value, but without the browser support check (and without the `alert`). Use `openWebSocketSetId` unless you already know the browser supports WebSocket.
 
-// C. Open the connection — without a 3rd argument, window.catcher is used automatically
-openWebSocketSetId(idPengguna, urlServer).then((koneksiWs) => {
-    window.koneksiWs = koneksiWs;
-});
-```
-## 3. Sending Messages to the Server
+## `sendMessagetoWebSocket(msg, wsocket)`
 
-Once the connection has been opened, you can send data using the `sendMessagetoWebSocket` function.
+Calls `wsocket.send(msg)` if `wsocket.readyState` is `OPEN`. If the connection isn't open yet or is already closed, the message is **dropped with no error and no log**.
 
-### Function Reference:
+`msg` is sent as is. Plain objects are not serialized (they would be sent as `"[object Object]"`), so convert them with `JSON.stringify()` first.
 
-* **`sendMessagetoWebSocket(msg, wsocket)`**: Sends data to the server, making sure the current connection state is `OPEN`.
-  * **`msg`** *(String/Object)*: The message or data to send.
-  * **`wsocket`** *(WebSocket Object)*: The variable holding the connection obtained from `openWebSocketSetId`.
+## `closeWebSocket(wsocket)`
 
-### Usage:
+Closes the connection with `wsocket.close()`. The function only skips the value `0`; if `wsocket` is `undefined` or `null`, it throws a `TypeError`.
 
-Make sure to allow a short delay (or put it inside a button *event listener*) so the connection is actually open before the message is sent.
-
-```javascript
-// Example: send a message after a 2-second delay
-setTimeout(() => {
-    let pesanSaya = "Halo, ini pesan dari Front-End!";
-
-    // Send the message using the connection stored in step 2 (window.koneksiWs)
-    sendMessagetoWebSocket(pesanSaya, window.koneksiWs);
-
-}, 2000);
-```
-## 4. Closing the Connection
-
-When the user's session is over (for example on *Log Out* or when navigating to another page), make a habit of closing the communication channel to avoid memory leaks.
-
-### Function Reference:
-
-* **`closeWebSocket(wsocket)`**: Checks whether the connection variable has a value, then safely closes that WebSocket channel.
-  * **`wsocket`** *(WebSocket Object)*: The variable holding the currently active connection.
-
-### Usage:
-
-Call this function inside a specific *event*, for example when a "Tutup Koneksi" ("Close Connection") button is clicked.
-
-```javascript
-// Example when placed inside a button handler function
-function akhiriSesi() {
-    closeWebSocket(window.koneksiWs);
-    console.log("Koneksi berhasil diputus.");
-}
-```

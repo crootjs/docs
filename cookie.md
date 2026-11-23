@@ -1,65 +1,69 @@
-# setCookieWithExpireHour – CrootJS Cookie Module
+# Dokumentasi Modul `cookie.js`
 
 *[English](en/cookie)*
 
-`cookie.js` adalah modul dari CrootJS yang digunakan untuk mengelola cookie pada browser. Modul ini menyediakan fungsi untuk menyimpan, mengambil, dan menghapus cookie dengan berbagai pilihan masa berlaku (hari, jam, atau detik).
+`cookie.js` menyimpan, membaca, dan menghapus cookie browser. Masa berlaku cookie diatur dalam hari, jam, atau detik. Semua cookie ditulis dengan `path=/`, jadi terbaca di seluruh halaman situs, dan ikut terkirim ke server di setiap request ke domain yang sama.
 
-`setCookieWithExpireHour` adalah fungsi dari modul `cookie.js` (CrootJS) yang digunakan untuk menyimpan cookie dengan masa berlaku dalam hitungan **jam**.
-
-Fungsi ini cocok digunakan untuk:
-
-- Session login sementara  
-- Token autentikasi  
-- Status pengguna aktif  
-- Preferensi sementara  
-
-Modul ini menggunakan **ES Module (ESM)** sehingga harus diimpor menggunakan `type="module"`.
-
----
-
-## Installation (CDN)
-
-Import langsung dari jsDelivr:
+## Cara Penggunaan (Import)
 
 ```javascript
-import { setCookieWithExpireHour } 
-from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js";
-
+import { setCookieWithExpireHour, getCookie, deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/cookie.js";
 ```
 
-## Function
+## `setCookieWithExpireDay(cname, cvalue, exdays)`
 
-`setCookieWithExpireHour(name, value, hour)`
+## `setCookieWithExpireHour(cname, cvalue, exhour)`
 
-Menyimpan cookie dengan masa berlaku dalam hitungan jam.
+## `setCookieWithExpireSecond(cname, cvalue, exsecs)`
 
-| Parameter | Type   |Description            |
-| --------- | ------ |---------------------- |
-| `name`    | String |Nama cookie            |
-| `value`   | String |Nilai cookie           |
-| `hour`    | Number |Masa berlaku dalam jam |
+Menyimpan cookie `cname` berisi `cvalue` yang kadaluwarsa `exdays` hari, `exhour` jam, atau `exsecs` detik dari sekarang. Nama dan nilai di-*encode* dengan `encodeURIComponent`. Tidak mengembalikan apa-apa.
 
-Contoh 
-
-Menyimpan Session Selama 2 Jam
-
-`setCookieWithExpireHour("loginUser", "user_714240003", 2);`
+| Parameter | Keterangan |
+|---|---|
+| `cname` | Nama cookie. Pakai huruf, angka, `-`, dan `_` saja (lihat Catatan) |
+| `cvalue` | Nilai cookie, diubah ke string. Object perlu `JSON.stringify` dulu, kalau tidak tersimpan sebagai `"[object Object]"` |
+| `exdays` / `exhour` / `exsecs` | Masa berlaku. `0` atau negatif membuat cookie langsung kadaluwarsa, sama dengan menghapusnya |
 
 ```javascript
-import { setCookieWithExpireHour } 
-from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js";
-function login() {
-  let username = "Zahra";
-setCookieWithExpireHour("loginUser", "user_714240003", 2);
-  console.log("Login berhasil, berlaku 2 jam.");
-}
+setCookieWithExpireDay("bahasa", "id", 30);
+setCookieWithExpireHour("token", "eyJhbGciOiJIUzI1NiJ9.contoh", 2);
+setCookieWithExpireSecond("kodeOTPTerkirim", "1", 60);
+```
 
-function logout() {
-  document.cookie = "loginUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  console.log("Logout berhasil.");
+## `getCookie(cname)`
+
+Mengembalikan nilai cookie `cname` sebagai string, atau `""` (string kosong) kalau cookie itu tidak ada atau sudah kadaluwarsa.
+
+```javascript
+const token = getCookie("token");
+if (token === "") {
+    console.log("Belum login");
 }
 ```
 
-## Note :
--Cookie hanya tersimpan pada domain yang sama.
--Jika nilai hour bernilai 0 atau negatif, cookie akan langsung kadaluarsa.
+## `deleteCookie(cname)`
+
+Menghapus cookie `cname` dengan mengatur kadaluwarsanya ke 1 Januari 1970. Hanya menghapus cookie dengan `path=/`, yaitu cookie yang dibuat modul ini.
+
+### Contoh: login dan logout
+
+```javascript
+import { setCookieWithExpireHour, getCookie, deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/cookie.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
+import { onClick, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+
+onClick("tombolLogin", async () => {
+    const { status, data } = await postJSON("https://api.example.com/login", { user: getValue("user"), password: getValue("password") }, null);
+    if (status === 200) setCookieWithExpireHour("token", data.token, 2);
+});
+
+onClick("tombolLogout", () => deleteCookie("token"));
+
+console.log(getCookie("token") ? "Sudah login" : "Belum login");
+```
+
+## Catatan
+
+- Cookie tidak diberi atribut `Secure` atau `SameSite`, jadi browser memakai bawaannya. Cookie yang dibuat dari JavaScript tidak bisa `HttpOnly`, sehingga token di sini bisa dibaca script mana pun di halaman.
+- Sejak 0.0.30 `getCookie` membaca nama berisi spasi atau karakter khusus, dan nilai berisi `;` atau `%`, dengan benar. Versi sebelumnya men-*decode* dua kali: nilai seperti itu terpotong atau membuatnya melempar `URIError`.
+- Browser membatasi ukuran satu cookie sekitar 4 KB. Data yang lebih besar dan tidak perlu dikirim ke server lebih cocok di [`storage.js`](storage).

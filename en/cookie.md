@@ -1,65 +1,69 @@
-# setCookieWithExpireHour – CrootJS Cookie Module
+# `cookie.js` Module Documentation
 
 *[Bahasa Indonesia](../cookie)*
 
-`cookie.js` is a CrootJS module used to manage cookies in the browser. It provides functions to save, read, and delete cookies with various expiry options (days, hours, or seconds).
+`cookie.js` saves, reads, and deletes browser cookies. Expiry is set in days, hours, or seconds. Every cookie is written with `path=/`, so it is readable on every page of the site, and it is sent to the server with every request to the same domain.
 
-`setCookieWithExpireHour` is a function from the `cookie.js` module (CrootJS) used to save a cookie whose validity period is measured in **hours**.
-
-This function is well suited for:
-
-- Temporary login sessions  
-- Authentication tokens  
-- Active-user status  
-- Temporary preferences  
-
-The module uses **ES Modules (ESM)**, so it must be imported using `type="module"`.
-
----
-
-## Installation (CDN)
-
-Import directly from jsDelivr:
+## Usage (Import)
 
 ```javascript
-import { setCookieWithExpireHour } 
-from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js";
-
+import { setCookieWithExpireHour, getCookie, deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/cookie.js";
 ```
 
-## Function
+## `setCookieWithExpireDay(cname, cvalue, exdays)`
 
-`setCookieWithExpireHour(name, value, hour)`
+## `setCookieWithExpireHour(cname, cvalue, exhour)`
 
-Saves a cookie with a validity period measured in hours.
+## `setCookieWithExpireSecond(cname, cvalue, exsecs)`
 
-| Parameter | Type   |Description            |
-| --------- | ------ |---------------------- |
-| `name`    | String |Cookie name            |
-| `value`   | String |Cookie value           |
-| `hour`    | Number |Validity period in hours |
+Saves cookie `cname` holding `cvalue`, expiring `exdays` days, `exhour` hours, or `exsecs` seconds from now. Name and value are encoded with `encodeURIComponent`. Returns nothing.
 
-Example 
-
-Saving a Session for 2 Hours
-
-`setCookieWithExpireHour("loginUser", "user_714240003", 2);`
+| Parameter | Description |
+|---|---|
+| `cname` | Cookie name. Use only letters, digits, `-`, and `_` (see Notes) |
+| `cvalue` | Cookie value, converted to a string. Objects need `JSON.stringify` first, otherwise they are stored as `"[object Object]"` |
+| `exdays` / `exhour` / `exsecs` | Lifetime. `0` or negative makes the cookie expire immediately, which is the same as deleting it |
 
 ```javascript
-import { setCookieWithExpireHour } 
-from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js";
-function login() {
-  let username = "Zahra";
-setCookieWithExpireHour("loginUser", "user_714240003", 2);
-  console.log("Login successful, valid for 2 hours.");
-}
+setCookieWithExpireDay("language", "en", 30);
+setCookieWithExpireHour("token", "eyJhbGciOiJIUzI1NiJ9.sample", 2);
+setCookieWithExpireSecond("otpSent", "1", 60);
+```
 
-function logout() {
-  document.cookie = "loginUser=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-  console.log("Logout successful.");
+## `getCookie(cname)`
+
+Returns the value of cookie `cname` as a string, or `""` (empty string) when the cookie does not exist or has expired.
+
+```javascript
+const token = getCookie("token");
+if (token === "") {
+    console.log("Not logged in");
 }
 ```
 
-## Note :
--Cookies are stored only for the same domain.
--If the hour value is 0 or negative, the cookie expires immediately.
+## `deleteCookie(cname)`
+
+Deletes cookie `cname` by setting its expiry to 1 January 1970. Only deletes a cookie with `path=/`, which is what this module creates.
+
+### Example: log in and log out
+
+```javascript
+import { setCookieWithExpireHour, getCookie, deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/cookie.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
+import { onClick, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
+
+onClick("loginButton", async () => {
+    const { status, data } = await postJSON("https://api.example.com/login", { user: getValue("user"), password: getValue("password") }, null);
+    if (status === 200) setCookieWithExpireHour("token", data.token, 2);
+});
+
+onClick("logoutButton", () => deleteCookie("token"));
+
+console.log(getCookie("token") ? "Logged in" : "Not logged in");
+```
+
+## Notes
+
+- Cookies get no `Secure` or `SameSite` attribute, so the browser defaults apply. Cookies created from JavaScript cannot be `HttpOnly`, so a token stored here can be read by any script on the page.
+- Since 0.0.30 `getCookie` correctly reads names with spaces or special characters and values containing `;` or `%`. Earlier versions decoded twice: such values were cut off or made it throw a `URIError`.
+- Browsers limit a single cookie to about 4 KB. Larger data that doesn't need to go to the server fits better in [`storage.js`](storage).
