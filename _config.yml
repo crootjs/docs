@@ -1,7 +1,25 @@
 title: CrootJS
 description: Dokumentasi pemakaian CrootJS, modul JavaScript ES6+ tanpa npm dan tanpa bundler.
+url: "https://croot.js.org"
+lang: id
+locale: id_ID
+# Tag meta SEO ({% seo %} di _layouts/default.html). Dulu ikut termuat lewat tema bawaan;
+# sekarang tata letaknya sendiri, jadi plugin disebut langsung.
+plugins:
+  - jekyll-seo-tag
 defaults:
   - scope:
       path: "en"
     values:
+      lang: en
+      locale: en_US
       description: "Documentation for CrootJS, vanilla ES6+ JavaScript modules with no npm and no bundler."
+  # conventions.md ditulis dalam bahasa Inggris dan belum punya pasangan.
+  - scope:
+      path: "conventions.md"
+    values:
+      lang: en
+      locale: en_US
+      description: "Documentation for CrootJS, vanilla ES6+ JavaScript modules with no npm and no bundler."
+exclude:
+  - CLAUDE.md

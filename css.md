@@ -89,6 +89,36 @@ Jarak dan lebar kolom diatur per elemen dengan variabel:
 </header>
 ```
 
+## Ikon
+
+Set ikon kecil di file terpisah, `icons.css` (sekitar 2 KB gzip), pengganti Boxicons atau Font Awesome untuk dashboard. Halaman yang tidak memakai ikon cukup memuat `croot.css` saja.
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.33/croot.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.33/icons.min.css">
+
+<button><span class="icon icon-download" aria-hidden="true"></span> Unduh</button>
+
+<button class="secondary">
+  <span class="icon icon-search" aria-hidden="true"></span>
+  <span class="visually-hidden">Cari</span>
+</button>
+```
+
+- Setiap ikon adalah elemen kosong dengan kelas `icon` dan `icon-<nama>`. Ikon hanya hiasan, jadi beri `aria-hidden="true"` dan pastikan tombolnya tetap punya teks, kalau perlu teks `.visually-hidden`.
+- Warna mengikuti warna teks (`currentColor`), ukurannya `1em`. Ubah dengan `font-size`, atau `width`/`height` di CSS Anda.
+- Ikon digambar sendiri untuk CrootJS di grid 24x24 dengan garis 2 px, berupa SVG di data-URI yang dipakai sebagai `mask-image`. Jadi tidak ada request tambahan per ikon, dan tetap bekerja dari jsDelivr (SVG `<use href>` ke domain lain diblokir browser).
+- Aturannya di `@layer croot.icons`, jadi CSS halaman Anda tetap menang. `icons.css` juga bisa dipakai tanpa `croot.css`.
+
+| Kelompok | Nama (`icon-...`) |
+|---|---|
+| Navigasi | `menu`, `close`, `search`, `home`, `dashboard`, `more`, `arrow-up`, `arrow-down`, `arrow-left`, `arrow-right`, `chevron-up`, `chevron-down`, `chevron-left`, `chevron-right` |
+| Aksi | `plus`, `minus`, `edit`, `trash`, `download`, `upload`, `copy`, `link`, `refresh`, `filter`, `sort`, `login`, `logout`, `settings` |
+| Status | `check`, `warning`, `info`, `bell`, `star`, `eye`, `eye-off`, `lock`, `unlock` |
+| Benda | `user`, `users`, `calendar`, `clock`, `mail`, `phone`, `pin`, `map`, `file`, `folder`, `chart`, `table` |
+
+Galeri semua ikon: [croot.js.org/examples/css/#ikon](https://croot.js.org/examples/css/#ikon).
+
 ## Tema
 
 Warna, sudut, jarak, dan font adalah variabel di `:root`. Ganti di CSS halaman Anda:

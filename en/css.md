@@ -89,6 +89,36 @@ Gaps and column widths are set per element with variables:
 </header>
 ```
 
+## Icons
+
+A small icon set in a separate file, `icons.css` (about 2 KB gzipped), replacing Boxicons or Font Awesome for dashboards. Pages without icons only need `croot.css`.
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.33/croot.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.33/icons.min.css">
+
+<button><span class="icon icon-download" aria-hidden="true"></span> Download</button>
+
+<button class="secondary">
+  <span class="icon icon-search" aria-hidden="true"></span>
+  <span class="visually-hidden">Search</span>
+</button>
+```
+
+- Each icon is an empty element with the classes `icon` and `icon-<name>`. Icons are decoration, so add `aria-hidden="true"` and make sure the button still has text, `.visually-hidden` text if needed.
+- The color follows the text color (`currentColor`) and the size is `1em`. Change it with `font-size`, or `width`/`height` in your CSS.
+- The icons are drawn for CrootJS on a 24x24 grid with 2 px strokes, as data-URI SVGs used as `mask-image`. So there is no extra request per icon, and they work from jsDelivr (an SVG `<use href>` to another domain is blocked by browsers).
+- The rules live in `@layer croot.icons`, so your page CSS still wins. `icons.css` also works without `croot.css`.
+
+| Group | Names (`icon-...`) |
+|---|---|
+| Navigation | `menu`, `close`, `search`, `home`, `dashboard`, `more`, `arrow-up`, `arrow-down`, `arrow-left`, `arrow-right`, `chevron-up`, `chevron-down`, `chevron-left`, `chevron-right` |
+| Actions | `plus`, `minus`, `edit`, `trash`, `download`, `upload`, `copy`, `link`, `refresh`, `filter`, `sort`, `login`, `logout`, `settings` |
+| Status | `check`, `warning`, `info`, `bell`, `star`, `eye`, `eye-off`, `lock`, `unlock` |
+| Things | `user`, `users`, `calendar`, `clock`, `mail`, `phone`, `pin`, `map`, `file`, `folder`, `chart`, `table` |
+
+Gallery of all icons: [croot.js.org/examples/css/#ikon](https://croot.js.org/examples/css/#ikon).
+
 ## Theme
 
 Colors, corners, spacing and fonts are variables on `:root`. Change them in your page CSS:

@@ -1,0 +1,61 @@
+{%- comment -%}
+  Tata letak semua halaman docs. Halaman versi bahasa lain dicari dari path-nya
+  (map.md <-> en/map.md); tautan bahasa di header hanya muncul kalau pasangannya ada.
+{%- endcomment -%}
+{%- assign lang = page.lang | default: site.lang -%}
+{%- assign prefix = page.path | slice: 0, 3 -%}
+{%- if prefix == "en/" -%}
+  {%- assign other_path = page.path | remove_first: "en/" -%}
+  {%- assign other_lang = "id" -%}
+  {%- assign other_label = "Bahasa Indonesia" -%}
+{%- else -%}
+  {%- assign other_path = "en/" | append: page.path -%}
+  {%- assign other_lang = "en" -%}
+  {%- assign other_label = "English" -%}
+{%- endif -%}
+{%- assign other = site.pages | where: "path", other_path | first -%}
+{%- if lang == "en" -%}
+  {%- assign home = "/en/" | relative_url -%}
+{%- else -%}
+  {%- assign home = "/" | relative_url -%}
+{%- endif -%}
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+{% seo %}
+{%- if other %}
+    <link rel="alternate" hreflang="{{ lang }}" href="{{ page.url | absolute_url }}">
+    <link rel="alternate" hreflang="{{ other_lang }}" href="{{ other.url | absolute_url }}">
+{%- endif %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/croot.min.css">
+    <link rel="stylesheet" href="{{ '/assets/docs.css' | relative_url }}">
+</head>
+<body>
+    <a class="skip-link" href="#isi">{% if lang == "en" %}Skip to content{% else %}Langsung ke isi{% endif %}</a>
+    <header class="site-header">
+        <nav class="nav container" aria-label="{% if lang == 'en' %}Site{% else %}Situs{% endif %}">
+            <a class="brand" href="{{ home }}">CrootJS <span class="muted">Docs</span></a>
+            <ul>
+                <li><a href="https://croot.js.org/">croot.js.org</a></li>
+                <li><a href="{{ home }}"{% if page.url == "/" or page.url == "/en/" %} aria-current="page"{% endif %}>Docs</a></li>
+                <li><a href="https://croot.js.org/examples/">Examples</a></li>
+                <li><a href="https://croot.js.org/lib/">Lib</a></li>
+                {%- if other %}
+                <li><a class="lang-switch" href="{{ other.url | remove: '.html' | relative_url }}" hreflang="{{ other_lang }}" lang="{{ other_lang }}">{{ other_label }}</a></li>
+                {%- endif %}
+            </ul>
+        </nav>
+    </header>
+    <main id="isi" class="container doc">
+{{ content }}
+    </main>
+    <footer class="site-footer container muted">
+        {%- if page.path != "404.html" %}
+        <p><a href="https://github.com/crootjs/docs/blob/main/{{ page.path }}">{% if lang == "en" %}Edit this page on GitHub{% else %}Sunting halaman ini di GitHub{% endif %}</a></p>
+        {%- endif %}
+        <p>CrootJS · <a href="https://github.com/crootjs/docs/blob/main/LICENSE">{% if lang == "en" %}License{% else %}Lisensi{% endif %}</a></p>
+    </footer>
+</body>
+</html>

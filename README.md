@@ -2,9 +2,9 @@
 
 *[English](en/)*
 
-[← croot.js.org](https://croot.js.org/) · [lib](https://croot.js.org/lib/) · [examples](https://croot.js.org/examples/)
-
 Dokumentasi Pemakaian CrootJS dengan AI Companion dan Human in the loop.
+
+Pindah dari **JSCroot**? Baca [Dari JSCroot ke CrootJS](migrasi): alamat impor baru, fungsi yang dihapus beserta penggantinya, dan perilaku yang berubah.
 
 ## Referensi Modul
 
@@ -12,12 +12,18 @@ Dokumentasi per-modul dari `crootjs/lib`:
 
 - [api.js](api/) — `getJSON`, `postJSON`, `putJSON`, `deleteJSON` (callback atau `await`, header, timeout, batal, cache ETag), `uploadFile` dengan kemajuan, `downloadFile`
 - [element.js](element/) — `onClick`, `setInner`, `getValue`, `serializeForm`, `fillForm`, dan helper DOM lainnya
-- [croot.css](css) — framework CSS kecil dan hijau (~2 KB gzip): HTML biasa langsung rapi tanpa kelas, plus tata letak (`.container`, `.stack`, `.cluster`, `.grid`), kartu, badge, alert, navigasi, mode gelap, dan tema lewat variabel CSS
+- [croot.css](css) — framework CSS kecil dan hijau (~2 KB gzip): HTML biasa langsung rapi tanpa kelas, plus tata letak (`.container`, `.stack`, `.cluster`, `.grid`), kartu, badge, alert, navigasi, mode gelap, dan tema lewat variabel CSS; ikon opsional `icons.css` (49 ikon, ~1,9 KB gzip)
 - [form.js](form) — validasi form dengan pesan di bawah setiap field, ramah pembaca layar (`handleForm`, `validateForm`, `clearFormErrors`)
+- [router.js](router) — router aplikasi satu halaman: mode hash/history, parameter `:id`, query, halaman 404, handler async, fokus dan `aria-current` (`startRouter`)
+- [table.js](table) — tabel data: urut per kolom, cari, halaman, mode server; pengganti jQuery DataTables (`createTable`)
+- [chart.js](chart) — grafik SVG batang, garis, dan donat yang ditulis sendiri: skala angka bulat, format angka Indonesia, mode gelap, tabel dan tooltip keyboard untuk aksesibilitas (`createChart`)
+- [markdown.js](markdown) — Markdown menjadi HTML yang aman (HTML mentah di-escape, URL berbahaya ditolak), render ke elemen, muat file `.md` (`markdownToHTML`, `renderMarkdown`, `getMarkdown`)
+- [qr.js](qr) — kode QR sebagai SVG, ditulis sendiri (`renderQR`, `qrSVG`, `qrMatrix`)
 - [cookie.js](cookie) — simpan/ambil/hapus cookie
 - [storage.js](storage) — simpan/ambil/hapus data di localStorage & sessionStorage (dengan opsi kadaluwarsa)
 - [debounce.js](debounce) — `debounce`/`throttle` untuk membatasi frekuensi eksekusi function (search-as-you-type, scroll, dsb)
 - [toast.js](toast) — notifikasi ringan tanpa dependency eksternal (`toast`, `toastSuccess`, `toastError`, `toastWarning`, `toastInfo`)
+- [pwa.js dan serviceworker.js](pwa) — aplikasi yang bisa dipasang dan tetap terbuka tanpa internet: service worker di domain sendiri, pemberitahuan versi baru, status online/offline, tombol pasang aplikasi (`registerServiceWorker`, `installButton`, `crootjsServiceWorker`)
 - [geo.js](geo) — baca data geospasial GeoJSON dari URL atau file lokal (`getGeoJSON`, `readGeoJSONFile`, `parseGeoJSON`), plus kotak pembatas, titik tengah, dan daftar properti
 - [map.js](map) — peta interaktif tanpa library eksternal: peta dasar tile (OpenStreetMap), gambar GeoJSON, popup, klik koordinat, klik kanan, lapisan bernama, label, hover, ganti peta dasar, renderer canvas (`createMap`, `addGeoJSON`, `fitMap`, `onMapClick`, `onMapContextMenu`, `showLayer`, `setTiles`)
 - [mapmarker.js](mapmarker) — modul tambahan `map.js`: marker pin, ikon, atau elemen sendiri, dengan label, popup, dan bisa digeser (`addMarker`)

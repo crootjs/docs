@@ -75,7 +75,7 @@ onClick("simpan-area", async () => {
 
 ## Catatan
 
-- Yang dijamin modul ini hanya tile-nya. Halaman, CSS, dan JS Anda sendiri harus tetap bisa dibuka tanpa internet: dari cache browser, aplikasi WebView, atau *service worker*/PWA milik Anda. Service worker tidak disediakan di sini, karena filenya harus berada di domain situs Anda sendiri, bukan diimpor dari jsDelivr.
+- Yang dijamin modul ini hanya tile-nya. Halaman, CSS, dan JS Anda sendiri harus tetap bisa dibuka tanpa internet: dari cache browser, aplikasi WebView, atau *service worker*. Untuk itu pakai [`pwa.js`](pwa): `sw.js` kecil di domain Anda sendiri (service worker tidak bisa didaftarkan dari jsDelivr) yang memuat `serviceworker.js` CrootJS. Service worker itu tidak menyentuh tile dari domain lain, jadi tidak bertabrakan dengan cache modul ini.
 - Cache Storage hanya ada di halaman `https` dan `localhost`. Di tempat lain tile dimuat biasa tanpa disimpan, dengan peringatan di console.
 - Browser bisa menghapus cache kalau ruang penyimpanan perangkat hampir penuh. `navigator.storage.persist()` meminta browser tidak menghapusnya.
 - Tile tersimpan per URL, jadi `{s}` yang berbeda-beda tetap tile yang sama hanya kalau subdomainnya sama. Untuk OpenStreetMap (tanpa `{s}`) tidak masalah.

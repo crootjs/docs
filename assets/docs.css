@@ -1,0 +1,95 @@
+/* Gaya situs docs di atas croot.css: hanya yang tidak disediakan croot.css. */
+
+:root {
+    /* Lebar baca nyaman untuk teks panjang; header ikut lebar yang sama supaya sejajar. */
+    --croot-max: 52rem;
+}
+
+.skip-link {
+    position: absolute;
+    left: var(--croot-space);
+    top: -100px;
+    z-index: 10;
+    padding: 0.5rem 1rem;
+    border-radius: var(--croot-radius);
+    background-color: var(--croot-surface);
+}
+
+.skip-link:focus {
+    top: var(--croot-space);
+}
+
+.site-header {
+    border-bottom: 1px solid var(--croot-border);
+    background-color: var(--croot-surface);
+}
+
+.site-header .nav {
+    border-bottom: 0;
+}
+
+.brand {
+    color: var(--croot-text);
+    font-weight: 700;
+    font-size: 1.125rem;
+    text-decoration: none;
+}
+
+.brand .muted {
+    font-weight: 400;
+}
+
+.lang-switch {
+    font-weight: 600;
+}
+
+.doc {
+    padding-block: calc(var(--croot-space) * 2);
+    overflow-wrap: break-word;
+}
+
+.doc h2 {
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid var(--croot-border);
+}
+
+/* Tautan bahasa di bawah H1 tetap ada di Markdown (berguna saat dibaca di github.com),
+   tapi di situs sudah diganti tautan bahasa di header. */
+.doc > h1 + p:has(> em:only-child > a:only-child[href^="en/"], > em:only-child > a:only-child[href^="../"]) {
+    display: none;
+}
+
+/* Tabel lebar bergulir sendiri di ponsel, bukan melebarkan seluruh halaman. */
+.doc table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+/* Kolom terakhir biasanya keterangan; tanpa lebar minimal ia diperas jadi satu-dua kata per baris. */
+.doc td:last-child {
+    min-width: 12rem;
+}
+
+.doc pre code {
+    font-size: inherit;
+}
+
+.site-footer {
+    padding-block: var(--croot-space) calc(var(--croot-space) * 2);
+    border-top: 1px solid var(--croot-border);
+    font-size: 0.9rem;
+}
+
+.site-footer p {
+    margin-bottom: 0.25rem;
+}
+
+/* Penyorotan sintaks rouge (kelas .highlight dari kramdown). Warna dari --croot-*, jadi
+   ikut mode terang dan gelap. */
+.highlight :is(.k, .kd, .kn, .kr, .kt, .nt) { color: var(--croot-danger); }
+.highlight :is(.s, .s1, .s2, .sb, .sd, .se, .sh, .si, .sr, .ss, .dl) { color: var(--croot-success); }
+.highlight :is(.c, .c1, .cm, .cp, .cs) { color: var(--croot-muted); font-style: italic; }
+.highlight :is(.m, .mi, .mf, .mh, .mo, .kc, .no) { color: var(--croot-info); }
+.highlight :is(.na, .py, .nl) { color: var(--croot-warning); }
+.highlight :is(.nf, .nb, .nc, .nd) { color: var(--croot-info); }

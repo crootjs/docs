@@ -75,7 +75,7 @@ onClick("save-area", async () => {
 
 ## Notes
 
-- This module only guarantees the tiles. Your own page, CSS, and JS must still be loadable without internet: from the browser cache, a WebView app, or your own *service worker*/PWA. No service worker is provided here, because its file has to live on your own site's domain, not be imported from jsDelivr.
+- This module only guarantees the tiles. Your own page, CSS, and JS must still be loadable without internet: from the browser cache, a WebView app, or a *service worker*. For that, use [`pwa.js`](pwa): a small `sw.js` on your own domain (a service worker cannot be registered from jsDelivr) that loads CrootJS's `serviceworker.js`. That service worker leaves tiles from other domains alone, so it does not clash with this module's cache.
 - Cache Storage only exists on `https` and `localhost` pages. Elsewhere, tiles load normally without being stored, with a warning in the console.
 - The browser may clear the cache when the device is nearly out of storage. `navigator.storage.persist()` asks the browser not to clear it.
 - Tiles are stored per URL, so with varying `{s}` values a tile only counts as the same tile if its subdomain is the same. For OpenStreetMap (no `{s}`) this is not an issue.

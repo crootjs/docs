@@ -2,9 +2,9 @@
 
 *[Bahasa Indonesia](../)*
 
-[← croot.js.org](https://croot.js.org/) · [lib](https://croot.js.org/lib/) · [examples](https://croot.js.org/examples/)
-
 Documentation for using CrootJS with an AI Companion and a human in the loop.
+
+Coming from **JSCroot**? Read [From JSCroot to CrootJS](migrasi): new import URLs, removed functions and their replacements, and changed behavior.
 
 ## Module Reference
 
@@ -12,12 +12,18 @@ Per-module documentation for `crootjs/lib`:
 
 - [api.js](api/) — `getJSON`, `postJSON`, `putJSON`, `deleteJSON` (callback or `await`, headers, timeout, cancellation, ETag cache), `uploadFile` with progress, `downloadFile`
 - [element.js](element/) — `onClick`, `setInner`, `getValue`, `serializeForm`, `fillForm`, and other DOM helpers
-- [croot.css](css) — small, green CSS framework (~2 KB gzipped): plain HTML looks finished without classes, plus layout (`.container`, `.stack`, `.cluster`, `.grid`), cards, badges, alerts, navigation, dark mode, and theming through CSS variables
+- [croot.css](css) — small, green CSS framework (~2 KB gzipped): plain HTML looks finished without classes, plus layout (`.container`, `.stack`, `.cluster`, `.grid`), cards, badges, alerts, navigation, dark mode, and theming through CSS variables; optional `icons.css` (49 icons, ~1.9 KB gzipped)
 - [form.js](form) — form validation with a message under each field, screen-reader friendly (`handleForm`, `validateForm`, `clearFormErrors`)
+- [router.js](router) — single-page app router: hash/history mode, `:id` params, query, 404 page, async handlers, focus and `aria-current` (`startRouter`)
+- [table.js](table) — data table: per-column sort, search, pagination, server mode; replaces jQuery DataTables (`createTable`)
+- [chart.js](chart) — hand-written SVG bar, line, and donut charts: round-number axes, Indonesian number format, dark mode, accessible data table and keyboard tooltips (`createChart`)
+- [markdown.js](markdown) — Markdown to safe HTML (raw HTML escaped, dangerous URLs rejected), render into an element, load `.md` files (`markdownToHTML`, `renderMarkdown`, `getMarkdown`)
+- [qr.js](qr) — QR codes as SVG, written from scratch (`renderQR`, `qrSVG`, `qrMatrix`)
 - [cookie.js](cookie) — set/get/delete cookies
 - [storage.js](storage) — set/get/delete data in localStorage & sessionStorage (with an optional expiry)
 - [debounce.js](debounce) — `debounce`/`throttle` to limit how often a function runs (search-as-you-type, scroll, etc.)
 - [toast.js](toast) — lightweight notifications with no external dependency (`toast`, `toastSuccess`, `toastError`, `toastWarning`, `toastInfo`)
+- [pwa.js and serviceworker.js](pwa) — installable apps that still open without internet: a service worker on your own domain, new-version notice, online/offline status, install button (`registerServiceWorker`, `installButton`, `crootjsServiceWorker`)
 - [geo.js](geo) — read GeoJSON geospatial data from a URL or a local file (`getGeoJSON`, `readGeoJSONFile`, `parseGeoJSON`), plus bounding box, center point, and property list
 - [map.js](map) — interactive maps with no external library: tile basemaps (OpenStreetMap), GeoJSON drawing, popups, coordinate clicks, right-click, named layers, labels, hover, basemap switching, canvas renderer (`createMap`, `addGeoJSON`, `fitMap`, `onMapClick`, `onMapContextMenu`, `showLayer`, `setTiles`)
 - [mapmarker.js](mapmarker) — `map.js` add-on: pin markers, icons, or your own element, with labels, popups, and dragging (`addMarker`)
