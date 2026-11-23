@@ -1,16 +1,17 @@
-# Setelah crootjs/lib merilis versi baru, workflow rilisnya mengirim repository_dispatch
-# "lib-released" ke sini: semua pin crootjs/lib@<versi> dinaikkan, di-commit, dan GitHub Pages
-# dibangun ulang. Bisa juga dijalankan manual dari tab Actions dengan versi tertentu.
+# Tiap jam membaca versi terbaru crootjs/lib dari croot.js.org/lib/version.txt (ditulis workflow
+# rilis lib setelah jsDelivr siap). Kalau lebih baru dari pin di repo ini: semua pin
+# crootjs/lib@<versi> dinaikkan, di-commit, dan GitHub Pages dibangun ulang. Bisa juga dijalankan
+# manual dari tab Actions, dengan atau tanpa versi.
 name: bump-pins
 
 on:
-  repository_dispatch:
-    types: [lib-released]
+  schedule:
+    - cron: "7 * * * *"
   workflow_dispatch:
     inputs:
       version:
-        description: "Versi crootjs/lib, misalnya 0.0.31"
-        required: true
+        description: "Versi crootjs/lib, misalnya 0.0.33 (kosong = baca version.txt)"
+        required: false
 
 permissions:
   contents: write
@@ -25,10 +26,15 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - name: Naikkan pin
+        id: bump
         env:
-          VERSION: ${{ github.event.client_payload.version || inputs.version }}
+          VERSION: ${{ inputs.version }}
         run: |
+          if [ -z "$VERSION" ]; then
+            VERSION=$(curl -fsS https://croot.js.org/lib/version.txt)
+          fi
           curl -fsSL "https://raw.githubusercontent.com/crootjs/lib/main/tools/bump-pins.sh" -o /tmp/bump-pins.sh
+          # bump-pins.sh menolak apa pun yang bukan x.y.z, termasuk halaman galat.
           sh /tmp/bump-pins.sh "$VERSION"
           if git diff --quiet; then
             echo "Pin sudah lib@$VERSION."
@@ -38,7 +44,9 @@ jobs:
           git config user.email "41898341+github-actions[bot]@users.noreply.github.com"
           git commit -am "bump pins to lib@$VERSION"
           git push origin HEAD:main
+          echo "pushed=1" >> "$GITHUB_OUTPUT"
       - name: Bangun ulang GitHub Pages
+        if: steps.bump.outputs.pushed
         env:
           GH_TOKEN: ${{ github.token }}
         # Push dari GITHUB_TOKEN belum tentu memicu build Pages; minta langsung.
