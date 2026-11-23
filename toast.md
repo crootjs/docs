@@ -17,7 +17,7 @@ Menampilkan satu toast. Toast baru ditumpuk di bawah toast yang masih tampil.
 | Parameter | Bawaan | Keterangan |
 |---|---|---|
 | `message` | — | Teks pesan. Dipasang sebagai `textContent`, jadi tag HTML tampil apa adanya, tidak dijalankan |
-| `type` | `"info"` | `"info"` (biru), `"success"` (hijau), `"error"` (merah), `"warning"` (kuning). Nilai lain tidak punya warna latar |
+| `type` | `"info"` | `"info"` (biru), `"success"` (hijau), `"error"` (merah), `"warning"` (kuning tua). Nilai lain tidak punya warna latar |
 | `duration` | `3000` | Lama tampil dalam milidetik. `0` (atau negatif) berarti tidak hilang sendiri |
 
 Mengembalikan function `dismiss()` untuk menutup toast itu kapan saja, juga sebelum `duration` habis. Memanggilnya lebih dari sekali tidak berpengaruh.
@@ -60,5 +60,8 @@ if (status === 200) {
 
 ## Catatan
 
-- Style toast disisipkan sekali sebagai `<style id="crootjs-toast-style">` di `<head>`, dan wadahnya `<div id="crootjs-toast-container">` di akhir `<body>`. Ini bagian dari cara kerja modul, bukan CSS yang perlu kamu tulis. Karena `<style>` itu ditambahkan paling akhir di `<head>`, aturan di CSS proyekmu untuk `.crootjs-toast` dan kelas warnanya perlu selektor yang lebih spesifik supaya menang.
+- Style toast disisipkan sekali sebagai `<style id="crootjs-toast-style">` di awal `<head>`, dan wadahnya `<div id="crootjs-toast-container">` di akhir `<body>`. Ini bagian dari cara kerja modul, bukan CSS yang perlu kamu tulis. Karena `<style>` itu ada di awal `<head>`, aturan di CSS proyekmu untuk `.crootjs-toast` dan kelas warnanya langsung menang (sejak 0.0.34).
+- Warnanya diambil dari variabel [croot.css](css) (`--croot-success`, `--croot-danger`, `--croot-warning`, `--croot-info`, teks `--croot-accent-text`), jadi ikut mode gelap kalau halaman memakai croot.css. Tanpa croot.css dipakai warna terangnya. Semua kombinasi memenuhi kontras WCAG AA. Ganti variabel itu untuk mengubah warna.
+- Pembaca layar membacakan setiap toast: wadahnya `aria-live="polite"`, dan toast `"error"` memakai `role="alert"` sehingga dibacakan segera. Supaya toast pertama ikut terbaca, toast yang muncul dalam 100 ms setelah wadah dibuat ditunda sampai 100 ms itu lewat (urutannya tetap).
+- Dengan `prefers-reduced-motion` toast muncul tanpa animasi.
 - Toast tidak punya tombol dan tidak bisa diklik untuk ditutup. Untuk dialog konfirmasi (OK/Batal) pakai elemen `<dialog>` atau library lain.
