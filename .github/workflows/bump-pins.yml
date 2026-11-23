@@ -1,0 +1,45 @@
+# Setelah crootjs/lib merilis versi baru, workflow rilisnya mengirim repository_dispatch
+# "lib-released" ke sini: semua pin crootjs/lib@<versi> dinaikkan, di-commit, dan GitHub Pages
+# dibangun ulang. Bisa juga dijalankan manual dari tab Actions dengan versi tertentu.
+name: bump-pins
+
+on:
+  repository_dispatch:
+    types: [lib-released]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Versi crootjs/lib, misalnya 0.0.31"
+        required: true
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency: bump-pins
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - name: Naikkan pin
+        env:
+          VERSION: ${{ github.event.client_payload.version || inputs.version }}
+        run: |
+          curl -fsSL "https://raw.githubusercontent.com/crootjs/lib/main/tools/bump-pins.sh" -o /tmp/bump-pins.sh
+          sh /tmp/bump-pins.sh "$VERSION"
+          if git diff --quiet; then
+            echo "Pin sudah lib@$VERSION."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898341+github-actions[bot]@users.noreply.github.com"
+          git commit -am "bump pins to lib@$VERSION"
+          git push origin HEAD:main
+      - name: Bangun ulang GitHub Pages
+        env:
+          GH_TOKEN: ${{ github.token }}
+        # Push dari GITHUB_TOKEN belum tentu memicu build Pages; minta langsung.
+        run: gh api -X POST "repos/${{ github.repository }}/pages/builds" || echo "::warning::Build Pages tidak bisa diminta; tunggu build otomatis."
