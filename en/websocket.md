@@ -13,7 +13,7 @@ Things to know before using this module:
 ## Usage (Import)
 
 ```javascript
-import { openWebSocketSetId, connectws, sendMessagetoWebSocket, closeWebSocket } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/websocket.js";
+import { openWebSocketSetId, connectws, sendMessagetoWebSocket, closeWebSocket } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.33/websocket.js";
 ```
 
 ## `openWebSocketSetId(id, url_ws, onMessage)`
@@ -29,8 +29,8 @@ If the browser doesn't support WebSocket, it calls `alert("Please Update Your br
 | `onMessage` | Optional. `function (data)` called with `event.data` for every incoming message. If omitted, the module calls `window.catcher(data)` if that function exists (legacy style); if neither exists, messages are ignored |
 
 ```javascript
-import { openWebSocketSetId, sendMessagetoWebSocket, closeWebSocket } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/websocket.js";
-import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/element.js";
+import { openWebSocketSetId, sendMessagetoWebSocket, closeWebSocket } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.33/websocket.js";
+import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.33/element.js";
 
 const ws = await openWebSocketSetId("user-714240001", btoa("wss://chat.example.com/ws"), (data) => {
     const message = JSON.parse(data);

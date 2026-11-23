@@ -15,7 +15,7 @@ Jadi modul ini hanya berguna untuk aplikasi yang memakai backend tersebut. Untuk
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/stp.js";
+import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.33/stp.js";
 ```
 
 ## Perilaku Bersama
@@ -46,8 +46,8 @@ Meminta kode dikirim ulang ke `phoneNumber`.
 ## Contoh
 
 ```javascript
-import { sendSTP, verifySTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/stp.js";
-import { getValue, onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/element.js";
+import { sendSTP, verifySTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.33/stp.js";
+import { getValue, onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.33/element.js";
 
 onClick("kirim-kode", async () => {
     try {

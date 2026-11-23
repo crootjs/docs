@@ -9,7 +9,7 @@ It follows the same principles as the CrootJS JS modules: small and frugal (no f
 ## Usage
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/croot.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.33/croot.min.css">
 <link rel="stylesheet" href="style.css">
 ```
 
