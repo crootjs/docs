@@ -1,6 +1,6 @@
-*[Bahasa Indonesia](../mapdraw)*
-
 # `mapdraw.js` Module Documentation
+
+*[Bahasa Indonesia](../mapdraw)*
 
 `mapdraw.js` is an add-on module for [`map.js`](map) for **creating data** on the map, not just displaying it: draw points, lines, and polygons by clicking or tapping, then reshape them — drag vertices, add a vertex in the middle of a segment, delete vertices. The result is plain GeoJSON, ready to send to a server with [`postJSON`](api/) or to measure with [`geomeasure.js`](geomeasure).
 
@@ -9,8 +9,8 @@ Useful for field surveys, marking coverage areas, drawing routes, or lot boundar
 ## Usage (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { addDrawControl, startDrawing, editFeature } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapdraw.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { addDrawControl, startDrawing, editFeature } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapdraw.js";
 ```
 
 The map must already have been created with `createMap`.
@@ -42,10 +42,10 @@ The panel below the buttons shows instructions and the **Selesai** ("Done"), **H
 Returns `{ getData(), setData(geojson), clear(), remove() }`. `getData()` returns a copy of the FeatureCollection.
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { addDrawControl } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapdraw.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js";
-import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { addDrawControl } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapdraw.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
+import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
 
 createMap("peta", { center: [107.6, -6.9], zoom: 16 });
 const gambar = addDrawControl("peta", {
@@ -84,7 +84,7 @@ While drawing, map clicks do not open popups and are not passed on to `onMapClic
 Returns `{ finish(), undo(), stop() }` for your own Done, Remove point, and Cancel buttons.
 
 ```javascript
-import { getArea } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/geomeasure.js";
+import { getArea } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/geomeasure.js";
 
 onClick("gambar-kavling", () => {
     startDrawing("peta", "polygon", (feature) => {

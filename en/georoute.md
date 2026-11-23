@@ -1,6 +1,6 @@
-*[Bahasa Indonesia](../georoute)*
-
 # `georoute.js` Module Documentation
+
+*[Bahasa Indonesia](../georoute)*
 
 `georoute.js` finds the **shortest route along the lines in your own GeoJSON data** — roads, alleys, campus paths, building corridors. The route is computed in the browser: no routing service is called, no API key is needed, and it keeps working offline as long as the data is already loaded.
 
@@ -9,7 +9,7 @@ This module is pure computation. It doesn't need a map; the result is plain GeoJ
 ## Usage (Import)
 
 ```javascript
-import { findRoute } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/georoute.js";
+import { findRoute } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/georoute.js";
 ```
 
 All [`geomeasure.js`](geomeasure) functions (`getDistance`, `getLength`, `isInside`, and the rest) are also exported from `georoute.js`, so a page that computes routes only needs to import from here.
@@ -42,8 +42,8 @@ In that example neither point lies exactly on a road. **`from` and `to` can be a
 Since the result is a plain Feature, `addGeoJSON` can draw it directly:
 
 ```javascript
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { findRoute } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/georoute.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { findRoute } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/georoute.js";
 
 createMap("peta");
 

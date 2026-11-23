@@ -1,6 +1,6 @@
-*[English](en/cookie)*
-
 # setCookieWithExpireHour – CrootJS Cookie Module
+
+*[English](en/cookie)*
 
 `cookie.js` adalah modul dari CrootJS yang digunakan untuk mengelola cookie pada browser. Modul ini menyediakan fungsi untuk menyimpan, mengambil, dan menghapus cookie dengan berbagai pilihan masa berlaku (hari, jam, atau detik).
 
@@ -23,7 +23,7 @@ Import langsung dari jsDelivr:
 
 ```javascript
 import { setCookieWithExpireHour } 
-from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/cookie.js";
+from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js";
 
 ```
 
@@ -47,7 +47,7 @@ Menyimpan Session Selama 2 Jam
 
 ```javascript
 import { setCookieWithExpireHour } 
-from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/cookie.js";
+from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js";
 function login() {
   let username = "Zahra";
 setCookieWithExpireHour("loginUser", "user_714240003", 2);

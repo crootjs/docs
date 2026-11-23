@@ -1,6 +1,6 @@
-*[English](../en/api/)*
-
 ## 1. API (`api.js`)
+
+*[English](../en/api/)*
 
 Modul `api.js` menyediakan fungsi-fungsi *wrapper* di atas **Fetch API** bawaan browser untuk mempermudah komunikasi HTTP dengan backend. Setiap fungsi menggunakan pola **callback** — Anda menyediakan sebuah fungsi yang akan dipanggil saat respons diterima dari server, beserta informasi HTTP status code. Fungsi JSON-nya juga bisa di-`await` (lihat [Gaya `await`](#gaya-await)).
 
@@ -10,18 +10,23 @@ Semua fungsi JSON pada modul ini (`getJSON`, `postJSON`, `deleteJSON`, `putJSON`
 
 ```javascript
 {
-  status: Number,  // HTTP status code (200, 201, 400, 404, 500, dst.)
-  data: Object     // Body respons yang sudah di-parse dari JSON
+  status: Number,   // HTTP status code (200, 201, 400, 404, 500, dst.); 0 kalau request gagal total
+  data: Object,     // Body respons yang sudah di-parse dari JSON (null kalau bukan JSON)
+  headers: Headers, // header respons, misalnya headers.get("X-RateLimit-Remaining") (sejak 0.0.29)
+  error: String,    // null, atau "timeout" / "offline" / "network" saat status 0 (sejak 0.0.29)
+  cached: Boolean   // true kalau data diambil dari cache (opsi cache, sejak 0.0.29)
 }
 ```
 
 #### Menangani Kegagalan Jaringan/Timeout
 
-`responseFunction` **selalu** dipanggil, termasuk saat request gagal total (bukan cuma saat server merespons dengan status error seperti 404/500). Kalau jaringan gagal (offline, DNS gagal, CORS ditolak) atau server tidak merespons sama sekali dalam 15 detik (request otomatis dibatalkan lewat timeout), `responseFunction` dipanggil dengan:
+`responseFunction` **selalu** dipanggil, termasuk saat request gagal total (bukan cuma saat server merespons dengan status error seperti 404/500). Kalau jaringan gagal (offline, DNS gagal, CORS ditolak) atau server tidak merespons sama sekali dalam 15 detik (request otomatis dibatalkan lewat timeout; bisa diubah dengan [opsi `timeout`](#opsi-header-timeout-dan-cache)), `responseFunction` dipanggil dengan:
 
 ```javascript
-{ status: 0, data: null }
+{ status: 0, data: null, headers: Headers /* kosong */, error: "timeout" | "offline" | "network", cached: false }
 ```
+
+`error` menjelaskan jenisnya: `"timeout"` (server tidak menjawab dalam batas waktu), `"offline"` (browser sedang tidak tersambung internet), atau `"network"` (selain itu). CORS ditolak dan server yang tidak terjangkau sama-sama `"network"`, karena browser sengaja tidak memberi tahu JavaScript bedanya; alasan persisnya ada di console. Kegagalan dicatat dengan `console.warn`, jadi bisa disembunyikan dengan filter level di DevTools.
 
 `status: 0` bukan kode HTTP asli (kode HTTP asli selalu >= 100) — jadi aman dipakai sebagai penanda "request gagal total", terpisah dari status error dari server seperti 404/500 yang tetap membawa `data` dari body respons server.
 
@@ -42,8 +47,8 @@ getJSON("https://api.example.com/data", (res) => {
 Sejak versi 0.0.26, `getJSON`, `postJSON`, `putJSON`, dan `deleteJSON` juga **mengembalikan Promise** berisi objek `{ status, data }` yang sama. Callback tetap jalan seperti biasa; kalau memakai `await`, isi `responseFunction` dengan `null`:
 
 ```javascript
-import { getJSON, postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js";
-import { getCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/cookie.js";
+import { getJSON, postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
+import { getCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js";
 
 const { status, data } = await getJSON("https://api.example.com/produk");
 if (status === 200) console.log(data);
@@ -54,6 +59,39 @@ const hasil = await postJSON("https://api.example.com/pesanan", { id: 7 }, null,
 
 Promise-nya tidak pernah *reject*, jadi tidak perlu `try/catch`: cek `status` seperti biasa (`0` = jaringan gagal atau timeout).
 
+### Opsi: header, timeout, dan cache
+
+Sejak 0.0.29, argumen sesudah `responseFunction` boleh berupa **satu object opsi**, sebagai ganti pasangan `tokenkey, tokenvalue` (yang tetap didukung):
+
+```javascript
+getJSON(url, responseFunction, { headers, timeout, cache })
+postJSON(url, data, responseFunction, { headers, timeout })
+```
+
+| Opsi | Bawaan | Keterangan |
+|---|---|---|
+| `headers` | — | Object header tambahan, misalnya `{ Authorization: "Bearer ...", "X-Client": "web" }`. Token bisa ditaruh di sini |
+| `timeout` | `15000` | Milidetik sebelum request dibatalkan (`error: "timeout"`) |
+| `cache` | — | Hanya `getJSON`: `{ key, ttl }`. Hasil yang berhasil disimpan di `localStorage` dengan nama `key`; selama `ttl` detik tidak ada request sama sekali (`cached: true`). Sesudahnya, kalau server memberi `ETag`, request membawa `If-None-Match`; balasan `304` memakai data yang tersimpan, dengan status saat disimpan (`200`) dan `cached: true` |
+
+`Content-Type: application/json` hanya dikirim kalau ada body (`postJSON`/`putJSON`/`deleteJSON`). `getJSON` tanpa header tambahan tidak memicu *preflight* CORS, jadi bisa membaca JSON dari host statis seperti GitHub Pages dan `raw.githubusercontent.com`. Header tambahan (termasuk token dan `If-None-Match` dari opsi `cache`) tetap memicu preflight, sehingga servernya harus mengizinkan header itu.
+
+Contoh: versi rilis terbaru dari GitHub API, disimpan 1 jam. Sesudah satu jam, GitHub menjawab `304` kalau belum ada rilis baru, dan balasan `304` tidak memotong kuota 60 request per jam.
+
+```javascript
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
+import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
+
+const { status, data, headers, error } = await getJSON(
+    "https://api.github.com/repos/crootjs/lib/releases/latest",
+    null,
+    { timeout: 8000, cache: { key: "rilis-crootjs", ttl: 3600 } }
+);
+if (status === 200) setInnerText("versi", data.tag_name);
+else if (status === 403) setInnerText("versi", "Kuota habis, coba lagi pukul " + new Date(headers.get("X-RateLimit-Reset") * 1000).toLocaleTimeString());
+else if (error === "offline") setInnerText("versi", "Tidak ada internet");
+```
+
 ### 1.1 `getJSON()`
 
 Melakukan **HTTP GET** request ke URL yang ditentukan dan mengembalikan respons dalam format JSON ke callback function.
@@ -62,6 +100,7 @@ Melakukan **HTTP GET** request ke URL yang ditentukan dan mengembalikan respons 
 
 ```javascript
 getJSON(target_url, responseFunction, tokenkey?, tokenvalue?)
+getJSON(target_url, responseFunction, options?)   // sejak 0.0.29
 ```
 
 #### Parameter
@@ -72,17 +111,18 @@ getJSON(target_url, responseFunction, tokenkey?, tokenvalue?)
 | `responseFunction` | `function` | ✅ | Callback function yang menerima objek `{ status, data }` |
 | `tokenkey` | `string` | ❌ | Nama header untuk autentikasi (misal: `"Authorization"`, `"token"`, `"Login"`) |
 | `tokenvalue` | `string` | ❌ | Nilai token autentikasi (misal: `"Bearer eyJhbGci..."`) |
+| `options` | `object` | ❌ | Ganti `tokenkey, tokenvalue`: `{ headers, timeout, cache }` (lihat [Opsi](#opsi-header-timeout-dan-cache)) |
 
 #### Return Value
 
-`Promise<{ status, data }>` — hasil yang sama dengan yang dikirim ke `responseFunction`. Promise ini tidak pernah *reject*; kegagalan jaringan juga berupa `{ status: 0, data: null }`. `responseFunction` boleh `null` kalau Anda memakai `await` (lihat [Gaya `await`](#gaya-await)).
+`Promise<{ status, data, headers, error, cached }>` — hasil yang sama dengan yang dikirim ke `responseFunction`. Promise ini tidak pernah *reject*; kegagalan jaringan juga berupa `{ status: 0, data: null, error }`. `responseFunction` boleh `null` kalau Anda memakai `await` (lihat [Gaya `await`](#gaya-await)).
 
 #### Contoh Penggunaan
 
 **Tanpa Token (Public API):**
 
 ```javascript
-import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
 
 // Ambil data dari API publik
 getJSON(
@@ -104,8 +144,8 @@ getJSON(
 **Dengan Token Autentikasi:**
 
 ```javascript
-import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
-import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/cookie.js';
+import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
+import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js';
 
 // Ambil token dari cookie
 const token = getCookie('user_token');
@@ -150,14 +190,14 @@ postJSON(target_url, datajson, responseFunction, tokenkey?, tokenvalue?)
 
 #### Return Value
 
-`Promise<{ status, data }>` — hasil yang sama dengan yang dikirim ke `responseFunction`. Promise ini tidak pernah *reject*; kegagalan jaringan juga berupa `{ status: 0, data: null }`. `responseFunction` boleh `null` kalau Anda memakai `await` (lihat [Gaya `await`](#gaya-await)).
+`Promise<{ status, data, headers, error, cached }>` — hasil yang sama dengan yang dikirim ke `responseFunction`. Promise ini tidak pernah *reject*; kegagalan jaringan juga berupa `{ status: 0, data: null, error }`. `responseFunction` boleh `null` kalau Anda memakai `await` (lihat [Gaya `await`](#gaya-await)).
 
 #### Contoh Penggunaan
 
 **Membuat Data Baru (Tanpa Token):**
 
 ```javascript
-import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
 
 // Data yang akan dikirim ke server
 const dataMahasiswa = {
@@ -183,8 +223,8 @@ postJSON(
 **Dengan Token Autentikasi:**
 
 ```javascript
-import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
-import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/cookie.js';
+import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
+import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js';
 
 const token = getCookie('user_token');
 
@@ -235,15 +275,15 @@ deleteJSON(target_url, datajson, responseFunction, tokenkey?, tokenvalue?)
 
 #### Return Value
 
-`Promise<{ status, data }>` — hasil yang sama dengan yang dikirim ke `responseFunction`. Promise ini tidak pernah *reject*; kegagalan jaringan juga berupa `{ status: 0, data: null }`. `responseFunction` boleh `null` kalau Anda memakai `await` (lihat [Gaya `await`](#gaya-await)).
+`Promise<{ status, data, headers, error, cached }>` — hasil yang sama dengan yang dikirim ke `responseFunction`. Promise ini tidak pernah *reject*; kegagalan jaringan juga berupa `{ status: 0, data: null, error }`. `responseFunction` boleh `null` kalau Anda memakai `await` (lihat [Gaya `await`](#gaya-await)).
 
 #### Contoh Penggunaan
 
 **Menghapus Data dengan Konfirmasi:**
 
 ```javascript
-import { deleteJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
-import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/cookie.js';
+import { deleteJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
+import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js';
 
 const token = getCookie('user_token');
 
@@ -303,7 +343,7 @@ responseFunction({ status: number, data: object })
 **Example**
 
 ```javascript
-import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
 
 const payload = { name: "Alice", age: 30 };
 
@@ -341,7 +381,7 @@ insertHTML(target_url, id, runFunction, errorFunction?)
 **Example**
 
 ```javascript
-import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
 
 insertHTML(
   "https://example.com/partials/navbar.html",
@@ -372,7 +412,7 @@ getDomHTML(target_url, domFunction)
 **Example**
 
 ```javascript
-import { getDomHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { getDomHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
 
 getDomHTML(
   "https://example.com/partials/card.html",
@@ -394,7 +434,7 @@ getDomHTML(
 ### Updating a resource with authentication
 
 ```javascript
-import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
 
 putJSON(
   "/api/products/42",
@@ -414,7 +454,7 @@ putJSON(
 ### Loading a page section dynamically
 
 ```javascript
-import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   insertHTML("/components/footer.html", "footer", () => {

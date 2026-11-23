@@ -1,6 +1,6 @@
-*[English](en/mapsearch)*
-
 # Dokumentasi Modul `mapsearch.js`
+
+*[English](en/mapsearch)*
 
 `mapsearch.js` adalah modul tambahan untuk [`map.js`](map) untuk **mencari tempat dari nama atau alamat** (geocoding), **mencari alamat dari sebuah titik** (reverse geocoding), dan **kotak pencarian** siap pakai di peta. Ukurannya sekitar 3 KB gzip.
 
@@ -15,8 +15,8 @@ Untuk aplikasi dengan banyak pengguna, pasang Nominatim sendiri (opsi `url`) ata
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { searchPlace, reverseGeocode, addSearchControl } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapsearch.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { searchPlace, reverseGeocode, addSearchControl } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapsearch.js";
 ```
 
 ## `addSearchControl(id, options)`

@@ -1,6 +1,6 @@
-*[English](en/model3d)*
-
 # Dokumentasi Modul `model3d.js`
+
+*[English](en/model3d)*
 
 `model3d.js` menampilkan model 3D **glTF 2.0** (`.glb` dan `.gltf`) langsung di browser: putar, zoom, klik sebuah bagian, ganti warnanya, sembunyikan, atau ubah posisi dan rotasinya lewat kode. Semuanya ditulis dari nol di atas WebGL — parser biner GLB, matriks, shader, dan kontrol orbit sendiri — tanpa Three.js (sekitar 600 KB) atau library lain. Ukurannya sekitar 16 KB gzip.
 
@@ -9,7 +9,7 @@ Merender dengan **WebGL2**, dan otomatis turun ke **WebGL1** di browser lama. Gi
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/model3d.js";
+import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/model3d.js";
 ```
 
 ## Contoh Minimal
@@ -29,8 +29,8 @@ import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib
 
 ```javascript
 // index.js
-import { createViewer, loadModel, onModelClick, highlightPart } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/model3d.js";
-import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
+import { createViewer, loadModel, onModelClick, highlightPart } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/model3d.js";
+import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
 
 createViewer("model");
 loadModel("model", "models/bts.glb", (info, error) => {
@@ -78,7 +78,7 @@ Kalau gagal, `info` = `null` dan `error` berisi alasannya (juga dicetak di conso
 
 ```javascript
 // Membuka file dari komputer pengguna
-import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
+import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
 
 onChange("file", () => {
     loadModel("model", document.getElementById("file").files[0], (info, error) => {

@@ -1,6 +1,6 @@
-*[Bahasa Indonesia](../websocket)*
-
 # `websocket.js` Documentation & Usage Guide
+
+*[Bahasa Indonesia](../websocket)*
 
 This module makes it easier to connect and communicate bidirectionally between a web application (*client*) and a server using the WebSocket protocol. 
 
@@ -17,7 +17,7 @@ import {
   connectws,
   sendMessagetoWebSocket, 
   closeWebSocket 
-} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/websocket.js";
+} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/websocket.js";
 ```
 ## 2. Opening a Connection & Receiving Messages
 

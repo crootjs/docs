@@ -1,3 +1,5 @@
+# Dokumentasi Modul `stp.js`
+
 *[English](en/stp)*
 
 Modul **`stp.js`** menyediakan kumpulan fungsi asinkron untuk mengelola alur otentikasi pengguna, meliputi pengiriman, verifikasi, dan pengiriman ulang kode STP. Modul ini secara otomatis memvalidasi format **nomor telepon** sebelum melakukan permintaan HTTP POST ke *endpoint* otentikasi eksternal.
@@ -11,7 +13,7 @@ Modul ini mengekspor tiga fungsi utama untuk berinteraksi dengan API otentikasi.
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/stp.js";
+import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/stp.js";
 ```
 
 ## Fungsi Internal

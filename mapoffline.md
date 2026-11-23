@@ -1,6 +1,6 @@
-*[English](en/mapoffline)*
-
 # Dokumentasi Modul `mapoffline.js`
+
+*[English](en/mapoffline)*
 
 `mapoffline.js` adalah modul tambahan untuk [`map.js`](map) yang menampilkan peta dasar dari **satu file [PMTiles](https://docs.protomaps.com/pmtiles/)** — format satu-file untuk tile peta. File itu bisa:
 
@@ -12,8 +12,8 @@ Hanya PMTiles versi 3 berisi tile **raster** (PNG, JPEG, WebP, AVIF). Tile vekto
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapoffline.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapoffline.js";
 ```
 
 ## `openPMTiles(source, responseFunction)`
@@ -53,8 +53,8 @@ createMap("peta", {
 ```
 
 ```javascript
-import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
-import { setTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
+import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
+import { setTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
 
 createMap("peta", { tiles: false, center: [107.6, -6.9], zoom: 12 });
 onChange("berkas", async () => {

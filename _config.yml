@@ -1,0 +1,7 @@
+title: CrootJS
+description: Dokumentasi pemakaian CrootJS, modul JavaScript ES6+ tanpa npm dan tanpa bundler.
+defaults:
+  - scope:
+      path: "en"
+    values:
+      description: "Documentation for CrootJS, vanilla ES6+ JavaScript modules with no npm and no bundler."

@@ -1,13 +1,13 @@
-*[Bahasa Indonesia](../storage)*
-
 # `storage.js` Module Documentation
+
+*[Bahasa Indonesia](../storage)*
 
 `storage.js` is a CrootJS module for saving, reading, and deleting data in the browser's `localStorage` and `sessionStorage`. Unlike the built-in `localStorage`/`sessionStorage`, this module automatically performs `JSON.stringify`/`JSON.parse` (so you can store objects/arrays directly, not just strings), and its `localStorage` functions support optional expiry (days/hours/seconds) — something the built-in `localStorage` does not have.
 
 ## Usage (Import)
 
 ```javascript
-import { setLocal, getLocal, deleteLocal } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/storage.js";
+import { setLocal, getLocal, deleteLocal } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/storage.js";
 ```
 
 ## localStorage
@@ -51,6 +51,7 @@ const langkah = getSession("langkahForm"); // 2
 
 ## Notes
 
+- **Blocked** storage (some private modes, strict privacy settings, or third-party iframes) or **full** storage: since 0.0.29 this module no longer throws. `getLocal`/`getSession` return `null`, `setLocal*`/`setSession` return `false` (and `true` when saved), and a warning is logged once. The page keeps working; the data just is not saved.
 - `localStorage` and `sessionStorage` are per-origin (domain) and cannot be accessed across domains.
 - Data stored with this module (including data without expiry via `setLocal`) can still be deleted by the browser at any time (private/incognito mode, full storage, or the user clearing site data) — do not make it the only source of important data.
 - If you need a cookie (sent to the server via an HTTP header), use [`cookie.js`](cookie), not this module — `localStorage`/`sessionStorage` can only be accessed from JavaScript and are not sent to the backend automatically.

@@ -1,6 +1,6 @@
-*[Bahasa Indonesia](../geomeasure)*
-
 # `geomeasure.js` Module Documentation
+
+*[Bahasa Indonesia](../geomeasure)*
 
 `geomeasure.js` contains the calculations most often needed for geospatial data: distance, length, area, point-in-area, nearest point, radius circles, and transformation from local coordinate systems. They are all pure functions — no map, no DOM required — so they can be used with or without [`map.js`](map).
 
@@ -9,7 +9,7 @@ Positions are always `[lng, lat]` as in GeoJSON, and results are always in **met
 ## Usage (Import)
 
 ```javascript
-import { getDistance, getArea, isInside, createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/geomeasure.js";
+import { getDistance, getArea, isInside, createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/geomeasure.js";
 ```
 
 Functions that accept `geojson` are as flexible as [`parseGeoJSON`](geo): a `FeatureCollection`, a single `Feature`, a single bare geometry, an array of them, or JSON text. The examples below use `data` from [contoh.geojson](https://github.com/petapedia/geojson/blob/main/contoh.geojson).
@@ -103,9 +103,9 @@ An affine transform on `[lng, lat]` is accurate enough for district-sized areas 
 The most common combination: draw the radius, get the user's location, then check whether they are inside it.
 
 ```javascript
-import { createMap, addGeoJSON, fitMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapcontrol.js";
-import { createCircle, isInside, getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/geomeasure.js";
+import { createMap, addGeoJSON, fitMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapcontrol.js";
+import { createCircle, isInside, getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/geomeasure.js";
 
 const kampus = [107.575914, -6.8732098];
 const area = createCircle(kampus, 100);

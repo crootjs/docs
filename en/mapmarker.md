@@ -1,6 +1,6 @@
-*[Bahasa Indonesia](../mapmarker)*
-
 # `mapmarker.js` Module Documentation
+
+*[Bahasa Indonesia](../mapmarker)*
 
 `mapmarker.js` is an add-on module for [`map.js`](map): markers shaped as a pin, an image icon, or your own HTML element — with a label, a popup, and optional dragging. This module is separate from `map.js` so pages that don't need markers don't have to download it (about 2 KB gzip).
 
@@ -9,8 +9,8 @@ Points in GeoJSON data are already drawn by `addGeoJSON` as small circles. `addM
 ## Usage (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapmarker.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapmarker.js";
 ```
 
 The map must be created with `createMap` before `addMarker` is called.
@@ -82,9 +82,9 @@ A marker's popup always appears above the marker's top edge, whatever its anchor
 The most common use: the user drags the pin to the exact location, and its coordinates go into a form.
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapmarker.js";
-import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { addMarker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapmarker.js";
+import { setValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
 
 createMap("peta", { center: [107.5759, -6.8736], zoom: 17 });
 
@@ -101,7 +101,7 @@ addMarker("peta", [107.5759, -6.8736], {
 To move a marker from code — for example to the point clicked on the map — use `setPosition`:
 
 ```javascript
-import { onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
+import { onMapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
 
 const pin = addMarker("peta", [107.5759, -6.8736]);
 onMapClick("peta", (position) => pin.setPosition(position));

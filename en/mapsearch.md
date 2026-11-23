@@ -1,6 +1,6 @@
-*[Bahasa Indonesia](../mapsearch)*
-
 # `mapsearch.js` Module Documentation
+
+*[Bahasa Indonesia](../mapsearch)*
 
 `mapsearch.js` is an add-on module for [`map.js`](map) for **finding places by name or address** (geocoding), **finding the address of a point** (reverse geocoding), and a ready-to-use **search box** on the map. Its size is about 3 KB gzip.
 
@@ -15,8 +15,8 @@ For apps with many users, run your own Nominatim (the `url` option) or use anoth
 ## Usage (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { searchPlace, reverseGeocode, addSearchControl } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapsearch.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { searchPlace, reverseGeocode, addSearchControl } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapsearch.js";
 ```
 
 ## `addSearchControl(id, options)`

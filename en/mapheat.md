@@ -1,6 +1,6 @@
-*[Bahasa Indonesia](../mapheat)*
-
 # `mapheat.js` Module Documentation
+
+*[Bahasa Indonesia](../mapheat)*
 
 `mapheat.js` is an add-on module for [`map.js`](map) that draws point data as a **heatmap** (a smooth density gradient) or a **grid map** (square/hexagon cells colored by their average value, like the nPerf signal coverage map). Both are drawn on a single canvas above the basemap and below the data layers, so they stay lightweight even for tens of thousands of points: in testing, 50,000 points were redrawn in about 15–25 ms.
 
@@ -9,8 +9,8 @@ It is separate from `map.js` so that pages that don't use it don't have to downl
 ## Usage (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { addHeatmap, addGridMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapheat.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { addHeatmap, addGridMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapheat.js";
 ```
 
 The map must already have been created with `createMap`.

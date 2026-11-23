@@ -1,6 +1,6 @@
-*[Bahasa Indonesia](../mapoffline)*
-
 # `mapoffline.js` Module Documentation
+
+*[Bahasa Indonesia](../mapoffline)*
 
 `mapoffline.js` is an add-on module for [`map.js`](map) that displays a base map from **a single [PMTiles](https://docs.protomaps.com/pmtiles/) file** — a single-file format for map tiles. That file can be:
 
@@ -12,8 +12,8 @@ Only PMTiles version 3 containing **raster** tiles (PNG, JPEG, WebP, AVIF). Vect
 ## Usage (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapoffline.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapoffline.js";
 ```
 
 ## `openPMTiles(source, responseFunction)`
@@ -53,8 +53,8 @@ createMap("peta", {
 ```
 
 ```javascript
-import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
-import { setTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
+import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
+import { setTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
 
 createMap("peta", { tiles: false, center: [107.6, -6.9], zoom: 12 });
 onChange("berkas", async () => {

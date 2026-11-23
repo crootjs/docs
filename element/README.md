@@ -1,6 +1,6 @@
-*[English](../en/element/)*
-
 # Dokumentasi Module: element.js
+
+*[English](../en/element/)*
 
 ## 1. Pendahuluan
 
@@ -373,8 +373,8 @@ Mengambil semua field yang punya atribut `name` di dalam form (text, email, chec
 ```
 
 ```javascript
-import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js";
+import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
 
 const data = serializeForm("formDaftar");
 // { nama: "...", email: "...", setuju: true/false }

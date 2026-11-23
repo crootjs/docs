@@ -1,13 +1,13 @@
-*[Bahasa Indonesia](../useragent)*
-
 # `useragent.js` Module Documentation
+
+*[Bahasa Indonesia](../useragent)*
 
 `useragent.js` is a small CrootJS module for detecting whether a visitor is accessing the page from a mobile device, based on the browser's built-in `navigator.userAgent`. The module does **not** use any third-party library (not UAParser.js or similar) — it is just a single regex function.
 
 ## Usage (Import)
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/useragent.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/useragent.js";
 ```
 
 ## Function List
@@ -23,7 +23,7 @@ Returns `true` if `navigator.userAgent` matches a common mobile device pattern (
 **Usage Example:**
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/useragent.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/useragent.js";
 
 if (isMobile()) {
     console.log("Accessed from a mobile device");
@@ -35,8 +35,8 @@ if (isMobile()) {
 **Example: showing different buttons on mobile**
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/useragent.js";
-import { show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/useragent.js";
+import { show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
 
 if (isMobile()) {
     show("tombol-buka-app");

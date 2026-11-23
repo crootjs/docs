@@ -1,13 +1,13 @@
-*[English](en/toast)*
-
 # Dokumentasi Modul `toast.js`
+
+*[English](en/toast)*
 
 `toast.js` menampilkan notifikasi kecil (*toast*) di pojok kanan atas layar — tanpa dependency eksternal apa pun. CSS-nya di-*inject* otomatis oleh modul ini sendiri sekali saja (bukan ditulis manual di HTML/CSS proyekmu), jadi cukup import satu file ini untuk langsung bisa dipakai.
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { toast, toastSuccess, toastError, toastWarning, toastInfo } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/toast.js";
+import { toast, toastSuccess, toastError, toastWarning, toastInfo } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/toast.js";
 ```
 
 ## `toast(message, type = "info", duration = 3000)`
@@ -36,8 +36,8 @@ toastInfo("Memuat data...");
 ## Toast yang di-dismiss manual (misal loading state)
 
 ```javascript
-import { toastInfo } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/toast.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js";
+import { toastInfo } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/toast.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
 
 const tutupLoading = toastInfo("Mengunggah...", 0); // duration 0 = tidak hilang sendiri
 

@@ -1,6 +1,6 @@
-*[Bahasa Indonesia](../../api/)*
-
 ## 1. API (`api.js`)
+
+*[Bahasa Indonesia](../../api/)*
 
 The `api.js` module provides *wrapper* functions on top of the browser's built-in **Fetch API** to make HTTP communication with a backend easier. Each function uses a **callback** pattern — you supply a function that is called when the response is received from the server, together with the HTTP status code. The JSON functions can also be `await`ed (see [`await` Style](#await-style)).
 
@@ -10,18 +10,23 @@ All JSON functions in this module (`getJSON`, `postJSON`, `deleteJSON`, `putJSON
 
 ```javascript
 {
-  status: Number,  // HTTP status code (200, 201, 400, 404, 500, etc.)
-  data: Object     // Response body parsed from JSON
+  status: Number,   // HTTP status code (200, 201, 400, 404, 500, etc.); 0 when the request failed entirely
+  data: Object,     // Response body parsed from JSON (null when it is not JSON)
+  headers: Headers, // response headers, e.g. headers.get("X-RateLimit-Remaining") (since 0.0.29)
+  error: String,    // null, or "timeout" / "offline" / "network" when status is 0 (since 0.0.29)
+  cached: Boolean   // true when data came from the cache (cache option, since 0.0.29)
 }
 ```
 
 #### Handling Network Failures/Timeouts
 
-`responseFunction` is **always** called, including when the request fails entirely (not only when the server responds with an error status such as 404/500). If the network fails (offline, DNS failure, CORS rejected) or the server does not respond at all within 15 seconds (the request is aborted automatically by a timeout), `responseFunction` is called with:
+`responseFunction` is **always** called, including when the request fails entirely (not only when the server responds with an error status such as 404/500). If the network fails (offline, DNS failure, CORS rejected) or the server does not respond at all within 15 seconds (the request is aborted automatically by a timeout; change it with the [`timeout` option](#options-headers-timeout-and-cache)), `responseFunction` is called with:
 
 ```javascript
-{ status: 0, data: null }
+{ status: 0, data: null, headers: Headers /* empty */, error: "timeout" | "offline" | "network", cached: false }
 ```
+
+`error` tells you which kind: `"timeout"` (the server did not answer in time), `"offline"` (the browser has no internet connection), or `"network"` (anything else). A CORS rejection and an unreachable server are both `"network"`, because browsers deliberately do not let JavaScript tell them apart; the exact reason is in the console. Failures are logged with `console.warn`, so they can be hidden with the level filter in DevTools.
 
 `status: 0` is not a real HTTP code (real HTTP codes are always >= 100) — so it is safe to use as a marker for "request failed entirely", distinct from server error statuses such as 404/500, which still carry `data` from the server's response body.
 
@@ -42,8 +47,8 @@ getJSON("https://api.example.com/data", (res) => {
 Since version 0.0.26, `getJSON`, `postJSON`, `putJSON`, and `deleteJSON` also **return a Promise** containing the same `{ status, data }` object. The callback still runs as usual; if you use `await`, pass `null` as `responseFunction`:
 
 ```javascript
-import { getJSON, postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js";
-import { getCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/cookie.js";
+import { getJSON, postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
+import { getCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js";
 
 const { status, data } = await getJSON("https://api.example.com/produk");
 if (status === 200) console.log(data);
@@ -54,6 +59,39 @@ const hasil = await postJSON("https://api.example.com/pesanan", { id: 7 }, null,
 
 The Promise never *rejects*, so there is no need for `try/catch`: check `status` as usual (`0` = network failure or timeout).
 
+### Options: headers, timeout, and cache
+
+Since 0.0.29, the argument after `responseFunction` may be **one options object** instead of the `tokenkey, tokenvalue` pair (which still works):
+
+```javascript
+getJSON(url, responseFunction, { headers, timeout, cache })
+postJSON(url, data, responseFunction, { headers, timeout })
+```
+
+| Option | Default | Description |
+|---|---|---|
+| `headers` | — | Object of extra headers, e.g. `{ Authorization: "Bearer ...", "X-Client": "web" }`. The token can go here |
+| `timeout` | `15000` | Milliseconds before the request is aborted (`error: "timeout"`) |
+| `cache` | — | `getJSON` only: `{ key, ttl }`. A successful result is stored in `localStorage` under `key`; for `ttl` seconds no request is made at all (`cached: true`). After that, if the server sent an `ETag`, the request carries `If-None-Match`; a `304` reply uses the stored data, with the status it was stored with (`200`) and `cached: true` |
+
+`Content-Type: application/json` is only sent when there is a body (`postJSON`/`putJSON`/`deleteJSON`). A `getJSON` without extra headers does not trigger a CORS *preflight*, so it can read JSON from static hosts such as GitHub Pages and `raw.githubusercontent.com`. Extra headers (including a token and the `If-None-Match` from the `cache` option) still trigger a preflight, so the server has to allow them.
+
+Example: the latest release from the GitHub API, kept for 1 hour. After an hour, GitHub answers `304` if there is no new release, and a `304` reply does not count against the 60-requests-per-hour quota.
+
+```javascript
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
+import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
+
+const { status, data, headers, error } = await getJSON(
+    "https://api.github.com/repos/crootjs/lib/releases/latest",
+    null,
+    { timeout: 8000, cache: { key: "crootjs-release", ttl: 3600 } }
+);
+if (status === 200) setInnerText("version", data.tag_name);
+else if (status === 403) setInnerText("version", "Quota used up, try again at " + new Date(headers.get("X-RateLimit-Reset") * 1000).toLocaleTimeString());
+else if (error === "offline") setInnerText("version", "No internet connection");
+```
+
 ### 1.1 `getJSON()`
 
 Performs an **HTTP GET** request to the given URL and returns the response in JSON format to the callback function.
@@ -62,6 +100,7 @@ Performs an **HTTP GET** request to the given URL and returns the response in JS
 
 ```javascript
 getJSON(target_url, responseFunction, tokenkey?, tokenvalue?)
+getJSON(target_url, responseFunction, options?)   // since 0.0.29
 ```
 
 #### Parameters
@@ -72,17 +111,18 @@ getJSON(target_url, responseFunction, tokenkey?, tokenvalue?)
 | `responseFunction` | `function` | ✅ | Callback function that receives the `{ status, data }` object |
 | `tokenkey` | `string` | ❌ | Header name for authentication (e.g. `"Authorization"`, `"token"`, `"Login"`) |
 | `tokenvalue` | `string` | ❌ | Authentication token value (e.g. `"Bearer eyJhbGci..."`) |
+| `options` | `object` | ❌ | Instead of `tokenkey, tokenvalue`: `{ headers, timeout, cache }` (see [Options](#options-headers-timeout-and-cache)) |
 
 #### Return Value
 
-`Promise<{ status, data }>` — the same result that is passed to `responseFunction`. This Promise never *rejects*; network failures are also returned as `{ status: 0, data: null }`. `responseFunction` may be `null` if you use `await` (see [`await` Style](#await-style)).
+`Promise<{ status, data, headers, error, cached }>` — the same result that is passed to `responseFunction`. This Promise never *rejects*; network failures are also returned as `{ status: 0, data: null, error }`. `responseFunction` may be `null` if you use `await` (see [`await` Style](#await-style)).
 
 #### Usage Examples
 
 **Without a Token (Public API):**
 
 ```javascript
-import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
 
 // Fetch data from a public API
 getJSON(
@@ -104,8 +144,8 @@ getJSON(
 **With an Authentication Token:**
 
 ```javascript
-import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
-import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/cookie.js';
+import { getJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
+import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js';
 
 // Get the token from a cookie
 const token = getCookie('user_token');
@@ -150,14 +190,14 @@ postJSON(target_url, datajson, responseFunction, tokenkey?, tokenvalue?)
 
 #### Return Value
 
-`Promise<{ status, data }>` — the same result that is passed to `responseFunction`. This Promise never *rejects*; network failures are also returned as `{ status: 0, data: null }`. `responseFunction` may be `null` if you use `await` (see [`await` Style](#await-style)).
+`Promise<{ status, data, headers, error, cached }>` — the same result that is passed to `responseFunction`. This Promise never *rejects*; network failures are also returned as `{ status: 0, data: null, error }`. `responseFunction` may be `null` if you use `await` (see [`await` Style](#await-style)).
 
 #### Usage Examples
 
 **Creating New Data (Without a Token):**
 
 ```javascript
-import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
 
 // Data to be sent to the server
 const dataMahasiswa = {
@@ -183,8 +223,8 @@ postJSON(
 **With an Authentication Token:**
 
 ```javascript
-import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
-import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/cookie.js';
+import { postJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
+import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js';
 
 const token = getCookie('user_token');
 
@@ -235,15 +275,15 @@ deleteJSON(target_url, datajson, responseFunction, tokenkey?, tokenvalue?)
 
 #### Return Value
 
-`Promise<{ status, data }>` — the same result that is passed to `responseFunction`. This Promise never *rejects*; network failures are also returned as `{ status: 0, data: null }`. `responseFunction` may be `null` if you use `await` (see [`await` Style](#await-style)).
+`Promise<{ status, data, headers, error, cached }>` — the same result that is passed to `responseFunction`. This Promise never *rejects*; network failures are also returned as `{ status: 0, data: null, error }`. `responseFunction` may be `null` if you use `await` (see [`await` Style](#await-style)).
 
 #### Usage Examples
 
 **Deleting Data with Confirmation:**
 
 ```javascript
-import { deleteJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
-import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/cookie.js';
+import { deleteJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
+import { getCookie } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/cookie.js';
 
 const token = getCookie('user_token');
 
@@ -303,7 +343,7 @@ responseFunction({ status: number, data: object })
 **Example**
 
 ```javascript
-import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
 
 const payload = { name: "Alice", age: 30 };
 
@@ -341,7 +381,7 @@ insertHTML(target_url, id, runFunction, errorFunction?)
 **Example**
 
 ```javascript
-import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
 
 insertHTML(
   "https://example.com/partials/navbar.html",
@@ -372,7 +412,7 @@ getDomHTML(target_url, domFunction)
 **Example**
 
 ```javascript
-import { getDomHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { getDomHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
 
 getDomHTML(
   "https://example.com/partials/card.html",
@@ -394,7 +434,7 @@ getDomHTML(
 ### Updating a resource with authentication
 
 ```javascript
-import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { putJSON } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
 
 putJSON(
   "/api/products/42",
@@ -414,7 +454,7 @@ putJSON(
 ### Loading a page section dynamically
 
 ```javascript
-import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js';
+import { insertHTML } from 'https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   insertHTML("/components/footer.html", "footer", () => {

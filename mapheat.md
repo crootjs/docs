@@ -1,6 +1,6 @@
-*[English](en/mapheat)*
-
 # Dokumentasi Modul `mapheat.js`
+
+*[English](en/mapheat)*
 
 `mapheat.js` adalah modul tambahan untuk [`map.js`](map) yang menggambar data titik sebagai **heatmap** (gradasi kepadatan yang halus) atau **peta petak** (petak persegi/heksagon berwarna menurut nilai rata-ratanya, seperti peta cakupan sinyal nPerf). Keduanya digambar di satu canvas di atas peta dasar dan di bawah lapisan data, jadi tetap ringan untuk puluhan ribu titik: pada pengujian, 50.000 titik digambar ulang dalam sekitar 15–25 ms.
 
@@ -9,8 +9,8 @@ Terpisah dari `map.js` supaya halaman yang tidak memakainya tidak ikut mengunduh
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { addHeatmap, addGridMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapheat.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { addHeatmap, addGridMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapheat.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` lebih dulu.

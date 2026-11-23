@@ -1,3 +1,5 @@
+# `stp.js` Module Documentation
+
 *[Bahasa Indonesia](../stp)*
 
 The **`stp.js`** module provides a set of asynchronous functions for managing the user authentication flow, covering sending, verifying, and resending STP codes. The module automatically validates the **phone number** format before making an HTTP POST request to the external authentication *endpoint*.
@@ -11,7 +13,7 @@ This module exports three main functions for interacting with the authentication
 ## Usage (Import)
 
 ```javascript
-import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/stp.js";
+import { sendSTP, verifySTP, resendSTP } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/stp.js";
 ```
 
 ## Internal Function

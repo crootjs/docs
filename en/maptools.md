@@ -1,14 +1,14 @@
-*[Bahasa Indonesia](../maptools)*
-
 # `maptools.js` Module Documentation
+
+*[Bahasa Indonesia](../maptools)*
 
 `maptools.js` is an add-on module for [`map.js`](map) with tools for technical and survey maps: **distance and area measurement**, **georeferenced images** (for example a master plan or a scanned floor plan, which can be rotated), and **exporting the map view to PNG** for reports. It is kept separate from `map.js` so pages that don't use it don't have to download it (about 5 KB gzip, plus [`geomeasure.js`](geomeasure) for the distance and area calculations).
 
 ## Usage (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { addMeasureControl, measure, addImageOverlay, exportMapImage, downloadMapImage } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/maptools.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { addMeasureControl, measure, addImageOverlay, exportMapImage, downloadMapImage } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/maptools.js";
 ```
 
 The map must already have been created with `createMap`.
@@ -91,7 +91,7 @@ masterPlan.setOpacity(0.4);
 **From control points.** If what you know is a few points on the image (pixels) along with their lng/lat, build the transformation with [`createAffineTransform`](geomeasure#createaffinetransformfrom-to) and then compute the three corners:
 
 ```javascript
-import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/geomeasure.js";
+import { createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/geomeasure.js";
 
 // A 2400 x 1600 pixel image; three points recognized on both the image and the map.
 const piksel = [[310, 220], [2105, 260], [400, 1390]];

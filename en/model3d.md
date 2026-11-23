@@ -1,6 +1,6 @@
-*[Bahasa Indonesia](../model3d)*
-
 # `model3d.js` Module Documentation
+
+*[Bahasa Indonesia](../model3d)*
 
 `model3d.js` displays **glTF 2.0** 3D models (`.glb` and `.gltf`) directly in the browser: rotate, zoom, click a part, change its color, hide it, or change its position and rotation from code. Everything is written from scratch on top of WebGL — its own GLB binary parser, matrices, shaders, and orbit controls — without Three.js (about 600 KB) or any other library. Its size is about 16 KB gzip.
 
@@ -9,7 +9,7 @@ It renders with **WebGL2**, and automatically falls back to **WebGL1** in older 
 ## Usage (Import)
 
 ```javascript
-import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/model3d.js";
+import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/model3d.js";
 ```
 
 ## Minimal Example
@@ -29,8 +29,8 @@ import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib
 
 ```javascript
 // index.js
-import { createViewer, loadModel, onModelClick, highlightPart } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/model3d.js";
-import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
+import { createViewer, loadModel, onModelClick, highlightPart } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/model3d.js";
+import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
 
 createViewer("model");
 loadModel("model", "models/bts.glb", (info, error) => {
@@ -78,7 +78,7 @@ On failure, `info` = `null` and `error` holds the reason (also printed to the co
 
 ```javascript
 // Opening a file from the user's computer
-import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
+import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
 
 onChange("file", () => {
     loadModel("model", document.getElementById("file").files[0], (info, error) => {

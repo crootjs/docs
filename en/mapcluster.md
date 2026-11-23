@@ -1,6 +1,6 @@
-*[Bahasa Indonesia](../mapcluster)*
-
 # `mapcluster.js` Module Documentation
+
+*[Bahasa Indonesia](../mapcluster)*
 
 `mapcluster.js` is an add-on module for [`map.js`](map) that keeps **very large point datasets** lightweight on the map. Points that are close together on screen are merged into a single numbered bubble; as the map zooms in, the bubbles split into smaller groups, and eventually into individual points.
 
@@ -9,8 +9,8 @@ Without clustering, 20,000 points means 20,000 elements on the page and a map th
 ## Usage (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { addCluster } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapcluster.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { addCluster } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapcluster.js";
 ```
 
 The map must already have been created with `createMap`.
@@ -22,8 +22,8 @@ Draws the point features (`Point` and `MultiPoint`) in `geojson` as clusters. `g
 Returns a `remove()` function that removes everything from the map.
 
 ```javascript
-import { createMap, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { addCluster } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/mapcluster.js";
+import { createMap, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { addCluster } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/mapcluster.js";
 
 createMap("peta");
 

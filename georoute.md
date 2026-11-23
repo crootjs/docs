@@ -1,6 +1,6 @@
-*[English](en/georoute)*
-
 # Dokumentasi Modul `georoute.js`
+
+*[English](en/georoute)*
 
 `georoute.js` mencari **rute terpendek di sepanjang garis-garis di dalam data GeoJSON**-mu sendiri — jalan, gang, jalur kampus, koridor gedung. Rutenya dihitung di browser: tidak ada layanan rute yang dipanggil, tidak perlu API key, dan tetap jalan tanpa internet selama datanya sudah termuat.
 
@@ -9,7 +9,7 @@ Modul ini murni perhitungan. Ia tidak butuh peta; hasilnya GeoJSON biasa yang bi
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { findRoute } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/georoute.js";
+import { findRoute } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/georoute.js";
 ```
 
 Semua fungsi [`geomeasure.js`](geomeasure) (`getDistance`, `getLength`, `isInside`, dan lainnya) ikut diekspor dari `georoute.js`, jadi halaman yang menghitung rute cukup mengimpor dari sini.
@@ -42,8 +42,8 @@ Di contoh itu kedua titik tidak berada tepat di atas jalan. **`from` dan `to` bo
 Karena hasilnya Feature biasa, `addGeoJSON` langsung bisa menggambarnya:
 
 ```javascript
-import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/map.js";
-import { findRoute } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/georoute.js";
+import { createMap, addGeoJSON, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/map.js";
+import { findRoute } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/georoute.js";
 
 createMap("peta");
 

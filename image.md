@@ -1,6 +1,6 @@
-*[English](en/image)*
-
 # Manual Penggunaan Fungsi image
+
+*[English](en/image)*
 
 ## Pendahuluan
 File ini berisi fungsi JavaScript yang digunakan untuk menghasilkan nilai warna secara acak. Fungsi-fungsi ini sangat berguna ketika Anda membutuhkan warna dinamis untuk elemen antarmuka (UI), seperti warna latar belakang (_background_), teks, atau _placeholder_ gambar.

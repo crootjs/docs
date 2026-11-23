@@ -1,6 +1,7 @@
+## Documentation: loading.js
+
 *[Bahasa Indonesia](../loading)*
 
-## Documentation: loading.js
 The `loading.js` module provides a visual asset in the form of a lightweight, elegant SVG-based loading animation. It is designed to give users visual feedback while the application is performing an asynchronous process (such as fetching data from an API).
 
 ## Key Features

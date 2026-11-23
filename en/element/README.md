@@ -1,6 +1,6 @@
-*[Bahasa Indonesia](../../element/)*
-
 # Module Documentation: element.js
+
+*[Bahasa Indonesia](../../element/)*
 
 ## 1. Introduction
 
@@ -373,8 +373,8 @@ Collects every field that has a `name` attribute inside a form (text, email, che
 ```
 
 ```javascript
-import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/element.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/api.js";
+import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/element.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/api.js";
 
 const data = serializeForm("formDaftar");
 // { nama: "...", email: "...", setuju: true/false }

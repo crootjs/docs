@@ -1,13 +1,13 @@
-*[English](en/storage)*
-
 # Dokumentasi Modul `storage.js`
+
+*[English](en/storage)*
 
 `storage.js` adalah modul dari CrootJS untuk menyimpan, mengambil, dan menghapus data di `localStorage` dan `sessionStorage` browser. Berbeda dari `localStorage`/`sessionStorage` bawaan, modul ini otomatis melakukan `JSON.stringify`/`JSON.parse` (jadi bisa langsung simpan object/array, bukan cuma string), dan `localStorage` mendukung kadaluwarsa opsional (hari/jam/detik) — sesuatu yang tidak dimiliki `localStorage` bawaan.
 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { setLocal, getLocal, deleteLocal } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.28/storage.js";
+import { setLocal, getLocal, deleteLocal } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.29/storage.js";
 ```
 
 ## localStorage
@@ -51,6 +51,7 @@ const langkah = getSession("langkahForm"); // 2
 
 ## Catatan
 
+- **Penyimpanan diblokir** (sebagian mode privat, pengaturan privasi ketat, atau iframe pihak ketiga) atau **penuh**: sejak 0.0.29 modul ini tidak melempar error lagi. `getLocal`/`getSession` memberi `null`, `setLocal*`/`setSession` memberi `false` (dan `true` kalau tersimpan), dan peringatan muncul sekali di console. Halaman tetap jalan; data hanya tidak tersimpan.
 - `localStorage` dan `sessionStorage` berjalan per-origin (domain) dan tidak bisa diakses lintas domain.
 - Data yang disimpan dengan modul ini (termasuk yang tanpa kadaluwarsa via `setLocal`) tetap bisa dihapus browser kapan saja (mode private/incognito, storage penuh, atau user membersihkan data situs) — jangan jadikan satu-satunya sumber data penting.
 - Kalau butuh cookie (dikirim ke server via HTTP header), pakai [`cookie.js`](cookie), bukan modul ini — `localStorage`/`sessionStorage` cuma bisa diakses lewat JavaScript, tidak otomatis terkirim ke backend.

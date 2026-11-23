@@ -1,6 +1,6 @@
-*[Bahasa Indonesia](../image)*
-
 # image Function Manual
+
+*[Bahasa Indonesia](../image)*
 
 ## Introduction
 This file contains JavaScript functions used to generate random color values. These functions are very useful when you need dynamic colors for user interface (UI) elements, such as _background_ colors, text, or image _placeholders_.
