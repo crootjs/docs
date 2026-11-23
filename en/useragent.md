@@ -7,7 +7,7 @@
 ## Usage (Import)
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/useragent.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/useragent.js";
 ```
 
 ## `isMobile()`
@@ -15,8 +15,8 @@ import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/userage
 Returns `true` if `navigator.userAgent` contains any of `Android`, `webOS`, `iPhone`, `iPad`, `iPod`, `BlackBerry`, `IEMobile`, or `Opera Mini` (case-insensitive), and `false` otherwise. Takes no parameters.
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/useragent.js";
-import { show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/element.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/useragent.js";
+import { show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/element.js";
 
 if (isMobile()) {
     show("open-app-button");

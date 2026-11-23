@@ -9,7 +9,7 @@ Dibuat dengan prinsip yang sama dengan modul JS CrootJS: kecil dan hemat (tidak 
 ## Cara Pemakaian
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/croot.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/croot.min.css">
 <link rel="stylesheet" href="style.css">
 ```
 

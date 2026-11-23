@@ -7,7 +7,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { loading } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/loading.js";
+import { loading } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/loading.js";
 ```
 
 ## `loading`
@@ -23,9 +23,9 @@ import { loading } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/loading.
 Animasinya memakai `<animateTransform>` (SMIL) di dalam SVG: rotasi satu putaran setiap 1,5 detik dengan `calcMode="spline"`, berulang terus. Tidak perlu CSS atau file gambar tambahan.
 
 ```javascript
-import { loading } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/loading.js";
-import { setInner } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/element.js";
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/api.js";
+import { loading } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/loading.js";
+import { setInner } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/element.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/api.js";
 
 setInner("daftar-produk", loading);
 

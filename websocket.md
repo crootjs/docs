@@ -13,7 +13,7 @@ Hal yang perlu diketahui sebelum memakai modul ini:
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { openWebSocketSetId, connectws, sendMessagetoWebSocket, closeWebSocket } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/websocket.js";
+import { openWebSocketSetId, connectws, sendMessagetoWebSocket, closeWebSocket } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/websocket.js";
 ```
 
 ## `openWebSocketSetId(id, url_ws, onMessage)`
@@ -29,8 +29,8 @@ Jika browser tidak mendukung WebSocket, fungsi ini memanggil `alert("Please Upda
 | `onMessage` | Opsional. `function (data)` yang dipanggil untuk setiap pesan masuk dengan `event.data`. Kalau tidak diisi, modul memanggil `window.catcher(data)` jika fungsi itu ada (gaya lama); kalau keduanya tidak ada, pesan diabaikan |
 
 ```javascript
-import { openWebSocketSetId, sendMessagetoWebSocket, closeWebSocket } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/websocket.js";
-import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/element.js";
+import { openWebSocketSetId, sendMessagetoWebSocket, closeWebSocket } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/websocket.js";
+import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.32/element.js";
 
 const ws = await openWebSocketSetId("user-714240001", btoa("wss://chat.example.com/ws"), (data) => {
     const pesan = JSON.parse(data);
