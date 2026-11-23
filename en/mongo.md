@@ -7,7 +7,7 @@
 ## Usage (Import)
 
 ```javascript
-import { generateObjectId, getDateFromObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/mongo.js";
+import { generateObjectId, getDateFromObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/mongo.js";
 ```
 
 ## `generateObjectId()`
@@ -15,7 +15,7 @@ import { generateObjectId, getDateFromObjectId } from "https://cdn.jsdelivr.net/
 Creates a 24-character string in the shape of a MongoDB `ObjectId` (8 hex characters of the timestamp in seconds + 16 random hex characters from `Math.random()`, not a counter like a real ObjectId), directly in the browser, without calling a server or the `mongodb` library.
 
 ```javascript
-import { generateObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/mongo.js";
+import { generateObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/mongo.js";
 
 const id = generateObjectId();
 console.log(id); // e.g. "65f1a2b3c4d5e6f708192a3b"
@@ -30,7 +30,7 @@ Reads back the creation time embedded in the first 8 characters of an `ObjectId`
 | `stringID` | `string` | ObjectId string (24 hex characters, or at least the first 8) |
 
 ```javascript
-import { getDateFromObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/mongo.js";
+import { getDateFromObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/mongo.js";
 
 const created = getDateFromObjectId("65f1a2b3c4d5e6f708192a3b");
 console.log(created); // Date from the first 8 characters of the ObjectId

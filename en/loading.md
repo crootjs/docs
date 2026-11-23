@@ -7,7 +7,7 @@
 ## Usage (Import)
 
 ```javascript
-import { loading } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/loading.js";
+import { loading } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/loading.js";
 ```
 
 ## `loading`
@@ -23,9 +23,9 @@ import { loading } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/loading.
 The animation uses `<animateTransform>` (SMIL) inside the SVG: one full rotation every 1.5 seconds with `calcMode="spline"`, repeating indefinitely. No extra CSS or image file is needed.
 
 ```javascript
-import { loading } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/loading.js";
-import { setInner } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/element.js";
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.30/api.js";
+import { loading } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/loading.js";
+import { setInner } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/element.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.31/api.js";
 
 setInner("product-list", loading);
 
