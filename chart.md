@@ -13,7 +13,7 @@ Yang sudah termasuk:
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createChart, niceScale } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.33/chart.js";
+import { createChart, niceScale } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.34/chart.js";
 ```
 
 ## Contoh Minimal
@@ -26,7 +26,7 @@ import { createChart, niceScale } from "https://cdn.jsdelivr.net/gh/crootjs/lib@
 
 ```javascript
 // grafik.js
-import { createChart } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.33/chart.js";
+import { createChart } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.34/chart.js";
 
 const grafik = createChart("grafik", {
     type: "bar",
@@ -60,7 +60,7 @@ Membuat grafik di dalam elemen `id` (biasanya `<div>` kosong). Kalau elemen itu 
 Mengganti sebagian opsi lalu menggambar ulang di wadah dan SVG yang sama, misalnya data baru dari server:
 
 ```javascript
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.33/api.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.34/api.js";
 
 const { status, data } = await getJSON("https://api.example.com/statistik", null);
 if (status === 200) grafik.update({ labels: data.bulan, series: data.seri });
