@@ -7,7 +7,7 @@
 ## Usage (Import)
 
 ```javascript
-import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/trace.js";
+import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/trace.js";
 ```
 
 ## `tapClick(event)`
@@ -23,7 +23,7 @@ For every event it prints `Elemen yang dipicu:` ("Triggered element") followed b
 Coordinates are `clientX`/`clientY`, i.e. relative to the viewport, not to the page or the element.
 
 ```javascript
-import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/trace.js";
+import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/trace.js";
 
 document.addEventListener("click", tapClick);
 document.addEventListener("touchstart", tapClick);

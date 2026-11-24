@@ -9,8 +9,8 @@ Terpisah dari `map.js` supaya halaman yang tidak memakainya tidak ikut mengunduh
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/map.js";
-import { addHeatmap, addGridMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/mapheat.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/map.js";
+import { addHeatmap, addGridMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/mapheat.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` lebih dulu.

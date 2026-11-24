@@ -6,13 +6,13 @@ CrootJS adalah penerus **JSCroot**. Modulnya sama asalnya (`jscroot/lib`), lalu 
 
 ## Langkah pindah
 
-1. Ganti alamat impor. Nomor versi CrootJS dimulai ulang dari `0.0.x`, jadi `crootjs/lib@0.0.39` **lebih baru** daripada `jscroot/lib@0.2.8`.
+1. Ganti alamat impor. Nomor versi CrootJS dimulai ulang dari `0.0.x`, jadi `crootjs/lib@0.0.40` **lebih baru** daripada `jscroot/lib@0.2.8`.
 
    ```javascript
    // sebelum
    import { getJSON } from "https://cdn.jsdelivr.net/gh/jscroot/lib@0.2.8/api.js";
    // sesudah
-   import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/api.min.js";
+   import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.min.js";
    ```
 
    Selalu patok versi (`@0.0.33`). Alamat tanpa versi (`jscroot/lib/api.js`, yang dipakai sebagian contoh lama) bisa berubah sewaktu-waktu. Untuk produksi pakai `.min.js`.

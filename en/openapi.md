@@ -9,8 +9,8 @@ It is about 11 KB gzipped. Swagger UI is about 464 KB gzipped (JS and CSS). The 
 ## Usage (Import)
 
 ```javascript
-import { renderOpenAPI, loadOpenAPI, openAPIExample } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/openapi.js";
-import { parseYAML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/yaml.js";
+import { renderOpenAPI, loadOpenAPI, openAPIExample } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/openapi.js";
+import { parseYAML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/yaml.js";
 ```
 
 ## A documentation page on GitHub Pages
@@ -25,7 +25,7 @@ Four files in one folder, for example `docs-api/` in your backend's GitHub Pages
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Notes API Documentation</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/croot.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/croot.min.css">
   <link rel="stylesheet" href="style.css">
   <script type="module" src="index.js"></script>
 </head>
@@ -39,7 +39,7 @@ Four files in one folder, for example `docs-api/` in your backend's GitHub Pages
 
 ```javascript
 // index.js
-import { renderOpenAPI } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/openapi.min.js";
+import { renderOpenAPI } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/openapi.min.js";
 
 renderOpenAPI("docs", "./openapi.yaml", {
     texts: { tryIt: "Try it", send: "Send", snippet: "CrootJS code", copy: "Copy" }
@@ -170,7 +170,7 @@ Not supported yet: `$ref` to other files (shown as "`$ref` not found"), `servers
 The small YAML parser used by `openapi.js`, also usable on its own for configuration files. Turns YAML text into a JavaScript value, or throws a `SyntaxError` with the line number (also in `error.line`).
 
 ```javascript
-import { parseYAML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/yaml.min.js";
+import { parseYAML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/yaml.min.js";
 
 parseYAML("name: Sari\nhobbies: [reading, running]"); // { name: "Sari", hobbies: ["reading", "running"] }
 ```

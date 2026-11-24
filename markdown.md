@@ -16,7 +16,7 @@ Waktu prosesnya linear terhadap panjang masukan: pengurainya memindai karakter d
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { markdownToHTML, renderMarkdown, getMarkdown } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/markdown.js";
+import { markdownToHTML, renderMarkdown, getMarkdown } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/markdown.js";
 ```
 
 ## `markdownToHTML(markdown, options)`
@@ -24,7 +24,7 @@ import { markdownToHTML, renderMarkdown, getMarkdown } from "https://cdn.jsdeliv
 Mengubah teks Markdown menjadi string HTML. `markdown` yang bukan string diubah dengan `String()`; `null`/`undefined` menjadi `""`.
 
 ```javascript
-import { markdownToHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/markdown.js";
+import { markdownToHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/markdown.js";
 
 const html = markdownToHTML("# Halo\n\nIni **tebal** dan [tautan](https://croot.js.org).");
 // <h1>Halo</h1>
@@ -42,8 +42,8 @@ Mengisi elemen dengan `id` tersebut dengan hasil `markdownToHTML`, lalu mengemba
 ```
 
 ```javascript
-import { renderMarkdown } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/markdown.js";
-import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/debounce.js";
+import { renderMarkdown } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/markdown.js";
+import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/debounce.js";
 
 const tulisan = document.getElementById("tulisan");
 tulisan.addEventListener("input", debounce(() => {
@@ -63,8 +63,8 @@ Mengambil file `.md` dari `url` dengan `fetch`, lalu mengubahnya menjadi HTML. H
 | `error` | `null`, atau saat status `0`: `"timeout"`, `"abort"`, `"offline"`, `"network"` |
 
 ```javascript
-import { getMarkdown } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/markdown.js";
-import { setInner } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/element.js";
+import { getMarkdown } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/markdown.js";
+import { setInner } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/element.js";
 
 const { status, data } = await getMarkdown("docs/panduan.md", null, { headingIds: true });
 if (status === 200) setInner("isi", data);

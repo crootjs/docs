@@ -30,7 +30,7 @@ icons/icon-512.png
 ### 1. `sw.js` (di folder yang sama dengan `index.html`)
 
 ```javascript
-importScripts("https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/serviceworker.min.js");
+importScripts("https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/serviceworker.min.js");
 
 crootjsServiceWorker({
     version: "1",
@@ -41,7 +41,7 @@ crootjsServiceWorker({
         "manifest.webmanifest",
         "icons/icon-192.png",
         "icons/icon-512.png",
-        "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/pwa.min.js"
+        "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/pwa.min.js"
     ]
 });
 ```
@@ -85,7 +85,7 @@ Ikon PNG 192 dan 512 px dibutuhkan Chrome supaya aplikasi bisa dipasang. Ikon `m
 ### 4. `index.js`
 
 ```javascript
-import { registerServiceWorker, onNetworkChange, installButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/pwa.min.js";
+import { registerServiceWorker, onNetworkChange, installButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/pwa.min.js";
 
 registerServiceWorker("sw.js");
 installButton("pasang");
@@ -119,7 +119,7 @@ Mengembalikan Promise `{ ok, registration, error }` yang tidak pernah *reject*:
 Pemberitahuan sendiri:
 
 ```javascript
-import { registerServiceWorker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/pwa.min.js";
+import { registerServiceWorker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/pwa.min.js";
 
 const hasil = await registerServiceWorker("sw.js", {
     onUpdate: ({ activate }) => {

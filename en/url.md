@@ -7,7 +7,7 @@
 ## Usage (Import)
 
 ```javascript
-import { getQueryString, getHash, setHash, onHashChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/url.js";
+import { getQueryString, getHash, setHash, onHashChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/url.js";
 ```
 
 ## Summary
@@ -65,7 +65,7 @@ Same as `fullPath()` without the leading `/`, e.g. `"class/lesson/ch1.html"`. On
 Returns a Proxy over a `URLSearchParams` of the current query string, so parameters are read like object properties. Values are always strings, or `null` when the parameter is absent.
 
 ```javascript
-import { getQueryString } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/url.js";
+import { getQueryString } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/url.js";
 
 // URL: https://example.com/product.html?id=102&tab=reviews
 const query = getQueryString();
@@ -81,7 +81,7 @@ The Proxy is read-only in practice. Every property name is passed to `searchPara
 Sets or replaces one query string parameter, keeps the others, and writes the result to `window.location.search`. As a result the browser **reloads the page** with the new URL and adds a history entry. To change the URL without a reload, use `history.replaceState` or `history.pushState` directly.
 
 ```javascript
-import { setQueryString } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/url.js";
+import { setQueryString } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/url.js";
 
 setQueryString("category", "books"); // ...?category=books, page reloads
 ```
@@ -101,8 +101,8 @@ Navigates to `URL` (absolute or relative) with `window.location.replace`. The cu
 `URL` is not validated. Don't pass a value from the query string or user input straight into `redirect` without checking its destination, so your page can't be used to send people to another site.
 
 ```javascript
-import { redirect } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/url.js";
-import { deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/cookie.js";
+import { redirect } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/url.js";
+import { deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/cookie.js";
 
 deleteCookie("token");
 redirect("/login.html");
@@ -115,8 +115,8 @@ Registers `runFunctionEvent(event)` for the `hashchange` event on `window`. `eve
 There is no way to remove this listener, and each call to `onHashChange` adds another one, so call it once.
 
 ```javascript
-import { getHash, onHashChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/url.js";
-import { renderHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/element.js";
+import { getHash, onHashChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/url.js";
+import { renderHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/element.js";
 
 function showPage() {
     renderHTML("content", `pages/${getHash() || "home"}.html`);
