@@ -12,7 +12,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createTable } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/table.js";
+import { createTable } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/table.js";
 ```
 
 ## `createTable(id, options)`
@@ -24,8 +24,8 @@ Membuat tabel di dalam elemen `id`. Isi elemen itu diganti. Mengembalikan objek 
 ```
 
 ```javascript
-import { createTable } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/table.js";
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
+import { createTable } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/table.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
 
 const tabel = createTable("proyek", {
     caption: "Daftar proyek",
@@ -110,8 +110,8 @@ Klik judul kolom mengurutkan naik; klik lagi mengurutkan turun. Mengurutkan, men
 Untuk tabel besar, jangan unduh semua data. Isi `source` dengan fungsi yang menerima `{ page, pageSize, sort, query }` dan mengembalikan (atau me-resolve) `{ rows, total }`: baris halaman itu saja dan jumlah semua baris yang cocok. Penyaringan dan pengurutan dikerjakan server.
 
 ```javascript
-import { createTable } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/table.js";
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
+import { createTable } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/table.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
 
 createTable("proyek", {
     columns: [{ key: "kode", label: "Kode" }, { key: "nama", label: "Proyek" }],

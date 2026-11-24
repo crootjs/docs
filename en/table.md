@@ -12,7 +12,7 @@
 ## Usage (Import)
 
 ```javascript
-import { createTable } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/table.js";
+import { createTable } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/table.js";
 ```
 
 ## `createTable(id, options)`
@@ -24,8 +24,8 @@ Creates the table inside element `id`, replacing its content. Returns a control 
 ```
 
 ```javascript
-import { createTable } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/table.js";
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
+import { createTable } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/table.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
 
 const table = createTable("projects", {
     caption: "Projects",
@@ -110,8 +110,8 @@ Clicking a column header sorts ascending; clicking again sorts descending. Sorti
 For large tables, don't download everything. Set `source` to a function that receives `{ page, pageSize, sort, query }` and returns (or resolves to) `{ rows, total }`: just that page's rows and the number of all matching rows. Filtering and sorting happen on the server.
 
 ```javascript
-import { createTable } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/table.js";
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
+import { createTable } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/table.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
 
 createTable("projects", {
     columns: [{ key: "code", label: "Code" }, { key: "name", label: "Project" }],

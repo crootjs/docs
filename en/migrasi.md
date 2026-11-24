@@ -6,13 +6,13 @@ CrootJS is the successor of **JSCroot**. The modules come from the same code (`j
 
 ## Steps
 
-1. Change the import URLs. CrootJS restarted its version numbers at `0.0.x`, so `crootjs/lib@0.0.40` is **newer** than `jscroot/lib@0.2.8`.
+1. Change the import URLs. CrootJS restarted its version numbers at `0.0.x`, so `crootjs/lib@0.0.41` is **newer** than `jscroot/lib@0.2.8`.
 
    ```javascript
    // before
    import { getJSON } from "https://cdn.jsdelivr.net/gh/jscroot/lib@0.2.8/api.js";
    // after
-   import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.min.js";
+   import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.min.js";
    ```
 
    Always pin a version (`@0.0.33`). URLs without one (`jscroot/lib/api.js`, used in some old examples) can change at any time. Use `.min.js` in production.

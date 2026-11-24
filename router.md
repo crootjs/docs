@@ -12,7 +12,7 @@ Sesudah pindah halaman, fokus keyboard dipindah ke judul konten baru dan judulny
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { startRouter } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/router.js";
+import { startRouter } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/router.js";
 ```
 
 ## `startRouter(routes, options)`
@@ -32,8 +32,8 @@ Memasang router dan menampilkan rute dari URL sekarang (pada microtask berikutny
 
 ```javascript
 // app.js
-import { startRouter } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/router.js";
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
+import { startRouter } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/router.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
 
 const router = startRouter({
     "/": "pages/beranda.html",

@@ -9,8 +9,8 @@ It is separate from `map.js` so that pages that don't use it don't have to downl
 ## Usage (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/map.js";
-import { addHeatmap, addGridMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/mapheat.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/map.js";
+import { addHeatmap, addGridMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/mapheat.js";
 ```
 
 The map must already have been created with `createMap`.

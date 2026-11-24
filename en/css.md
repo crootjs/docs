@@ -9,7 +9,7 @@ It follows the same principles as the CrootJS JS modules: small and frugal (no f
 ## Usage
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/croot.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/croot.min.css">
 <link rel="stylesheet" href="style.css">
 ```
 
@@ -94,8 +94,8 @@ Gaps and column widths are set per element with variables:
 A small icon set in a separate file, `icons.css` (about 2 KB gzipped), replacing Boxicons or Font Awesome for dashboards. Pages without icons only need `croot.css`.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/croot.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/croot.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/icons.min.css">
 
 <button><span class="icon icon-download" aria-hidden="true"></span> Download</button>
 

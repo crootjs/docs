@@ -7,7 +7,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { getJSON, postJSON, putJSON, deleteJSON, uploadFile, downloadFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
+import { getJSON, postJSON, putJSON, deleteJSON, uploadFile, downloadFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
 ```
 
 ## Bentuk Hasil
@@ -47,7 +47,7 @@ Satu `error` lagi muncul dengan status asli server, bukan 0: `"select"` (sejak 0
 Server yang menjawab dengan status error (400, 404, 500) bukan kegagalan total: `status` berisi kode aslinya dan `data` berisi body error dari server. Kegagalan total dicatat dengan `console.warn` (kecuali `"abort"`, yang memang disengaja).
 
 ```javascript
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
 
 const { status, data, error } = await getJSON("https://api.example.com/produk");
 if (status === 200) {
@@ -101,8 +101,8 @@ await getJSON(url, null, { headers: { login: token }, timeout: 8000 });
 Berguna untuk pencarian saat mengetik: request lama dibatalkan begitu pengguna mengetik lagi, supaya hasil lama tidak menimpa hasil baru.
 
 ```javascript
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
-import { onInput, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/element.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
+import { onInput, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/element.js";
 
 let pencarian = null;
 onInput("cari", async () => {
@@ -130,8 +130,8 @@ onInput("cari", async () => {
 Contoh: versi rilis terbaru dari GitHub API, disimpan 1 jam. Hanya dua field yang disimpan (balasan aslinya sekitar 10 KB), dan kalau kuota habis atau internet putus, versi terakhir yang tersimpan tetap tampil.
 
 ```javascript
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
-import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/element.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
+import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/element.js";
 
 const { status, data, headers, error } = await getJSON(
     "https://api.github.com/repos/crootjs/lib/releases/latest",
@@ -171,8 +171,8 @@ Perhatikan urutannya: `responseFunction` **bukan** argumen terakhir, dan untuk `
 | `options` | Pengganti `tokenkey, tokenvalue`: `{ headers, timeout, signal, cache }` (lihat [Opsi](#opsi-header-timeout-signal-dan-cache)) |
 
 ```javascript
-import { getJSON, postJSON, putJSON, deleteJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
-import { getCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/cookie.js";
+import { getJSON, postJSON, putJSON, deleteJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
+import { getCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/cookie.js";
 
 const auth = { headers: { login: getCookie("login") } };
 
@@ -216,8 +216,8 @@ uploadFile(url, source, responseFunction, options)
 ```
 
 ```javascript
-import { uploadFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
-import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/element.js";
+import { uploadFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
+import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/element.js";
 
 let unggahan = null;
 onClick("unggah", async () => {
@@ -249,7 +249,7 @@ downloadFile(url, responseFunction, options)
 Opsinya `headers`, `timeout`, `signal` (sama dengan `getJSON`), ditambah `fileName`: kalau diisi, file 2xx langsung disimpan browser dengan nama itu.
 
 ```javascript
-import { downloadFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
+import { downloadFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
 
 // langsung disimpan
 const { status, data } = await downloadFile("https://api.example.com/laporan/7.pdf", null, {
@@ -272,7 +272,7 @@ insertHTML(url, id, runFunction, errorFunction?)
 Mengambil HTML dari `url` dan memasangnya sebagai isi elemen `id`, lalu memanggil `runFunction()`. `errorFunction` (opsional) dipanggil dengan sebuah `Error` kalau elemennya tidak ada, server menjawab selain 2xx, jaringan gagal, atau request melewati 15 detik. Saat gagal, isi elemen tidak diubah dan `runFunction` tidak dipanggil.
 
 ```javascript
-import { insertHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
+import { insertHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
 
 insertHTML("./bagian/navbar.html", "navbar", () => {
     console.log("Navbar terpasang");
@@ -292,7 +292,7 @@ getDomHTML(url, domFunction)
 Mengambil HTML dari `url` dan memberikannya ke `domFunction(htmlDom)` sebagai `Document` hasil parse, untuk dibaca atau diubah dulu sebelum dipasang. Status jawaban tidak diperiksa: halaman error 404/500 juga diberikan sebagai `Document`. Hanya saat jaringan gagal atau lewat 15 detik `domFunction` tidak dipanggil (alasannya di console).
 
 ```javascript
-import { getDomHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
+import { getDomHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
 
 getDomHTML("./bagian/kartu.html", (htmlDom) => {
     const judul = htmlDom.querySelector(".judul");

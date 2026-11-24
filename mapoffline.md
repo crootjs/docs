@@ -12,8 +12,8 @@ PMTiles versi 3 berisi tile **raster** (PNG, JPEG, WebP, AVIF) atau, sejak 0.0.3
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/map.js";
-import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/mapoffline.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/map.js";
+import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/mapoffline.js";
 ```
 
 ## `openPMTiles(source, responseFunction, options)`
@@ -79,8 +79,8 @@ Gaya bawaannya untuk skema [Protomaps Basemap](https://docs.protomaps.com/basema
 ```
 
 ```javascript
-import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/element.js";
-import { setTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/map.js";
+import { onChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/element.js";
+import { setTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/map.js";
 
 createMap("peta", { tiles: false, center: [107.6, -6.9], zoom: 12 });
 onChange("berkas", async () => {

@@ -7,7 +7,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { setCookieWithExpireHour, getCookie, deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/cookie.js";
+import { setCookieWithExpireHour, getCookie, deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/cookie.js";
 ```
 
 ## `setCookieWithExpireDay(cname, cvalue, exdays)`
@@ -48,9 +48,9 @@ Menghapus cookie `cname` dengan mengatur kadaluwarsanya ke 1 Januari 1970. Hanya
 ### Contoh: login dan logout
 
 ```javascript
-import { setCookieWithExpireHour, getCookie, deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/cookie.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/api.js";
-import { onClick, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/element.js";
+import { setCookieWithExpireHour, getCookie, deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/cookie.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
+import { onClick, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/element.js";
 
 onClick("tombolLogin", async () => {
     const { status, data } = await postJSON("https://api.example.com/login", { user: getValue("user"), password: getValue("password") }, null);

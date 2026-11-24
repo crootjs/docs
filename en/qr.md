@@ -7,7 +7,7 @@
 ## Usage (Import)
 
 ```javascript
-import { renderQR, qrSVG, qrMatrix } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/qr.js";
+import { renderQR, qrSVG, qrMatrix } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/qr.js";
 ```
 
 ## Example
@@ -21,7 +21,7 @@ import { renderQR, qrSVG, qrMatrix } from "https://cdn.jsdelivr.net/gh/crootjs/l
 ```
 
 ```javascript
-import { renderQR } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/qr.min.js";
+import { renderQR } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/qr.min.js";
 
 renderQR("qr", "https://croot.js.org", { label: "QR code for croot.js.org" });
 ```

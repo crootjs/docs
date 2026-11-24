@@ -9,8 +9,8 @@ Tanpa pengelompokan, 20.000 titik berarti 20.000 elemen di halaman dan peta yang
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/map.js";
-import { addCluster } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/mapcluster.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/map.js";
+import { addCluster } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/mapcluster.js";
 ```
 
 Petanya harus sudah dibuat dengan `createMap` lebih dulu.
@@ -22,8 +22,8 @@ Menggambar fitur-fitur titik (`Point` dan `MultiPoint`) di dalam `geojson` sebag
 Mengembalikan function `remove()` untuk menghapus semuanya dari peta.
 
 ```javascript
-import { createMap, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/map.js";
-import { addCluster } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.40/mapcluster.js";
+import { createMap, fitMap, getGeoJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/map.js";
+import { addCluster } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/mapcluster.js";
 
 createMap("peta");
 
