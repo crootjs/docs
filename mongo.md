@@ -9,7 +9,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { generateObjectId, getDateFromObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.34/mongo.js";
+import { generateObjectId, getDateFromObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/mongo.js";
 ```
 
 ## Daftar Fungsi
@@ -21,7 +21,7 @@ Membuat string 24-karakter yang menyerupai format MongoDB `ObjectId` (8 karakter
 **Contoh Penggunaan:**
 
 ```javascript
-import { generateObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.34/mongo.js";
+import { generateObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/mongo.js";
 
 const id = generateObjectId();
 console.log(id); // contoh: "65f1a2b3c4d5e6f708192a3b"
@@ -37,7 +37,7 @@ Mengambil kembali waktu pembuatan (timestamp) yang tertanam di 8 karakter pertam
 **Contoh Penggunaan:**
 
 ```javascript
-import { getDateFromObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.34/mongo.js";
+import { getDateFromObjectId } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/mongo.js";
 
 const tanggalDibuat = getDateFromObjectId("65f1a2b3c4d5e6f708192a3b");
 console.log(tanggalDibuat); // Date object sesuai 8 karakter pertama ObjectId

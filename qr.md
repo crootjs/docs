@@ -7,7 +7,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { renderQR, qrSVG, qrMatrix } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.34/qr.js";
+import { renderQR, qrSVG, qrMatrix } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/qr.js";
 ```
 
 ## Contoh
@@ -21,7 +21,7 @@ import { renderQR, qrSVG, qrMatrix } from "https://cdn.jsdelivr.net/gh/crootjs/l
 ```
 
 ```javascript
-import { renderQR } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.34/qr.min.js";
+import { renderQR } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/qr.min.js";
 
 renderQR("qr", "https://croot.js.org", { label: "Kode QR ke croot.js.org" });
 ```
