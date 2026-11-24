@@ -16,7 +16,7 @@ Processing time is linear in the input length: the parser scans character by cha
 ## Usage (Import)
 
 ```javascript
-import { markdownToHTML, renderMarkdown, getMarkdown } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/markdown.js";
+import { markdownToHTML, renderMarkdown, getMarkdown } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/markdown.js";
 ```
 
 ## `markdownToHTML(markdown, options)`
@@ -24,7 +24,7 @@ import { markdownToHTML, renderMarkdown, getMarkdown } from "https://cdn.jsdeliv
 Converts Markdown text to an HTML string. A non-string `markdown` is converted with `String()`; `null`/`undefined` become `""`.
 
 ```javascript
-import { markdownToHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/markdown.js";
+import { markdownToHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/markdown.js";
 
 const html = markdownToHTML("# Hello\n\nThis is **bold** and a [link](https://croot.js.org).");
 // <h1>Hello</h1>
@@ -42,8 +42,8 @@ Fills the element with that `id` with the result of `markdownToHTML` and returns
 ```
 
 ```javascript
-import { renderMarkdown } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/markdown.js";
-import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/debounce.js";
+import { renderMarkdown } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/markdown.js";
+import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/debounce.js";
 
 const post = document.getElementById("post");
 post.addEventListener("input", debounce(() => {
@@ -63,8 +63,8 @@ Fetches a `.md` file from `url` with `fetch` and converts it to HTML. The result
 | `error` | `null`, or when status is `0`: `"timeout"`, `"abort"`, `"offline"`, `"network"` |
 
 ```javascript
-import { getMarkdown } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/markdown.js";
-import { setInner } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
+import { getMarkdown } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/markdown.js";
+import { setInner } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/element.js";
 
 const { status, data } = await getMarkdown("docs/guide.md", null, { headingIds: true });
 if (status === 200) setInner("content", data);

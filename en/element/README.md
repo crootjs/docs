@@ -7,7 +7,7 @@
 ## Usage (Import)
 
 ```javascript
-import { onClick, getValue, setInner, serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
+import { onClick, getValue, setInner, serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/element.js";
 ```
 
 Unless stated otherwise, the functions on this page throw a `TypeError` when no element has the given ID.
@@ -40,7 +40,7 @@ If the element is not found, a warning is logged and nothing throws. Calling `on
 
 ```javascript
 // app.js
-import { onClick, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
+import { onClick, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/element.js";
 
 onClick("saveButton", () => {
     setInnerText("status", "Saved");
@@ -84,7 +84,7 @@ Sets an `input` handler on element `id` through the `oninput` property (replacin
 
 ```javascript
 // app.js
-import { onInput, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
+import { onInput, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/element.js";
 
 onInput("name", (input) => {
     setInnerText("preview", input.value);
@@ -172,8 +172,8 @@ Collects every field with a `name` attribute inside the form (text, email, check
 ```
 
 ```javascript
-import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/api.js";
+import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/element.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.js";
 
 const data = serializeForm("signupForm");
 // { name: "...", email: "...", agree: true/false }
@@ -190,8 +190,8 @@ For validation with messages below each field before sending, see [`form.js`](..
 The reverse of `serializeForm` (since 0.0.30): fills the form's fields from an object, for example data from the server for an edit form. Values have the same shape as `serializeForm`'s result, so `fillForm(id, serializeForm(id))` changes nothing. Only fields whose name is a key in `data` are changed; `<input type="file">` is skipped; `null`/`undefined` clears a field. If the form is not found, a warning is logged and nothing throws.
 
 ```javascript
-import { fillForm, serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
-import { getJSON, putJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/api.js";
+import { fillForm, serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/element.js";
+import { getJSON, putJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.js";
 
 const { status, data } = await getJSON("https://api.example.com/profile/7");
 if (status === 200) fillForm("profileForm", data); // { name: "Sari", hobbies: ["reading"], agree: true }
@@ -281,7 +281,7 @@ Errors are always logged to the console as well. `<script>` tags inside the load
 
 ```javascript
 // app.js
-import { renderHTML, onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
+import { renderHTML, onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/element.js";
 
 renderHTML("menu", "parts/menu.html");
 renderHTML("content", "parts/home.html", () => {
@@ -308,7 +308,7 @@ Loads an external JS or CSS file into `<head>` if it isn't on the page yet. Both
 Scripts are loaded as classic scripts (not `type="module"`), which suits third-party libraries that set a global variable.
 
 ```javascript
-import { addJS, addCSS } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
+import { addJS, addCSS } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/element.js";
 
 await addCSS("https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css");
 await addJS("https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.js");
