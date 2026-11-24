@@ -1,16 +1,16 @@
-# Tiap jam membaca versi terbaru crootjs/lib dari croot.js.org/lib/version.json (ditulis workflow
-# rilis lib setelah jsDelivr siap). Kalau lebih baru dari pin di repo ini: semua pin
-# crootjs/lib@<versi> dinaikkan, di-commit, dan GitHub Pages dibangun ulang. Bisa juga dijalankan
-# manual dari tab Actions, dengan atau tanpa versi.
+# Setelah crootjs/lib merilis versi baru, workflow rilisnya mengirim repository_dispatch
+# "lib-released" ke sini: semua pin crootjs/lib@<versi> dinaikkan, di-commit, dan GitHub Pages
+# dibangun ulang. Bisa juga dijalankan manual dari tab Actions; tanpa versi, versinya dibaca dari
+# croot.js.org/lib/version.json.
 name: bump-pins
 
 on:
-  schedule:
-    - cron: "7 * * * *"
+  repository_dispatch:
+    types: [lib-released]
   workflow_dispatch:
     inputs:
       version:
-        description: "Versi crootjs/lib, misalnya 0.0.33 (kosong = baca version.json)"
+        description: "Versi crootjs/lib, misalnya 0.0.34 (kosong = baca version.json)"
         required: false
 
 permissions:
@@ -28,7 +28,7 @@ jobs:
       - name: Naikkan pin
         id: bump
         env:
-          VERSION: ${{ inputs.version }}
+          VERSION: ${{ github.event.client_payload.version || inputs.version }}
         run: |
           if [ -z "$VERSION" ]; then
             VERSION=$(curl -fsS https://croot.js.org/lib/version.json | jq -r .version)
