@@ -7,7 +7,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/trace.js";
+import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/trace.js";
 ```
 
 ## `tapClick(event)`
@@ -23,7 +23,7 @@ Untuk setiap event, fungsi ini mencetak `Elemen yang dipicu:` diikuti `event.tar
 Koordinat adalah `clientX`/`clientY`, yaitu relatif terhadap viewport, bukan terhadap halaman atau elemen.
 
 ```javascript
-import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/trace.js";
+import { tapClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/trace.js";
 
 document.addEventListener("click", tapClick);
 document.addEventListener("touchstart", tapClick);

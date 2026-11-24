@@ -7,7 +7,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { debounce, throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/debounce.js";
+import { debounce, throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/debounce.js";
 ```
 
 ## `debounce(fn, delay)`
@@ -17,9 +17,9 @@ Mengembalikan function baru yang menunda `fn` sampai tidak ada panggilan lagi se
 Contoh umumnya pencarian saat mengetik: request dikirim setelah pengguna berhenti mengetik, bukan di setiap ketikan.
 
 ```javascript
-import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/debounce.js";
-import { onInput } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/element.js";
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/api.js";
+import { debounce } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/debounce.js";
+import { onInput } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/api.js";
 
 const cariProduk = debounce(async (input) => {
     const { status, data } = await getJSON(`https://api.example.com/produk?q=${encodeURIComponent(input.value)}`);
@@ -36,7 +36,7 @@ Mengembalikan function baru yang menjalankan `fn` paling sering sekali setiap `d
 Contoh umumnya event `scroll`, `resize`, dan `mousemove`.
 
 ```javascript
-import { throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/debounce.js";
+import { throttle } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/debounce.js";
 
 window.addEventListener("scroll", throttle(() => {
     console.log("posisi scroll:", window.scrollY);

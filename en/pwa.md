@@ -30,7 +30,7 @@ icons/icon-512.png
 ### 1. `sw.js` (in the same folder as `index.html`)
 
 ```javascript
-importScripts("https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/serviceworker.min.js");
+importScripts("https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/serviceworker.min.js");
 
 crootjsServiceWorker({
     version: "1",
@@ -41,7 +41,7 @@ crootjsServiceWorker({
         "manifest.webmanifest",
         "icons/icon-192.png",
         "icons/icon-512.png",
-        "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/pwa.min.js"
+        "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/pwa.min.js"
     ]
 });
 ```
@@ -85,7 +85,7 @@ Chrome needs 192 and 512 px PNG icons before an app can be installed. Android cr
 ### 4. `index.js`
 
 ```javascript
-import { registerServiceWorker, onNetworkChange, installButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/pwa.min.js";
+import { registerServiceWorker, onNetworkChange, installButton } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/pwa.min.js";
 
 registerServiceWorker("sw.js");
 installButton("install");
@@ -119,7 +119,7 @@ Returns a Promise of `{ ok, registration, error }` that never rejects:
 Your own notice:
 
 ```javascript
-import { registerServiceWorker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/pwa.min.js";
+import { registerServiceWorker } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/pwa.min.js";
 
 const result = await registerServiceWorker("sw.js", {
     onUpdate: ({ activate }) => {

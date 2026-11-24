@@ -7,7 +7,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { onClick, getValue, setInner, serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/element.js";
+import { onClick, getValue, setInner, serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
 ```
 
 Kecuali disebut lain, function di halaman ini melempar `TypeError` kalau tidak ada elemen dengan ID tersebut.
@@ -40,7 +40,7 @@ Kalau elemen tidak ditemukan, muncul peringatan di console dan tidak ada error. 
 
 ```javascript
 // app.js
-import { onClick, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/element.js";
+import { onClick, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
 
 onClick("tombolSimpan", () => {
     setInnerText("status", "Tersimpan");
@@ -84,7 +84,7 @@ Memasang handler `input` pada elemen `id` lewat properti `oninput` (menimpa hand
 
 ```javascript
 // app.js
-import { onInput, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/element.js";
+import { onInput, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
 
 onInput("nama", (input) => {
     setInnerText("pratinjau", input.value);
@@ -172,8 +172,8 @@ Mengambil semua field yang punya atribut `name` di dalam form (text, email, chec
 ```
 
 ```javascript
-import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/element.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/api.js";
+import { serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/api.js";
 
 const data = serializeForm("formDaftar");
 // { nama: "...", email: "...", setuju: true/false }
@@ -190,8 +190,8 @@ Untuk validasi dengan pesan di bawah field sebelum dikirim, lihat [`form.js`](..
 Kebalikan `serializeForm` (sejak 0.0.30): mengisi field form dari sebuah object, misalnya data dari server untuk form edit. Bentuk nilainya sama dengan hasil `serializeForm`, jadi `fillForm(id, serializeForm(id))` tidak mengubah apa-apa. Hanya field yang namanya ada di `data` yang diubah; `<input type="file">` dilewati; `null`/`undefined` mengosongkan field. Kalau form tidak ditemukan, muncul peringatan di console dan tidak ada error.
 
 ```javascript
-import { fillForm, serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/element.js";
-import { getJSON, putJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/api.js";
+import { fillForm, serializeForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
+import { getJSON, putJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/api.js";
 
 const { status, data } = await getJSON("https://api.example.com/profil/7");
 if (status === 200) fillForm("formProfil", data); // { nama: "Sari", hobi: ["baca"], setuju: true }
@@ -281,7 +281,7 @@ Error juga selalu ditulis ke console. `<script>` di dalam HTML yang dimuat tidak
 
 ```javascript
 // app.js
-import { renderHTML, onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/element.js";
+import { renderHTML, onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
 
 renderHTML("menu", "bagian/menu.html");
 renderHTML("konten", "bagian/beranda.html", () => {
@@ -308,7 +308,7 @@ Memuat file JS atau CSS eksternal ke `<head>` kalau belum ada di halaman. Keduan
 Script dimuat sebagai script klasik (bukan `type="module"`), jadi cocok untuk library pihak ketiga yang memasang variabel global.
 
 ```javascript
-import { addJS, addCSS } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/element.js";
+import { addJS, addCSS } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
 
 await addCSS("https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css");
 await addJS("https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.js");

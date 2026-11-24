@@ -7,7 +7,7 @@
 ## Usage (Import)
 
 ```javascript
-import { decodeMVT, renderVectorTile, DEFAULT_VECTOR_STYLE } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/mapvector.js";
+import { decodeMVT, renderVectorTile, DEFAULT_VECTOR_STYLE } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/mapvector.js";
 ```
 
 ## Style
@@ -30,9 +30,9 @@ A style is an array of **rules** drawn in order; later rules appear on top. The 
 Example: a map with more prominent highways and place names in Indonesian. The default rules are copied, then one rule is appended at the end so it is drawn on top:
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/map.js";
-import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/mapoffline.js";
-import { DEFAULT_VECTOR_STYLE } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/mapvector.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/map.js";
+import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/mapoffline.js";
+import { DEFAULT_VECTOR_STYLE } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/mapvector.js";
 
 const style = [
     ...DEFAULT_VECTOR_STYLE,
@@ -68,8 +68,8 @@ Renders the output of `decodeMVT` into a Promise of a PNG `Blob`.
 Example: MVT tiles from an ordinary vector tile server, rendered for `map.js`.
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/map.js";
-import { decodeMVT, renderVectorTile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/mapvector.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/map.js";
+import { decodeMVT, renderVectorTile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/mapvector.js";
 
 const vector = {
     async getTile(z, x, y) {

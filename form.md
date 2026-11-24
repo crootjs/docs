@@ -9,7 +9,7 @@ Pesannya juga terbaca pembaca layar: field yang salah diberi `aria-invalid="true
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { handleForm, validateForm, clearFormErrors } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/form.js";
+import { handleForm, validateForm, clearFormErrors } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/form.js";
 ```
 
 ## `handleForm(id, onSubmit, options)`
@@ -38,8 +38,8 @@ Cara paling cepat. Menangani submit form `id`: halaman tidak di-reload, form div
 ```
 
 ```javascript
-import { handleForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/form.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/api.js";
+import { handleForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/form.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/api.js";
 
 handleForm("daftar", async (data) => {
     const { status } = await postJSON("https://api.example.com/daftar", data, null);
@@ -63,8 +63,8 @@ Pesan bawaan browser dimatikan dengan `novalidate` selama `handleForm` aktif.
 Memeriksa form sekali, misalnya sebelum pindah langkah di form bertahap. Pesan ditampilkan atau dihapus, lalu mengembalikan `true` kalau semuanya benar.
 
 ```javascript
-import { validateForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/form.js";
-import { onClick, show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/element.js";
+import { validateForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/form.js";
+import { onClick, show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
 
 onClick("lanjut", () => {
     if (!validateForm("langkah-1")) return;

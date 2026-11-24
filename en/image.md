@@ -7,7 +7,7 @@ Despite its name, `image.js` doesn't process images. It contains two functions f
 ## Usage (Import)
 
 ```javascript
-import { getRandomColor, getRandomColorName } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/image.js";
+import { getRandomColor, getRandomColorName } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/image.js";
 ```
 
 ## `getRandomColor()`
@@ -15,7 +15,7 @@ import { getRandomColor, getRandomColorName } from "https://cdn.jsdelivr.net/gh/
 Returns a 6-digit uppercase hex color string, for example `"#7A2B9C"`. Each digit is picked with `Math.random()`, so a color too light or too dark for the text on top of it can come up.
 
 ```javascript
-import { getRandomColor } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/image.js";
+import { getRandomColor } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/image.js";
 
 document.getElementById("avatar").style.backgroundColor = getRandomColor();
 ```
@@ -29,7 +29,7 @@ Returns one random Tailwind CSS palette color name, **without** a prefix or shad
 Some of these names (e.g. `sky`, `emerald`, `zinc`) are not standard CSS color names, so don't use them directly as a `color` or `background-color` value. Build a Tailwind class name instead:
 
 ```javascript
-import { getRandomColorName } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/image.js";
+import { getRandomColorName } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/image.js";
 
 const color = getRandomColorName();
 document.getElementById("category-label").classList.add(`bg-${color}-500`, "text-white");

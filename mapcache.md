@@ -9,8 +9,8 @@ Berbeda dari [`mapoffline.js`](mapoffline), di sini tidak perlu menyiapkan file 
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/map.js";
-import { cachedTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/mapcache.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/map.js";
+import { cachedTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/mapcache.js";
 
 createMap("peta", { tiles: cachedTiles(), center: [107.6, -6.9], zoom: 14 });
 ```
@@ -59,8 +59,8 @@ Mengunduh tile di `bounds` `[minLng, minLat, maxLng, maxLat]` dari `minZoom` sam
 **Hanya untuk server tile milik sendiri atau penyedia yang mengizinkan.** Kebijakan OpenStreetMap melarang unduhan massal dari `tile.openstreetmap.org`, jadi template bawaan ditolak (`error` berisi alasannya, tanpa request).
 
 ```javascript
-import { getMapBounds } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/map.js";
-import { onClick, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.35/element.js";
+import { getMapBounds } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/map.js";
+import { onClick, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.36/element.js";
 
 const tiles = cachedTiles("https://tiles.contoh.id/{z}/{x}/{y}.png", { name: "peta-dinas", attribution: "© Dinas PU" });
 createMap("peta", { tiles, center: [107.6, -6.9], zoom: 14 });
