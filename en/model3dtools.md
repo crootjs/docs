@@ -18,8 +18,8 @@ The middle three suit learning materials well: anatomy, engines, buildings, lab 
 ## Usage (Import)
 
 ```javascript
-import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/model3d.js";
-import { addHotspot, enableTransform, getAnimations, playAnimation, explodeModel, addSection, measureModel, addARButton, getARLink, isARSupported, startAR, exportGLB, downloadGLB } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/model3dtools.js";
+import { createViewer, loadModel } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/model3d.js";
+import { addHotspot, enableTransform, getAnimations, playAnimation, explodeModel, addSection, measureModel, addARButton, getARLink, isARSupported, startAR, exportGLB, downloadGLB } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/model3dtools.js";
 ```
 
 The viewer must already be created with `createViewer`. Hotspots and gizmos that refer to a part name need the model to be loaded, so call them inside `loadModel`'s `responseFunction`.
@@ -183,7 +183,7 @@ A measuring tool on the model's surface (since 0.0.30): click or tap points on t
 Returns `{ getResult(), clear(), remove() }`. Clicks are still passed on to `onModelClick` while measuring.
 
 ```javascript
-import { onClick, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/element.js";
+import { onClick, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/element.js";
 
 let alat = null;
 onClick("ukur-sudut", () => {
@@ -245,8 +245,8 @@ It must be called from a user click/tap; browsers refuse to open AR without one.
 Returns a Promise of `{ supported, end() }`; `supported` = `false` (with the reason in the console) if the AR session could not be opened.
 
 ```javascript
-import { isARSupported, startAR } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/model3dtools.js";
-import { onClick, show } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/element.js";
+import { isARSupported, startAR } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/model3dtools.js";
+import { onClick, show } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/element.js";
 
 if (await isARSupported()) show("tombol-ar");
 onClick("tombol-ar", () => startAR("model", { scale: 0.1 }));

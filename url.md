@@ -7,7 +7,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { getQueryString, getHash, setHash, onHashChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/url.js";
+import { getQueryString, getHash, setHash, onHashChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/url.js";
 ```
 
 ## Ringkasan
@@ -65,7 +65,7 @@ Sama dengan `fullPath()` tanpa `/` di depan, misalnya `"kelas/materi/bab1.html"`
 Mengembalikan Proxy di atas `URLSearchParams` dari query string saat ini, sehingga parameter dibaca seperti properti object. Nilainya selalu string, atau `null` kalau parameter itu tidak ada.
 
 ```javascript
-import { getQueryString } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/url.js";
+import { getQueryString } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/url.js";
 
 // URL: https://contoh.id/produk.html?id=102&tab=ulasan
 const query = getQueryString();
@@ -81,7 +81,7 @@ Proxy ini hanya untuk membaca. Setiap nama properti diteruskan ke `searchParams.
 Mengisi atau mengganti satu parameter query string, mempertahankan parameter lainnya, lalu menulis hasilnya ke `window.location.search`. Akibatnya browser **memuat ulang halaman** dengan URL baru dan menambah satu entri riwayat. Untuk mengubah URL tanpa muat ulang, pakai `history.replaceState` atau `history.pushState` langsung.
 
 ```javascript
-import { setQueryString } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/url.js";
+import { setQueryString } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/url.js";
 
 setQueryString("kategori", "buku"); // ...?kategori=buku, halaman dimuat ulang
 ```
@@ -101,8 +101,8 @@ Pindah ke `URL` (absolut atau relatif) dengan `window.location.replace`. Halaman
 `URL` tidak divalidasi. Jangan teruskan nilai dari query string atau input pengguna langsung ke `redirect` tanpa memeriksa tujuannya, supaya halamanmu tidak bisa dipakai untuk mengarahkan orang ke situs lain.
 
 ```javascript
-import { redirect } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/url.js";
-import { deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/cookie.js";
+import { redirect } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/url.js";
+import { deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/cookie.js";
 
 deleteCookie("token");
 redirect("/login.html");
@@ -115,8 +115,8 @@ Mendaftarkan `runFunctionEvent(event)` ke event `hashchange` di `window`. `event
 Tidak ada cara melepas listener ini, dan setiap panggilan `onHashChange` menambah listener baru, jadi panggil sekali saja.
 
 ```javascript
-import { getHash, onHashChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/url.js";
-import { renderHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/element.js";
+import { getHash, onHashChange } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/url.js";
+import { renderHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/element.js";
 
 function tampilkanHalaman() {
     renderHTML("konten", `halaman/${getHash() || "beranda"}.html`);

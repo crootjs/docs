@@ -9,7 +9,7 @@ Dibuat dengan prinsip yang sama dengan modul JS CrootJS: kecil dan hemat (tidak 
 ## Cara Pemakaian
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/croot.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/croot.min.css">
 <link rel="stylesheet" href="style.css">
 ```
 
@@ -94,8 +94,8 @@ Jarak dan lebar kolom diatur per elemen dengan variabel:
 Set ikon kecil di file terpisah, `icons.css` (sekitar 2 KB gzip), pengganti Boxicons atau Font Awesome untuk dashboard. Halaman yang tidak memakai ikon cukup memuat `croot.css` saja.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/croot.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/croot.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/icons.min.css">
 
 <button><span class="icon icon-download" aria-hidden="true"></span> Unduh</button>
 

@@ -6,7 +6,7 @@ Dokumentasi Pemakaian CrootJS dengan AI Companion dan Human in the loop.
 
 Pindah dari **JSCroot**? Baca [Dari JSCroot ke CrootJS](migrasi): alamat impor baru, fungsi yang dihapus beserta penggantinya, dan perilaku yang berubah.
 
-Impor setiap modul dari versi yang dipatok, mis. `https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/api.min.js`. Untuk produksi pakai `.min.js` untuk **semua** impor CrootJS di satu halaman, jangan dicampur dengan `.js`: `api.min.js` dan `storage.js` adalah alamat modul yang berbeda, jadi modul yang diimpor keduanya termuat dua kali dengan state masing-masing. Sejak 0.0.38 berkas `.min.js` di setiap rilis mengimpor `.min.js` modul pendampingnya.
+Impor setiap modul dari versi yang dipatok, mis. `https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/api.min.js`. Untuk produksi pakai `.min.js` untuk **semua** impor CrootJS di satu halaman, jangan dicampur dengan `.js`: `api.min.js` dan `storage.js` adalah alamat modul yang berbeda, jadi modul yang diimpor keduanya termuat dua kali dengan state masing-masing. Sejak 0.0.38 berkas `.min.js` di setiap rilis mengimpor `.min.js` modul pendampingnya.
 
 ## Referensi Modul
 
@@ -177,8 +177,8 @@ API whatsauth dapat digunakan untuk pengembangan implementasi SSO, login menggun
    ```
 2. main.js : pengaturan login menggunakan crootjs
    ```js
-   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/auth.js";
-   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/config.js";
+   import {qrController,deleteCookie,appendGoogleSignin} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/auth.js";
+   import { wauthparam } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/config.js";
    
    wauthparam.auth_ws="d3NzOi8vYXBpLndhLm15LmlkL3dzL3doYXRzYXV0aC9wdWJsaWM=";
    wauthparam.keyword="aHR0cHM6Ly93YS5tZS82MjgzMTMxODk1MDAwP3RleHQ9d2g0dDVhdXRoMA==";
@@ -245,9 +245,9 @@ Pada file index.html
 
 Pada file index.js
 ```js
-import {getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/cookie.js";
-import {getJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/api.js";
-import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/url.js";
+import {getCookie} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/cookie.js";
+import {getJSON} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/api.js";
+import {redirect} from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/url.js";
 
 if (getCookie("login")){
     getJSON("https://asia-southeast2-awangga.cloudfunctions.net/florka/data/user",responseFunction,"login",getCookie("login"));
