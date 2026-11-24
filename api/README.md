@@ -21,11 +21,14 @@ import { getJSON, postJSON, putJSON, deleteJSON, uploadFile, downloadFile } from
   headers: Headers, // header respons, misalnya headers.get("X-RateLimit-Remaining")
   error: String,    // null, atau jenis kegagalan saat status 0 (lihat di bawah)
   cached: Boolean,  // getJSON saja: true kalau data dari cache
-  stale: Boolean    // getJSON dengan cache.staleIfError saja: true kalau request gagal dan data tersimpan yang dipakai
+  stale: Boolean,   // getJSON dengan cache.staleIfError saja: true kalau request gagal dan data tersimpan yang dipakai
+  staleReason: Number | String // kalau stale: status HTTP kegagalannya (mis. 403), atau "network"/"timeout"/"offline"
 }
 ```
 
-`headers`, `error`, dan `cached` ada sejak 0.0.29; `stale` sejak 0.0.35 (hanya ada kalau `true`).
+`headers`, `error`, dan `cached` ada sejak 0.0.29; `stale` sejak 0.0.35 dan `staleReason` sejak 0.0.37 (keduanya hanya ada kalau data lama dipakai).
+
+`responseFunction` selalu dipanggil **belakangan**, sesudah baris setelah panggilan `getJSON`/`postJSON`/... selesai, juga saat data diambil dari cache (sejak 0.0.37; sebelumnya cache memanggilnya saat itu juga). Jadi pola `getJSON(url, sembunyikanSpinner, { cache }); tampilkanSpinner();` aman.
 
 ### Saat Request Gagal Total
 
@@ -38,6 +41,8 @@ import { getJSON, postJSON, putJSON, deleteJSON, uploadFile, downloadFile } from
 | `"network"` | Selain itu: server tidak terjangkau, DNS gagal, atau CORS ditolak. Browser sengaja tidak memberi tahu JavaScript bedanya; alasan persisnya ada di console |
 | `"abort"` | Dibatalkan lewat opsi `signal` (sejak 0.0.30) |
 | `"nofile"` | `uploadFile` saja: tidak ada file yang dipilih, request tidak dikirim (sejak 0.0.30) |
+
+Satu `error` lagi muncul dengan status asli server, bukan 0: `"select"` (sejak 0.0.37) kalau fungsi `cache.select` milik Anda melempar error. `data` berisi `null`, error aslinya dicatat dengan `console.error`, hasilnya tidak disimpan, dan tidak diganti data lama walaupun `staleIfError` aktif.
 
 Server yang menjawab dengan status error (400, 404, 500) bukan kegagalan total: `status` berisi kode aslinya dan `data` berisi body error dari server. Kegagalan total dicatat dengan `console.warn` (kecuali `"abort"`, yang memang disengaja).
 
@@ -118,8 +123,9 @@ onInput("cari", async () => {
 - **Yang menghemat request hanya `ttl`.** Selama `ttl` detik tidak ada request sama sekali. Sesudahnya request selalu dikirim, juga yang dijawab `304`: GitHub API tanpa login tetap memotong kuota 60 request per jam untuk jawaban `304`. Yang dihemat `304` hanya ukuran unduhan.
 - **Revalidasi ETag butuh izin CORS.** Dari origin lain, JavaScript hanya bisa membaca `ETag` kalau server menyebutnya di `Access-Control-Expose-Headers`. api.github.com dan jsDelivr melakukannya. GitHub Pages dan raw.githubusercontent.com tidak, jadi `If-None-Match` tidak pernah dikirim dan sesudah `ttl` datanya diunduh ulang (cache HTTP browser masih bisa menghemat sebagian). Dari origin yang sama, `ETag` selalu terbaca.
 - **Entri terikat ke URL** (sejak 0.0.35). Kalau URL berubah tapi `key` sama, data lama tidak dipakai dan request dikirim.
-- **`staleIfError: true`** (sejak 0.0.35): kalau request sesudah `ttl` gagal (jaringan putus, timeout, atau status selain 2xx seperti `403` karena kuota habis), hasilnya data tersimpan dengan status saat disimpan, `cached: true`, dan `stale: true`, bukan galat. Request yang dibatalkan sendiri lewat `signal` tetap `error: "abort"`.
-- **`select: data => ...`** (sejak 0.0.35): memangkas balasan 2xx sebelum disimpan, supaya `localStorage` tidak terisi data yang tidak dipakai. Hasil yang dikembalikan juga sudah dipangkas, baik dari server maupun dari cache.
+- **`staleIfError: true`** (sejak 0.0.35): kalau request sesudah `ttl` gagal (jaringan putus, timeout, atau status selain 2xx seperti `403` karena kuota habis), hasilnya data tersimpan dengan status saat disimpan, `cached: true`, `stale: true`, dan `staleReason` (penyebabnya: status HTTP atau jenis kegagalan jaringan, sejak 0.0.37), bukan galat. Request yang dibatalkan sendiri lewat `signal` tetap `error: "abort"`.
+- **Jeda saat kuota habis** (sejak 0.0.37, dengan `staleIfError`): kalau server menjawab `403` atau `429` dan memberi tahu kapan boleh mencoba lagi (`Retry-After`, atau `X-RateLimit-Reset` saat `X-RateLimit-Remaining` bernilai `0`, seperti GitHub), sampai waktu itu data lama dipakai **tanpa request**, paling lama satu jam. Tanpa header itu tidak ada jeda.
+- **`select: data => ...`** (sejak 0.0.35): memangkas balasan 2xx sebelum disimpan, supaya `localStorage` tidak terisi data yang tidak dipakai. Hasil yang dikembalikan juga sudah dipangkas, baik dari server maupun dari cache. Entri mengingat kode `select` yang membuatnya (sejak 0.0.37): kalau `select` diubah, data berbentuk lama tidak dipakai lagi. Kalau `select` memakai variabel dari luar yang berubah, ganti `key`-nya.
 
 Contoh: versi rilis terbaru dari GitHub API, disimpan 1 jam. Hanya dua field yang disimpan (balasan aslinya sekitar 10 KB), dan kalau kuota habis atau internet putus, versi terakhir yang tersimpan tetap tampil.
 

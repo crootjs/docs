@@ -21,11 +21,14 @@ import { getJSON, postJSON, putJSON, deleteJSON, uploadFile, downloadFile } from
   headers: Headers, // response headers, e.g. headers.get("X-RateLimit-Remaining")
   error: String,    // null, or the kind of failure when status is 0 (see below)
   cached: Boolean,  // getJSON only: true when the data came from the cache
-  stale: Boolean    // getJSON with cache.staleIfError only: true when the request failed and stored data was used
+  stale: Boolean,   // getJSON with cache.staleIfError only: true when the request failed and stored data was used
+  staleReason: Number | String // when stale: the failed HTTP status (e.g. 403), or "network"/"timeout"/"offline"
 }
 ```
 
-`headers`, `error`, and `cached` exist since 0.0.29; `stale` since 0.0.35 (present only when `true`).
+`headers`, `error`, and `cached` exist since 0.0.29; `stale` since 0.0.35 and `staleReason` since 0.0.37 (both only present when stale data is used).
+
+`responseFunction` is always called **later**, after the line following the `getJSON`/`postJSON`/... call has run, also when the data comes from the cache (since 0.0.37; before, the cache called it right away). So `getJSON(url, hideSpinner, { cache }); showSpinner();` is safe.
 
 ### When a Request Fails Entirely
 
@@ -38,6 +41,8 @@ import { getJSON, postJSON, putJSON, deleteJSON, uploadFile, downloadFile } from
 | `"network"` | Anything else: server unreachable, DNS failure, or CORS rejected. Browsers deliberately do not let JavaScript tell these apart; the exact reason is in the console |
 | `"abort"` | Cancelled through the `signal` option (since 0.0.30) |
 | `"nofile"` | `uploadFile` only: no file was selected, so the request was not sent (since 0.0.30) |
+
+One more `error` comes with the server's real status instead of 0: `"select"` (since 0.0.37) when your `cache.select` function throws. `data` is `null`, the original error is logged with `console.error`, the result is not stored, and it is not replaced by stale data even with `staleIfError`.
 
 A server that answers with an error status (400, 404, 500) is not a total failure: `status` holds the real code and `data` holds the server's error body. Total failures are logged with `console.warn` (except `"abort"`, which is intentional).
 
@@ -118,8 +123,9 @@ onInput("search", async () => {
 - **Only `ttl` saves requests.** For `ttl` seconds no request is made at all. After that a request is always sent, including ones answered with `304`: the GitHub API without login still counts a `304` against the quota of 60 requests per hour. A `304` only saves download size.
 - **ETag revalidation needs CORS permission.** From another origin, JavaScript can read `ETag` only if the server lists it in `Access-Control-Expose-Headers`. api.github.com and jsDelivr do. GitHub Pages and raw.githubusercontent.com don't, so `If-None-Match` is never sent and after `ttl` the data is downloaded again (the browser's HTTP cache may still save some of it). From the same origin, `ETag` is always readable.
 - **Entries are tied to their URL** (since 0.0.35). If the URL changes but `key` stays the same, the old data is not used and a request is sent.
-- **`staleIfError: true`** (since 0.0.35): if the request after `ttl` fails (network down, timeout, or a non-2xx status such as `403` when the quota is used up), the result is the stored data with its stored status, `cached: true`, and `stale: true`, instead of an error. A request you abort yourself through `signal` still gives `error: "abort"`.
-- **`select: data => ...`** (since 0.0.35): trims a 2xx answer before it is stored, so `localStorage` doesn't fill up with data you don't use. The returned result is trimmed too, whether it came from the server or the cache.
+- **`staleIfError: true`** (since 0.0.35): if the request after `ttl` fails (network down, timeout, or a non-2xx status such as `403` when the quota is used up), the result is the stored data with its stored status, `cached: true`, `stale: true`, and `staleReason` (the cause: an HTTP status or the kind of network failure, since 0.0.37), instead of an error. A request you abort yourself through `signal` still gives `error: "abort"`.
+- **Pause when the quota is used up** (since 0.0.37, with `staleIfError`): if the server answers `403` or `429` and says when to try again (`Retry-After`, or `X-RateLimit-Reset` when `X-RateLimit-Remaining` is `0`, as GitHub does), the stored data is used **without a request** until then, at most one hour. Without those headers there is no pause.
+- **`select: data => ...`** (since 0.0.35): trims a 2xx answer before it is stored, so `localStorage` doesn't fill up with data you don't use. The returned result is trimmed too, whether it came from the server or the cache. Entries remember the `select` code that produced them (since 0.0.37): after you change `select`, data in the old shape is no longer used. If `select` uses outside variables that change, change the `key` too.
 
 Example: the latest release version from the GitHub API, stored for 1 hour. Only two fields are stored (the original answer is about 10 KB), and if the quota is used up or the network is down, the last stored version is still shown.
 
