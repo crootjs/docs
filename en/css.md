@@ -15,7 +15,7 @@ It follows the same principles as the CrootJS JS modules: small and frugal (no f
 
 `croot.min.css` is minified automatically by jsDelivr. Put your page CSS **after** it, although the order doesn't actually matter: every `croot.css` rule lives in `@layer croot`, and unlayered CSS always beats layers, so you can override anything without `!important`.
 
-Full showcase of every element and component: [croot.js.org/examples/css](https://croot.js.org/examples/css/).
+Full showcase of every element and component: [croot.js.org/examples/css](https://croot.js.org/examples/css/). For application pages there are optional extras, [`ui.css` and `themes.css`](ui), and copy-ready [page patterns](https://croot.js.org/examples/pola/).
 
 ## Without Classes
 

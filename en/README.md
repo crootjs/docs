@@ -47,6 +47,7 @@ Per-module documentation for `crootjs/lib`:
 - [api.js](api/) — `getJSON`, `postJSON`, `putJSON`, `deleteJSON` (callback or `await`, headers, timeout, cancellation, ETag cache), `uploadFile` with progress, `downloadFile`
 - [element.js](element/) — `onClick`, `setInner`, `getValue`, `serializeForm`, `fillForm`, and other DOM helpers
 - [croot.css](css) — small, green CSS framework (~2 KB gzipped): plain HTML looks finished without classes, plus layout (`.container`, `.stack`, `.cluster`, `.grid`), cards, badges, alerts, navigation, dark mode, and theming through CSS variables; optional `icons.css` (49 icons, ~1.9 KB gzipped)
+- [ui.css, themes.css, tabs.js](ui) — optional app components (shell with sidebar, tabs, menus, accordion, summary numbers, switch, steps, and more), four themes with character (`kampus`, `kertas`, `kontras`, `niaga`), `initTabs`, and copy-ready [page patterns](https://croot.js.org/examples/pola/)
 - [form.js](form) — form validation with a message under each field, screen-reader friendly (`handleForm`, `validateForm`, `clearFormErrors`)
 - [router.js](router) — single-page app router: hash/history mode, `:id` params, query, 404 page, async handlers, focus and `aria-current` (`startRouter`)
 - [table.js](table) — data table: per-column sort, search, pagination, server mode; replaces jQuery DataTables (`createTable`)

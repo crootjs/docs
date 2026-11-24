@@ -15,7 +15,7 @@ Dibuat dengan prinsip yang sama dengan modul JS CrootJS: kecil dan hemat (tidak 
 
 `croot.min.css` diperkecil otomatis oleh jsDelivr. Taruh CSS halaman Anda **sesudahnya**, walau sebenarnya urutan tidak menentukan: semua aturan `croot.css` ada di dalam `@layer croot`, dan CSS tanpa layer selalu menang atas layer, jadi Anda bisa menimpa apa pun tanpa `!important`.
 
-Contoh lengkap semua elemen dan komponen: [croot.js.org/examples/css](https://croot.js.org/examples/css/).
+Contoh lengkap semua elemen dan komponen: [croot.js.org/examples/css](https://croot.js.org/examples/css/). Untuk halaman aplikasi ada tambahan opsional [`ui.css` dan `themes.css`](ui), dan [pola halaman](https://croot.js.org/examples/pola/) siap salin.
 
 ## Tanpa Kelas
 

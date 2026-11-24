@@ -47,6 +47,7 @@ Dokumentasi per-modul dari `crootjs/lib`:
 - [api.js](api/) — `getJSON`, `postJSON`, `putJSON`, `deleteJSON` (callback atau `await`, header, timeout, batal, cache ETag), `uploadFile` dengan kemajuan, `downloadFile`
 - [element.js](element/) — `onClick`, `setInner`, `getValue`, `serializeForm`, `fillForm`, dan helper DOM lainnya
 - [croot.css](css) — framework CSS kecil dan hijau (~2 KB gzip): HTML biasa langsung rapi tanpa kelas, plus tata letak (`.container`, `.stack`, `.cluster`, `.grid`), kartu, badge, alert, navigasi, mode gelap, dan tema lewat variabel CSS; ikon opsional `icons.css` (49 ikon, ~1,9 KB gzip)
+- [ui.css, themes.css, tabs.js](ui) — komponen aplikasi opsional (kerangka dengan sidebar, tab, menu, akordeon, angka ringkasan, sakelar, langkah, dan lainnya), empat tema berkarakter (`kampus`, `kertas`, `kontras`, `niaga`), `initTabs`, dan [pola halaman](https://croot.js.org/examples/pola/) siap salin
 - [form.js](form) — validasi form dengan pesan di bawah setiap field, ramah pembaca layar (`handleForm`, `validateForm`, `clearFormErrors`)
 - [router.js](router) — router aplikasi satu halaman: mode hash/history, parameter `:id`, query, halaman 404, handler async, fokus dan `aria-current` (`startRouter`)
 - [table.js](table) — tabel data: urut per kolom, cari, halaman, mode server; pengganti jQuery DataTables (`createTable`)
