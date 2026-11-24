@@ -56,6 +56,7 @@ import { getJSON, postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.3
 
 - Always pin an exact version tag (`@0.0.5`), never `@latest`, in committed code — `@latest` can silently change behavior under you.
 - Import only the specific module files you actually use (`cookie.js`, `url.js`, ...), not the whole library, so the page only loads what it needs.
+- In production use `.min.js` (`api.min.js`) for **every** CrootJS import on the page, all from the same version. Never mix `api.min.js` with `storage.js`: they are different module URLs, so a module imported by both is loaded twice and each copy keeps its own state. Since 0.0.38 the `.min.js` files in a release import the `.min.js` of their sibling modules.
 
 ## 4. No AI slop
 

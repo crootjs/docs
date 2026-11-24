@@ -6,6 +6,8 @@ Dokumentasi Pemakaian CrootJS dengan AI Companion dan Human in the loop.
 
 Pindah dari **JSCroot**? Baca [Dari JSCroot ke CrootJS](migrasi): alamat impor baru, fungsi yang dihapus beserta penggantinya, dan perilaku yang berubah.
 
+Impor setiap modul dari versi yang dipatok, mis. `https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.min.js`. Untuk produksi pakai `.min.js` untuk **semua** impor CrootJS di satu halaman, jangan dicampur dengan `.js`: `api.min.js` dan `storage.js` adalah alamat modul yang berbeda, jadi modul yang diimpor keduanya termuat dua kali dengan state masing-masing. Sejak 0.0.38 berkas `.min.js` di setiap rilis mengimpor `.min.js` modul pendampingnya.
+
 ## Referensi Modul
 
 Dokumentasi per-modul dari `crootjs/lib`:

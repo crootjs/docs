@@ -6,6 +6,8 @@ Documentation for using CrootJS with an AI Companion and a human in the loop.
 
 Coming from **JSCroot**? Read [From JSCroot to CrootJS](migrasi): new import URLs, removed functions and their replacements, and changed behavior.
 
+Import every module from a pinned version, e.g. `https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.min.js`. In production use `.min.js` for **every** CrootJS import on a page, never mixed with `.js`: `api.min.js` and `storage.js` are different module URLs, so a module imported by both is loaded twice, each copy with its own state. Since 0.0.38 the `.min.js` files in every release import the `.min.js` of their sibling modules.
+
 ## Module Reference
 
 Per-module documentation for `crootjs/lib`:
