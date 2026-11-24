@@ -19,6 +19,7 @@ Per-module documentation for `crootjs/lib`:
 - [chart.js](chart) — hand-written SVG bar, line, and donut charts: round-number axes, Indonesian number format, dark mode, accessible data table and keyboard tooltips (`createChart`)
 - [markdown.js](markdown) — Markdown to safe HTML (raw HTML escaped, dangerous URLs rejected), render into an element, load `.md` files (`markdownToHTML`, `renderMarkdown`, `getMarkdown`)
 - [qr.js](qr) — QR codes as SVG, written from scratch (`renderQR`, `qrSVG`, `qrMatrix`)
+- [openapi.js](openapi) — API documentation from `openapi.yaml`/`.json`, a Swagger UI replacement, with `api.js` code and a try-it button per operation (`renderOpenAPI`, `loadOpenAPI`, `openAPIExample`); its YAML parser is `yaml.js` (`parseYAML`)
 - [cookie.js](cookie) — set/get/delete cookies
 - [storage.js](storage) — set/get/delete data in localStorage & sessionStorage (with an optional expiry)
 - [debounce.js](debounce) — `debounce`/`throttle` to limit how often a function runs (search-as-you-type, scroll, etc.)

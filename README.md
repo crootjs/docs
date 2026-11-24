@@ -19,6 +19,7 @@ Dokumentasi per-modul dari `crootjs/lib`:
 - [chart.js](chart) — grafik SVG batang, garis, dan donat yang ditulis sendiri: skala angka bulat, format angka Indonesia, mode gelap, tabel dan tooltip keyboard untuk aksesibilitas (`createChart`)
 - [markdown.js](markdown) — Markdown menjadi HTML yang aman (HTML mentah di-escape, URL berbahaya ditolak), render ke elemen, muat file `.md` (`markdownToHTML`, `renderMarkdown`, `getMarkdown`)
 - [qr.js](qr) — kode QR sebagai SVG, ditulis sendiri (`renderQR`, `qrSVG`, `qrMatrix`)
+- [openapi.js](openapi) — dokumentasi API dari `openapi.yaml`/`.json`, pengganti Swagger UI, dengan kode `api.js` dan tombol coba per operasi (`renderOpenAPI`, `loadOpenAPI`, `openAPIExample`); pengurai YAML-nya `yaml.js` (`parseYAML`)
 - [cookie.js](cookie) — simpan/ambil/hapus cookie
 - [storage.js](storage) — simpan/ambil/hapus data di localStorage & sessionStorage (dengan opsi kadaluwarsa)
 - [debounce.js](debounce) — `debounce`/`throttle` untuk membatasi frekuensi eksekusi function (search-as-you-type, scroll, dsb)
