@@ -7,7 +7,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/useragent.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/useragent.js";
 ```
 
 ## `isMobile()`
@@ -15,8 +15,8 @@ import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/userage
 Mengembalikan `true` jika `navigator.userAgent` mengandung salah satu dari `Android`, `webOS`, `iPhone`, `iPad`, `iPod`, `BlackBerry`, `IEMobile`, atau `Opera Mini` (tanpa membedakan huruf besar/kecil), dan `false` jika tidak. Tidak menerima parameter.
 
 ```javascript
-import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/useragent.js";
-import { show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/element.js";
+import { isMobile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/useragent.js";
+import { show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/element.js";
 
 if (isMobile()) {
     show("tombol-buka-app");

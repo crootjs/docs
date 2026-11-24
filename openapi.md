@@ -9,8 +9,8 @@ Ukurannya sekitar 11 KB gzip. Swagger UI sekitar 464 KB gzip (JS dan CSS). Pengu
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { renderOpenAPI, loadOpenAPI, openAPIExample } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/openapi.js";
-import { parseYAML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/yaml.js";
+import { renderOpenAPI, loadOpenAPI, openAPIExample } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/openapi.js";
+import { parseYAML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/yaml.js";
 ```
 
 ## Halaman dokumentasi di GitHub Pages
@@ -25,7 +25,7 @@ Empat berkas dalam satu folder, misalnya `docs-api/` di repo GitHub Pages backen
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dokumentasi API Catatan</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/croot.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/croot.min.css">
   <link rel="stylesheet" href="style.css">
   <script type="module" src="index.js"></script>
 </head>
@@ -39,7 +39,7 @@ Empat berkas dalam satu folder, misalnya `docs-api/` di repo GitHub Pages backen
 
 ```javascript
 // index.js
-import { renderOpenAPI } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/openapi.min.js";
+import { renderOpenAPI } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/openapi.min.js";
 
 renderOpenAPI("dokumentasi", "./openapi.yaml");
 ```
@@ -168,7 +168,7 @@ Belum didukung: `$ref` ke berkas lain (ditampilkan sebagai "`$ref` tidak ditemuk
 Pengurai YAML kecil yang dipakai `openapi.js`, bisa juga dipakai sendiri untuk berkas konfigurasi. Mengubah teks YAML menjadi nilai JavaScript, atau melempar `SyntaxError` dengan nomor baris (juga di `error.line`).
 
 ```javascript
-import { parseYAML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/yaml.min.js";
+import { parseYAML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/yaml.min.js";
 
 parseYAML("nama: Sari\nhobi: [baca, lari]"); // { nama: "Sari", hobi: ["baca", "lari"] }
 ```

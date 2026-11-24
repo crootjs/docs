@@ -9,7 +9,7 @@ Positions are always `[lng, lat]` as in GeoJSON, and results are always in **met
 ## Usage (Import)
 
 ```javascript
-import { getDistance, getArea, isInside, createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/geomeasure.js";
+import { getDistance, getArea, isInside, createAffineTransform } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/geomeasure.js";
 ```
 
 Functions that accept `geojson` are as flexible as [`parseGeoJSON`](geo): a `FeatureCollection`, a single `Feature`, a single bare geometry, an array of them, or JSON text. The examples below use `data` from [contoh.geojson](https://github.com/petapedia/geojson/blob/main/contoh.geojson).
@@ -103,9 +103,9 @@ An affine transform on `[lng, lat]` is accurate enough for district-sized areas 
 The most common combination: draw the radius, get the user's location, then check whether they are inside it.
 
 ```javascript
-import { createMap, addGeoJSON, fitMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/map.js";
-import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/mapcontrol.js";
-import { createCircle, isInside, getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/geomeasure.js";
+import { createMap, addGeoJSON, fitMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/map.js";
+import { locateUser } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/mapcontrol.js";
+import { createCircle, isInside, getDistance } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/geomeasure.js";
 
 const kampus = [107.575914, -6.8732098];
 const area = createCircle(kampus, 100);

@@ -7,7 +7,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { toast, toastSuccess, toastError, toastWarning, toastInfo } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/toast.js";
+import { toast, toastSuccess, toastError, toastWarning, toastInfo } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/toast.js";
 ```
 
 ## `toast(message, type = "info", duration = 3000)`
@@ -44,8 +44,8 @@ toastInfo("Memuat data");
 Untuk proses yang lamanya tidak bisa ditebak, misalnya unggahan, pakai `duration` `0` lalu tutup sendiri setelah selesai:
 
 ```javascript
-import { toastInfo, toastSuccess, toastError } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/toast.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.js";
+import { toastInfo, toastSuccess, toastError } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/toast.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/api.js";
 
 const tutup = toastInfo("Mengirim...", 0);
 const { status } = await postJSON("https://api.example.com/laporan", { judul: "Jalan rusak" }, null);

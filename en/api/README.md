@@ -7,7 +7,7 @@
 ## Usage (Import)
 
 ```javascript
-import { getJSON, postJSON, putJSON, deleteJSON, uploadFile, downloadFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.js";
+import { getJSON, postJSON, putJSON, deleteJSON, uploadFile, downloadFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/api.js";
 ```
 
 ## Result Shape
@@ -47,7 +47,7 @@ One more `error` comes with the server's real status instead of 0: `"select"` (s
 A server that answers with an error status (400, 404, 500) is not a total failure: `status` holds the real code and `data` holds the server's error body. Total failures are logged with `console.warn` (except `"abort"`, which is intentional).
 
 ```javascript
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/api.js";
 
 const { status, data, error } = await getJSON("https://api.example.com/products");
 if (status === 200) {
@@ -101,8 +101,8 @@ await getJSON(url, null, { headers: { login: token }, timeout: 8000 });
 Useful for search-as-you-type: the old request is cancelled as soon as the user types again, so an old result does not overwrite a newer one.
 
 ```javascript
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.js";
-import { onInput, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/element.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/api.js";
+import { onInput, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/element.js";
 
 let search = null;
 onInput("search", async () => {
@@ -130,8 +130,8 @@ onInput("search", async () => {
 Example: the latest release version from the GitHub API, stored for 1 hour. Only two fields are stored (the original answer is about 10 KB), and if the quota is used up or the network is down, the last stored version is still shown.
 
 ```javascript
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.js";
-import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/element.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/api.js";
+import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/element.js";
 
 const { status, data, headers, error } = await getJSON(
     "https://api.github.com/repos/crootjs/lib/releases/latest",
@@ -171,8 +171,8 @@ Note the order: `responseFunction` is **not** the last argument, and for `postJS
 | `options` | Replaces `tokenkey, tokenvalue`: `{ headers, timeout, signal, cache }` (see [Options](#options-headers-timeout-signal-and-cache)) |
 
 ```javascript
-import { getJSON, postJSON, putJSON, deleteJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.js";
-import { getCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/cookie.js";
+import { getJSON, postJSON, putJSON, deleteJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/api.js";
+import { getCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/cookie.js";
 
 const auth = { headers: { login: getCookie("login") } };
 
@@ -216,8 +216,8 @@ uploadFile(url, source, responseFunction, options)
 ```
 
 ```javascript
-import { uploadFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.js";
-import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/element.js";
+import { uploadFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/api.js";
+import { onClick } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/element.js";
 
 let upload = null;
 onClick("upload", async () => {
@@ -249,7 +249,7 @@ downloadFile(url, responseFunction, options)
 Its options are `headers`, `timeout`, `signal` (same as `getJSON`), plus `fileName`: when set, a 2xx file is saved by the browser right away under that name.
 
 ```javascript
-import { downloadFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.js";
+import { downloadFile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/api.js";
 
 // saved right away
 const { status, data } = await downloadFile("https://api.example.com/reports/7.pdf", null, {
@@ -272,7 +272,7 @@ insertHTML(url, id, runFunction, errorFunction?)
 Fetches HTML from `url`, sets it as the content of element `id`, then calls `runFunction()`. `errorFunction` (optional) is called with an `Error` if the element does not exist, the server answers with a non-2xx status, the network fails, or the request exceeds 15 seconds. On failure, the element's content is left unchanged and `runFunction` is not called.
 
 ```javascript
-import { insertHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.js";
+import { insertHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/api.js";
 
 insertHTML("./sections/navbar.html", "navbar", () => {
     console.log("Navbar loaded");
@@ -292,7 +292,7 @@ getDomHTML(url, domFunction)
 Fetches HTML from `url` and passes it to `domFunction(htmlDom)` as a parsed `Document`, so it can be read or modified before being inserted. The response status is not checked: a 404/500 error page is passed as a `Document` too. Only when the network fails or 15 seconds pass is `domFunction` not called (the reason is in the console).
 
 ```javascript
-import { getDomHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.js";
+import { getDomHTML } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/api.js";
 
 getDomHTML("./sections/card.html", (htmlDom) => {
     const title = htmlDom.querySelector(".title");

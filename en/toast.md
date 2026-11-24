@@ -7,7 +7,7 @@
 ## Usage (Import)
 
 ```javascript
-import { toast, toastSuccess, toastError, toastWarning, toastInfo } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/toast.js";
+import { toast, toastSuccess, toastError, toastWarning, toastInfo } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/toast.js";
 ```
 
 ## `toast(message, type = "info", duration = 3000)`
@@ -44,8 +44,8 @@ toastInfo("Loading data");
 For work whose duration you can't predict, such as an upload, pass `duration` `0` and close it yourself when done:
 
 ```javascript
-import { toastInfo, toastSuccess, toastError } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/toast.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.37/api.js";
+import { toastInfo, toastSuccess, toastError } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/toast.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.38/api.js";
 
 const close = toastInfo("Sending...", 0);
 const { status } = await postJSON("https://api.example.com/reports", { title: "Damaged road" }, null);
