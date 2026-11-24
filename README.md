@@ -8,6 +8,38 @@ Pindah dari **JSCroot**? Baca [Dari JSCroot ke CrootJS](migrasi): alamat impor b
 
 Impor setiap modul dari versi yang dipatok, mis. `https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/api.min.js`. Untuk produksi pakai `.min.js` untuk **semua** impor CrootJS di satu halaman, jangan dicampur dengan `.js`: `api.min.js` dan `storage.js` adalah alamat modul yang berbeda, jadi modul yang diimpor keduanya termuat dua kali dengan state masing-masing. Sejak 0.0.38 berkas `.min.js` di setiap rilis mengimpor `.min.js` modul pendampingnya.
 
+Patok versi ke **tag** (`@0.0.39`), bukan ke SHA commit dari `main`. Berkas `.min.js` buatan kita hanya ada di commit rilis (di branch `dist`, sejak 0.0.40); untuk SHA dari `main`, jsDelivr memperkecil sendiri dan `api.min.js`-nya kembali mengimpor `"./storage.js"`.
+
+### Memuat lebih cepat dengan `modulepreload`
+
+Browser baru tahu sebuah modul butuh modul lain setelah modul itu selesai diunduh, jadi setiap tingkat impor menambah satu kali bolak-balik ke server (sekitar 150 ms di jaringan seluler). Modul berikut mengimpor modul lain:
+
+| Modul | Ikut dimuat | Tingkat |
+|---|---|---|
+| `api.js` | `storage.js` | 1 |
+| `auth.js` | `cookie.js`, `api.js`, `storage.js`, `url.js`, `element.js`, `template.js`, `useragent.js`, `qr.js` | 2 |
+| `config.js` | `auth.js`, `cookie.js`, `api.js`, `storage.js`, `url.js`, `element.js`, `template.js`, `useragent.js`, `qr.js` | 3 |
+| `form.js` | `element.js` | 1 |
+| `geomeasure.js` | `geo.js` | 1 |
+| `georoute.js` | `geo.js`, `geomeasure.js` | 2 |
+| `map.js` | `geo.js` | 1 |
+| `mapcluster.js` | `geo.js` | 1 |
+| `mapdraw.js` | `geo.js` | 1 |
+| `mapheat.js` | `geo.js` | 1 |
+| `mapmodel.js` | `model3d.js` | 1 |
+| `mapoffline.js` | `mapvector.js` | 1 |
+| `maptools.js` | `geomeasure.js`, `geo.js` | 2 |
+
+Tambahkan `<link rel="modulepreload">` di `<head>` untuk modul yang Anda impor **dan** modul di kolom "Ikut dimuat", dengan versi dan akhiran `.min.js` yang sama. Semuanya lalu diunduh bersamaan sejak awal. Contoh untuk halaman yang mengimpor `api.min.js`:
+
+```html
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/api.min.js">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/storage.min.js">
+<script type="module" src="index.js"></script>
+```
+
+Di landing page croot.js.org, cara ini memajukan request API pertama sekitar 300 ms pada latensi 150 ms. Tabel di atas dibuat dari kode dengan `python3 tools/module-deps.py` di repo `lib`.
+
 ## Referensi Modul
 
 Dokumentasi per-modul dari `crootjs/lib`:

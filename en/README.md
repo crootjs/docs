@@ -8,6 +8,38 @@ Coming from **JSCroot**? Read [From JSCroot to CrootJS](migrasi): new import URL
 
 Import every module from a pinned version, e.g. `https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/api.min.js`. In production use `.min.js` for **every** CrootJS import on a page, never mixed with `.js`: `api.min.js` and `storage.js` are different module URLs, so a module imported by both is loaded twice, each copy with its own state. Since 0.0.38 the `.min.js` files in every release import the `.min.js` of their sibling modules.
 
+Pin to a **tag** (`@0.0.39`), not to a commit SHA from `main`. Our own `.min.js` files only exist in the release commits (on the `dist` branch, since 0.0.40); for a SHA from `main`, jsDelivr minifies on its own and its `api.min.js` imports `"./storage.js"` again.
+
+### Loading faster with `modulepreload`
+
+A browser only learns that a module needs another one after it has downloaded it, so every level of imports adds one round trip to the server (about 150 ms on mobile networks). These modules import others:
+
+| Module | Also loads | Levels |
+|---|---|---|
+| `api.js` | `storage.js` | 1 |
+| `auth.js` | `cookie.js`, `api.js`, `storage.js`, `url.js`, `element.js`, `template.js`, `useragent.js`, `qr.js` | 2 |
+| `config.js` | `auth.js`, `cookie.js`, `api.js`, `storage.js`, `url.js`, `element.js`, `template.js`, `useragent.js`, `qr.js` | 3 |
+| `form.js` | `element.js` | 1 |
+| `geomeasure.js` | `geo.js` | 1 |
+| `georoute.js` | `geo.js`, `geomeasure.js` | 2 |
+| `map.js` | `geo.js` | 1 |
+| `mapcluster.js` | `geo.js` | 1 |
+| `mapdraw.js` | `geo.js` | 1 |
+| `mapheat.js` | `geo.js` | 1 |
+| `mapmodel.js` | `model3d.js` | 1 |
+| `mapoffline.js` | `mapvector.js` | 1 |
+| `maptools.js` | `geomeasure.js`, `geo.js` | 2 |
+
+Add `<link rel="modulepreload">` in `<head>` for the modules you import **and** the ones in the "Also loads" column, with the same version and `.min.js` suffix. They are then all downloaded together from the start. Example for a page that imports `api.min.js`:
+
+```html
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/api.min.js">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.39/storage.min.js">
+<script type="module" src="index.js"></script>
+```
+
+On the croot.js.org landing page this moves the first API request about 300 ms earlier at 150 ms latency. The table above is generated from the code with `python3 tools/module-deps.py` in the `lib` repo.
+
 ## Module Reference
 
 Per-module documentation for `crootjs/lib`:
