@@ -28,6 +28,8 @@ setLocal("prefs", { theme: "dark", fontSize: 16 });
 
 Sama dengan `setLocal`, dengan masa berlaku `exdays` hari, `exhour` jam, atau `exsecs` detik dihitung dari sekarang. Setelah lewat, `getLocal` memberi `null` dan menghapus key itu dari storage. Data kadaluwarsa tidak dihapus sebelum dibaca.
 
+Satuan waktunya berbeda per fungsi. Opsi `cache.ttl` di [api.js](api/) juga memakai detik, sama dengan `setLocalWithExpireSecond`.
+
 ```javascript
 setLocalWithExpireHour("draftArtikel", { judul: "Banjir di Dayeuhkolot" }, 2); // berlaku 2 jam
 ```

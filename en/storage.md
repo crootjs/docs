@@ -28,6 +28,8 @@ setLocal("prefs", { theme: "dark", fontSize: 16 });
 
 Same as `setLocal`, with an expiry of `exdays` days, `exhour` hours, or `exsecs` seconds from now. After that, `getLocal` returns `null` and removes the key from storage. Expired data is not removed until it is read.
 
+The time unit differs per function. The `cache.ttl` option in [api.js](api/) also uses seconds, like `setLocalWithExpireSecond`.
+
 ```javascript
 setLocalWithExpireHour("articleDraft", { title: "Flooding in Dayeuhkolot" }, 2); // valid for 2 hours
 ```

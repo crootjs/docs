@@ -20,11 +20,12 @@ import { getJSON, postJSON, putJSON, deleteJSON, uploadFile, downloadFile } from
   data: Object,     // body yang di-parse dari JSON (null kalau bukan JSON); Blob untuk downloadFile 2xx
   headers: Headers, // header respons, misalnya headers.get("X-RateLimit-Remaining")
   error: String,    // null, atau jenis kegagalan saat status 0 (lihat di bawah)
-  cached: Boolean   // getJSON saja: true kalau data dari cache
+  cached: Boolean,  // getJSON saja: true kalau data dari cache
+  stale: Boolean    // getJSON dengan cache.staleIfError saja: true kalau request gagal dan data tersimpan yang dipakai
 }
 ```
 
-`headers`, `error`, dan `cached` ada sejak 0.0.29.
+`headers`, `error`, dan `cached` ada sejak 0.0.29; `stale` sejak 0.0.35 (hanya ada kalau `true`).
 
 ### Saat Request Gagal Total
 
@@ -79,7 +80,7 @@ Argumen sesudah `responseFunction` boleh berupa pasangan token lama `tokenkey, t
 | `headers` | — | Object header tambahan, misalnya `{ Authorization: "Bearer ...", "X-Client": "web" }` |
 | `timeout` | `15000` | Milidetik sebelum request dibatalkan (`error: "timeout"`) |
 | `signal` | — | `AbortSignal` dari `AbortController`; `controller.abort()` membatalkan request (`error: "abort"`). Sejak 0.0.30 |
-| `cache` | — | Hanya `getJSON`: `{ key, ttl }`. Hasil yang berhasil disimpan di `localStorage` dengan nama `key`; selama `ttl` detik tidak ada request sama sekali (`cached: true`). Sesudahnya, kalau server memberi `ETag`, request membawa `If-None-Match`; jawaban `304` memakai data tersimpan dengan status saat disimpan (`200`) dan `cached: true` |
+| `cache` | — | Hanya `getJSON`: `{ key, ttl, staleIfError?, select? }`. Hasil yang berhasil disimpan di `localStorage` dengan nama `key`; selama `ttl` **detik** (sama dengan `setLocalWithExpireSecond` di [storage.js](../storage), bukan jam atau hari) tidak ada request sama sekali (`cached: true`). Sesudahnya, kalau server memberi `ETag`, request membawa `If-None-Match`; jawaban `304` memakai data tersimpan dengan status saat disimpan (`200`) dan `cached: true`. Lihat [Cache](#cache-ttl-etag-dan-data-lama) untuk `staleIfError`, `select`, dan batasannya |
 
 ```javascript
 // pasangan token lama
@@ -112,9 +113,15 @@ onInput("cari", async () => {
 });
 ```
 
-### Cache dengan ETag
+### Cache: TTL, ETag, dan data lama
 
-Contoh: versi rilis terbaru dari GitHub API, disimpan 1 jam. Sesudah satu jam GitHub menjawab `304` kalau belum ada rilis baru, dan jawaban `304` tidak memotong kuota 60 request per jam.
+- **Yang menghemat request hanya `ttl`.** Selama `ttl` detik tidak ada request sama sekali. Sesudahnya request selalu dikirim, juga yang dijawab `304`: GitHub API tanpa login tetap memotong kuota 60 request per jam untuk jawaban `304`. Yang dihemat `304` hanya ukuran unduhan.
+- **Revalidasi ETag butuh izin CORS.** Dari origin lain, JavaScript hanya bisa membaca `ETag` kalau server menyebutnya di `Access-Control-Expose-Headers`. api.github.com dan jsDelivr melakukannya. GitHub Pages dan raw.githubusercontent.com tidak, jadi `If-None-Match` tidak pernah dikirim dan sesudah `ttl` datanya diunduh ulang (cache HTTP browser masih bisa menghemat sebagian). Dari origin yang sama, `ETag` selalu terbaca.
+- **Entri terikat ke URL** (sejak 0.0.35). Kalau URL berubah tapi `key` sama, data lama tidak dipakai dan request dikirim.
+- **`staleIfError: true`** (sejak 0.0.35): kalau request sesudah `ttl` gagal (jaringan putus, timeout, atau status selain 2xx seperti `403` karena kuota habis), hasilnya data tersimpan dengan status saat disimpan, `cached: true`, dan `stale: true`, bukan galat. Request yang dibatalkan sendiri lewat `signal` tetap `error: "abort"`.
+- **`select: data => ...`** (sejak 0.0.35): memangkas balasan 2xx sebelum disimpan, supaya `localStorage` tidak terisi data yang tidak dipakai. Hasil yang dikembalikan juga sudah dipangkas, baik dari server maupun dari cache.
+
+Contoh: versi rilis terbaru dari GitHub API, disimpan 1 jam. Hanya dua field yang disimpan (balasan aslinya sekitar 10 KB), dan kalau kuota habis atau internet putus, versi terakhir yang tersimpan tetap tampil.
 
 ```javascript
 import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.34/api.js";
@@ -123,7 +130,15 @@ import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.34/ele
 const { status, data, headers, error } = await getJSON(
     "https://api.github.com/repos/crootjs/lib/releases/latest",
     null,
-    { timeout: 8000, cache: { key: "rilis-crootjs", ttl: 3600 } }
+    {
+        timeout: 8000,
+        cache: {
+            key: "rilis-crootjs",
+            ttl: 3600,
+            staleIfError: true,
+            select: rilis => ({ tag_name: rilis.tag_name, published_at: rilis.published_at })
+        }
+    }
 );
 if (status === 200) setInnerText("versi", data.tag_name);
 else if (status === 403) setInnerText("versi", "Kuota habis, coba lagi pukul " + new Date(headers.get("X-RateLimit-Reset") * 1000).toLocaleTimeString());

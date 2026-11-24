@@ -20,11 +20,12 @@ import { getJSON, postJSON, putJSON, deleteJSON, uploadFile, downloadFile } from
   data: Object,     // body parsed from JSON (null when it is not JSON); a Blob for a 2xx downloadFile
   headers: Headers, // response headers, e.g. headers.get("X-RateLimit-Remaining")
   error: String,    // null, or the kind of failure when status is 0 (see below)
-  cached: Boolean   // getJSON only: true when the data came from the cache
+  cached: Boolean,  // getJSON only: true when the data came from the cache
+  stale: Boolean    // getJSON with cache.staleIfError only: true when the request failed and stored data was used
 }
 ```
 
-`headers`, `error`, and `cached` exist since 0.0.29.
+`headers`, `error`, and `cached` exist since 0.0.29; `stale` since 0.0.35 (present only when `true`).
 
 ### When a Request Fails Entirely
 
@@ -79,7 +80,7 @@ The arguments after `responseFunction` can be the legacy token pair `tokenkey, t
 | `headers` | — | Object of extra headers, e.g. `{ Authorization: "Bearer ...", "X-Client": "web" }` |
 | `timeout` | `15000` | Milliseconds before the request is cancelled (`error: "timeout"`) |
 | `signal` | — | `AbortSignal` from an `AbortController`; `controller.abort()` cancels the request (`error: "abort"`). Since 0.0.30 |
-| `cache` | — | `getJSON` only: `{ key, ttl }`. A successful result is stored in `localStorage` under the name `key`; for `ttl` seconds no request is made at all (`cached: true`). After that, if the server sent an `ETag`, the request carries `If-None-Match`; a `304` answer uses the stored data with the status it had when stored (`200`) and `cached: true` |
+| `cache` | — | `getJSON` only: `{ key, ttl, staleIfError?, select? }`. A successful result is stored in `localStorage` under the name `key`; for `ttl` **seconds** (like `setLocalWithExpireSecond` in [storage.js](../storage), not hours or days) no request is made at all (`cached: true`). After that, if the server sent an `ETag`, the request carries `If-None-Match`; a `304` answer uses the stored data with the status it had when stored (`200`) and `cached: true`. See [Caching](#caching-ttl-etag-and-stale-data) for `staleIfError`, `select`, and the limits |
 
 ```javascript
 // legacy token pair
@@ -112,9 +113,15 @@ onInput("search", async () => {
 });
 ```
 
-### Caching with ETag
+### Caching: TTL, ETag, and stale data
 
-Example: the latest release version from the GitHub API, stored for 1 hour. After an hour GitHub answers `304` if there is no new release, and a `304` answer does not count against the quota of 60 requests per hour.
+- **Only `ttl` saves requests.** For `ttl` seconds no request is made at all. After that a request is always sent, including ones answered with `304`: the GitHub API without login still counts a `304` against the quota of 60 requests per hour. A `304` only saves download size.
+- **ETag revalidation needs CORS permission.** From another origin, JavaScript can read `ETag` only if the server lists it in `Access-Control-Expose-Headers`. api.github.com and jsDelivr do. GitHub Pages and raw.githubusercontent.com don't, so `If-None-Match` is never sent and after `ttl` the data is downloaded again (the browser's HTTP cache may still save some of it). From the same origin, `ETag` is always readable.
+- **Entries are tied to their URL** (since 0.0.35). If the URL changes but `key` stays the same, the old data is not used and a request is sent.
+- **`staleIfError: true`** (since 0.0.35): if the request after `ttl` fails (network down, timeout, or a non-2xx status such as `403` when the quota is used up), the result is the stored data with its stored status, `cached: true`, and `stale: true`, instead of an error. A request you abort yourself through `signal` still gives `error: "abort"`.
+- **`select: data => ...`** (since 0.0.35): trims a 2xx answer before it is stored, so `localStorage` doesn't fill up with data you don't use. The returned result is trimmed too, whether it came from the server or the cache.
+
+Example: the latest release version from the GitHub API, stored for 1 hour. Only two fields are stored (the original answer is about 10 KB), and if the quota is used up or the network is down, the last stored version is still shown.
 
 ```javascript
 import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.34/api.js";
@@ -123,7 +130,15 @@ import { setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.34/ele
 const { status, data, headers, error } = await getJSON(
     "https://api.github.com/repos/crootjs/lib/releases/latest",
     null,
-    { timeout: 8000, cache: { key: "crootjs-release", ttl: 3600 } }
+    {
+        timeout: 8000,
+        cache: {
+            key: "crootjs-release",
+            ttl: 3600,
+            staleIfError: true,
+            select: release => ({ tag_name: release.tag_name, published_at: release.published_at })
+        }
+    }
 );
 if (status === 200) setInnerText("version", data.tag_name);
 else if (status === 403) setInnerText("version", "Quota exhausted, try again at " + new Date(headers.get("X-RateLimit-Reset") * 1000).toLocaleTimeString());
