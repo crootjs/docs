@@ -12,7 +12,7 @@ After each page change, keyboard focus moves to the new content's heading and th
 ## Usage (Import)
 
 ```javascript
-import { startRouter } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/router.js";
+import { startRouter } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/router.js";
 ```
 
 ## `startRouter(routes, options)`
@@ -32,8 +32,8 @@ Installs the router and shows the route for the current URL (on the next microta
 
 ```javascript
 // app.js
-import { startRouter } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/router.js";
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/api.js";
+import { startRouter } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/router.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/api.js";
 
 const router = startRouter({
     "/": "pages/home.html",

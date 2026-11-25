@@ -12,10 +12,10 @@ Instead of starting from a blank page (and ending up with the typical AI look), 
 ## Usage
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/croot.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/ui.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/themes.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/croot.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/ui.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/themes.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/icons.min.css">
 <link rel="stylesheet" href="style.css">
 ```
 
@@ -99,7 +99,7 @@ Dialogs (`<dialog>`) are already styled by croot.css; put their buttons in `<div
 ## `tabs.js`
 
 ```javascript
-import { initTabs } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/tabs.min.js";
+import { initTabs } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/tabs.min.js";
 
 const tabs = initTabs("detail-tabs");
 tabs.select(2); // switch to the third tab from code

@@ -9,7 +9,7 @@ Setiap fungsi menerima **elemen input** (bukan ID) dan tidak mengembalikan nilai
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { validateUserName, validateHouseNumber, validatePhoneNumber, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/validate.js";
+import { validateUserName, validateHouseNumber, validatePhoneNumber, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/validate.js";
 ```
 
 ## `validateUserName(input)`
@@ -74,8 +74,8 @@ Awalan `Rp. ` ikut terhapus saat fungsi dipanggil lagi, jadi aman dipasang di ev
 
 ```javascript
 // script.js
-import { validateUserName, validatePhoneNumber, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/validate.js";
-import { onInput } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/element.js";
+import { validateUserName, validatePhoneNumber, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/validate.js";
+import { onInput } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/element.js";
 
 onInput("uname", validateUserName);
 onInput("telepon", validatePhoneNumber);

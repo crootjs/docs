@@ -7,7 +7,7 @@
 ## Cara Penggunaan (Import)
 
 ```javascript
-import { decodeMVT, renderVectorTile, DEFAULT_VECTOR_STYLE } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/mapvector.js";
+import { decodeMVT, renderVectorTile, DEFAULT_VECTOR_STYLE } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/mapvector.js";
 ```
 
 ## Gaya
@@ -30,9 +30,9 @@ Gaya adalah array **aturan** yang digambar berurutan; aturan yang belakangan tam
 Contoh: peta dengan jalan utama lebih menonjol dan nama tempat berbahasa Indonesia. Aturan bawaan disalin, lalu satu aturan ditambahkan di akhir supaya tampil paling atas:
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/map.js";
-import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/mapoffline.js";
-import { DEFAULT_VECTOR_STYLE } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/mapvector.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/map.js";
+import { openPMTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/mapoffline.js";
+import { DEFAULT_VECTOR_STYLE } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/mapvector.js";
 
 const style = [
     ...DEFAULT_VECTOR_STYLE,
@@ -68,8 +68,8 @@ Menggambar hasil `decodeMVT` menjadi Promise berisi `Blob` PNG.
 Contoh: tile MVT dari server tile vektor biasa, digambar untuk `map.js`.
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/map.js";
-import { decodeMVT, renderVectorTile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/mapvector.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/map.js";
+import { decodeMVT, renderVectorTile } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/mapvector.js";
 
 const vektor = {
     async getTile(z, x, y) {

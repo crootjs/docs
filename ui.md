@@ -12,10 +12,10 @@ Daripada mulai dari halaman kosong (dan berakhir dengan tampilan khas AI), salin
 ## Cara Pemakaian
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/croot.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/ui.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/themes.min.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/icons.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/croot.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/ui.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/themes.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/icons.min.css">
 <link rel="stylesheet" href="style.css">
 ```
 
@@ -99,7 +99,7 @@ Dialog (`<dialog>`) sudah ditata croot.css; taruh tombolnya di `<div class="acti
 ## `tabs.js`
 
 ```javascript
-import { initTabs } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/tabs.min.js";
+import { initTabs } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/tabs.min.js";
 
 const tabs = initTabs("tab-detail");
 tabs.select(2); // pindah ke tab ketiga dari kode

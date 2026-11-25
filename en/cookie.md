@@ -7,7 +7,7 @@
 ## Usage (Import)
 
 ```javascript
-import { setCookieWithExpireHour, getCookie, deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/cookie.js";
+import { setCookieWithExpireHour, getCookie, deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/cookie.js";
 ```
 
 ## `setCookieWithExpireDay(cname, cvalue, exdays)`
@@ -48,9 +48,9 @@ Deletes cookie `cname` by setting its expiry to 1 January 1970. Only deletes a c
 ### Example: log in and log out
 
 ```javascript
-import { setCookieWithExpireHour, getCookie, deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/cookie.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/api.js";
-import { onClick, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/element.js";
+import { setCookieWithExpireHour, getCookie, deleteCookie } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/cookie.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/api.js";
+import { onClick, getValue } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.43/element.js";
 
 onClick("loginButton", async () => {
     const { status, data } = await postJSON("https://api.example.com/login", { user: getValue("user"), password: getValue("password") }, null);
