@@ -13,7 +13,7 @@ It follows the same principles as the CrootJS JS modules: small and frugal (no f
 <link rel="stylesheet" href="style.css">
 ```
 
-`croot.min.css` is minified automatically by jsDelivr. Put your page CSS **after** it, although the order doesn't actually matter: every `croot.css` rule lives in `@layer croot`, and unlayered CSS always beats layers, so you can override anything without `!important`.
+Since 0.0.43 `croot.min.css` is minified by CrootJS itself and shipped in every release, so its content is fixed and its SRI hash is in `integrity.json` ([SRI](./#locking-file-contents-with-integrity-sri)); up to 0.0.42 jsDelivr minified it. Put your page CSS **after** it, although the order doesn't actually matter: every `croot.css` rule lives in `@layer croot`, and unlayered CSS always beats layers, so you can override anything without `!important`.
 
 Full showcase of every element and component: [croot.js.org/examples/css](https://croot.js.org/examples/css/). For application pages there are optional extras, [`ui.css` and `themes.css`](ui), and copy-ready [page patterns](https://croot.js.org/examples/pola/).
 

@@ -44,7 +44,7 @@ The `integrity` attributes in the example are explained in the next section. `py
 
 ### Locking file contents with `integrity` (SRI)
 
-Pinning a version keeps the URL the same, not the content: what is behind `@0.0.41` still depends on jsDelivr and GitHub. With an SRI (Subresource Integrity) hash the browser hashes the downloaded file and refuses to run it when the hash doesn't match. Since 0.0.42 every release includes `integrity.json` (`https://cdn.jsdelivr.net/gh/crootjs/lib@<version>/integrity.json`): sha384 hashes of every `.js`, `.min.js`, and `.css`, plus the modules each module imports.
+Pinning a version keeps the URL the same, not the content: what is behind `@0.0.41` still depends on jsDelivr and GitHub. With an SRI (Subresource Integrity) hash the browser hashes the downloaded file and refuses to run it when the hash doesn't match. Since 0.0.42 every release includes `integrity.json` (`https://cdn.jsdelivr.net/gh/crootjs/lib@<version>/integrity.json`): sha384 hashes of every `.js`, `.min.js`, `.css`, and (since 0.0.43) `.min.css`, plus the modules each module imports.
 
 `integrity` on `<link rel="modulepreload">` alone is not enough: only Chromium rejects a changed file, Firefox and Safari still run the module loaded by `import`. All three enforce an import map with an `integrity` key, and that import map also covers imports inside modules (`api.min.js` imports `storage.min.js`). Install it from `integrity.js`, the first script in `<head>` and a **classic** one (the only exception to the [ES module rule](../conventions#2-javascript-must-be-loaded-as-an-es-module)):
 
@@ -73,7 +73,7 @@ document.currentScript.after(map);
 
 - List every module the page imports **and** the ones in the "Also loads" column (`openapi.js` also loads `yaml.js` and `markdown.js` when needed). A module missing from the list still loads, just unchecked; `bump-pins.py` reports it.
 - Put the same hash on `modulepreload`. Without it Chromium discards the preloaded copy and downloads the module again.
-- Modules need no `crossorigin` (they are always requested with CORS). For CSS use `<link rel="stylesheet" href="…/croot.css" integrity="…" crossorigin="anonymous">` with `.css`, not `.min.css`: `croot.min.css` is minified by jsDelivr itself and isn't part of the release, so its hash is not guaranteed to stay the same.
+- Modules need no `crossorigin` (they are always requested with CORS), but CSS does: `<link rel="stylesheet" href="…/croot.min.css" integrity="…" crossorigin="anonymous">`; without it the browser rejects a cross-origin stylesheet that has `integrity`. `.min.css` files are part of releases (and `integrity.json`) since 0.0.43; for 0.0.42 use `.css`, because its `.min.css` was minified by jsDelivr itself and its hash is not guaranteed to stay the same.
 - No need to write hashes by hand: write `integrity=""` or `"…/api.min.js": ""`, then run `bump-pins.py` (next section) to fill them in.
 - Browsers that don't know `integrity` in import maps still load the modules, unchecked. If the page already has its own import map, add the `integrity` key there. The Draco decoder that `model3d.js` downloads from gstatic.com is not covered.
 

@@ -13,7 +13,7 @@ Dibuat dengan prinsip yang sama dengan modul JS CrootJS: kecil dan hemat (tidak 
 <link rel="stylesheet" href="style.css">
 ```
 
-`croot.min.css` diperkecil otomatis oleh jsDelivr. Taruh CSS halaman Anda **sesudahnya**, walau sebenarnya urutan tidak menentukan: semua aturan `croot.css` ada di dalam `@layer croot`, dan CSS tanpa layer selalu menang atas layer, jadi Anda bisa menimpa apa pun tanpa `!important`.
+Sejak 0.0.43 `croot.min.css` diperkecil sendiri oleh CrootJS dan ikut di setiap rilis, jadi isinya tetap dan hash SRI-nya ada di `integrity.json` ([SRI](./#mengunci-isi-berkas-dengan-integrity-sri)); sampai 0.0.42 jsDelivr yang memperkecilnya. Taruh CSS halaman Anda **sesudahnya**, walau sebenarnya urutan tidak menentukan: semua aturan `croot.css` ada di dalam `@layer croot`, dan CSS tanpa layer selalu menang atas layer, jadi Anda bisa menimpa apa pun tanpa `!important`.
 
 Contoh lengkap semua elemen dan komponen: [croot.js.org/examples/css](https://croot.js.org/examples/css/). Untuk halaman aplikasi ada tambahan opsional [`ui.css` dan `themes.css`](ui), dan [pola halaman](https://croot.js.org/examples/pola/) siap salin.
 

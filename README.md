@@ -44,7 +44,7 @@ Atribut `integrity` pada contoh di atas dijelaskan di bagian berikut. `python3 t
 
 ### Mengunci isi berkas dengan `integrity` (SRI)
 
-Pin versi menjamin URL-nya tetap, bukan isinya: isi di balik `@0.0.41` tetap bergantung pada jsDelivr dan GitHub. Dengan hash SRI (Subresource Integrity) browser menghitung hash berkas yang diunduh dan menolak menjalankannya kalau tidak cocok. Sejak 0.0.42 setiap rilis menyertakan `integrity.json` (`https://cdn.jsdelivr.net/gh/crootjs/lib@<versi>/integrity.json`): hash sha384 semua `.js`, `.min.js`, dan `.css`, ditambah modul yang diimpor setiap modul.
+Pin versi menjamin URL-nya tetap, bukan isinya: isi di balik `@0.0.41` tetap bergantung pada jsDelivr dan GitHub. Dengan hash SRI (Subresource Integrity) browser menghitung hash berkas yang diunduh dan menolak menjalankannya kalau tidak cocok. Sejak 0.0.42 setiap rilis menyertakan `integrity.json` (`https://cdn.jsdelivr.net/gh/crootjs/lib@<versi>/integrity.json`): hash sha384 semua `.js`, `.min.js`, `.css`, dan (sejak 0.0.43) `.min.css`, ditambah modul yang diimpor setiap modul.
 
 `integrity` di `<link rel="modulepreload">` saja tidak cukup: hanya Chromium yang menolak berkas yang berubah, Firefox dan Safari tetap menjalankan modul yang diimpor `import`. Yang ditegakkan ketiganya adalah import map dengan kunci `integrity`, dan import map itu juga berlaku untuk import di dalam modul (`api.min.js` mengimpor `storage.min.js`). Pasang import map itu dari `integrity.js`, skrip **klasik** pertama di `<head>` (satu-satunya pengecualian aturan [modul ES](conventions#2-javascript-must-be-loaded-as-an-es-module)):
 
@@ -73,7 +73,7 @@ document.currentScript.after(map);
 
 - Cantumkan setiap modul yang diimpor halaman **dan** modul di kolom "Ikut dimuat" (`openapi.js` juga memuat `yaml.js` dan `markdown.js` saat dibutuhkan). Modul yang tidak ada di daftar tetap dimuat, hanya tanpa dicek; `bump-pins.py` melaporkannya.
 - Tulis hash yang sama di `modulepreload`. Tanpa itu Chromium membuang hasil preload dan mengunduh modulnya lagi.
-- `crossorigin` tidak perlu untuk modul (selalu diminta dengan CORS). Untuk CSS pakai `<link rel="stylesheet" href="…/croot.css" integrity="…" crossorigin="anonymous">` dengan `.css`, bukan `.min.css`: `croot.min.css` diperkecil jsDelivr sendiri dan tidak ada di rilis, jadi hash-nya tidak dijamin tetap.
+- `crossorigin` tidak perlu untuk modul (selalu diminta dengan CORS), tetapi wajib untuk CSS: `<link rel="stylesheet" href="…/croot.min.css" integrity="…" crossorigin="anonymous">`, tanpa itu browser menolak stylesheet ber-`integrity` dari domain lain. `.min.css` baru ikut rilis (dan `integrity.json`) sejak 0.0.43; untuk 0.0.42 pakai `.css`, karena `.min.css`-nya diperkecil jsDelivr sendiri dan hash-nya tidak dijamin tetap.
 - Hash tidak perlu ditulis tangan: tulis `integrity=""` atau `"…/api.min.js": ""`, lalu jalankan `bump-pins.py` (bagian berikut) untuk mengisinya.
 - Browser yang belum mengenal `integrity` di import map tetap memuat modulnya tanpa dicek. Kalau halaman sudah punya import map sendiri, tambahkan kunci `integrity` ke sana. Dekoder Draco yang diunduh `model3d.js` dari gstatic.com tidak tercakup.
 
