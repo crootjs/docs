@@ -9,7 +9,7 @@ The messages are also read by screen readers: an invalid field gets `aria-invali
 ## Usage (Import)
 
 ```javascript
-import { handleForm, validateForm, clearFormErrors } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/form.js";
+import { handleForm, validateForm, clearFormErrors } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/form.js";
 ```
 
 ## `handleForm(id, onSubmit, options)`
@@ -38,8 +38,8 @@ The quickest way. Handles the submit of form `id`: the page does not reload, the
 ```
 
 ```javascript
-import { handleForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/form.js";
-import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
+import { handleForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/form.js";
+import { postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/api.js";
 
 handleForm("signup", async (data) => {
     const { status } = await postJSON("https://api.example.com/signup", data, null);
@@ -63,8 +63,8 @@ The browser's built-in messages are turned off with `novalidate` while `handleFo
 Checks the form once, for example before moving to the next step of a multi-step form. Messages are shown or removed, and it returns `true` when everything is valid.
 
 ```javascript
-import { validateForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/form.js";
-import { onClick, show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/element.js";
+import { validateForm } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/form.js";
+import { onClick, show, hide } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/element.js";
 
 onClick("next", () => {
     if (!validateForm("step-1")) return;

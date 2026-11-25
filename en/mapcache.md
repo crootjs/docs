@@ -9,8 +9,8 @@ Unlike [`mapoffline.js`](mapoffline), there is no PMTiles file to prepare: an or
 ## Usage (Import)
 
 ```javascript
-import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/map.js";
-import { cachedTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/mapcache.js";
+import { createMap } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/map.js";
+import { cachedTiles } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/mapcache.js";
 
 createMap("map", { tiles: cachedTiles(), center: [107.6, -6.9], zoom: 14 });
 ```
@@ -59,8 +59,8 @@ Downloads the tiles in `bounds` `[minLng, minLat, maxLng, maxLat]` from `minZoom
 **Only for your own tile server or a provider that allows it.** The OpenStreetMap policy forbids bulk downloading from `tile.openstreetmap.org`, so the default template is refused (`error` holds the reason, and no request is made).
 
 ```javascript
-import { getMapBounds } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/map.js";
-import { onClick, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/element.js";
+import { getMapBounds } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/map.js";
+import { onClick, setInnerText } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/element.js";
 
 const tiles = cachedTiles("https://tiles.example.com/{z}/{x}/{y}.png", { name: "agency-map", attribution: "© Public Works Agency" });
 createMap("map", { tiles, center: [107.6, -6.9], zoom: 14 });

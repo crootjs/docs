@@ -13,7 +13,7 @@ Included:
 ## Usage (Import)
 
 ```javascript
-import { createChart, niceScale } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/chart.js";
+import { createChart, niceScale } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/chart.js";
 ```
 
 ## Minimal Example
@@ -26,7 +26,7 @@ import { createChart, niceScale } from "https://cdn.jsdelivr.net/gh/crootjs/lib@
 
 ```javascript
 // chart-page.js
-import { createChart } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/chart.js";
+import { createChart } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/chart.js";
 
 const chart = createChart("chart", {
     type: "bar",
@@ -60,7 +60,7 @@ Creates a chart inside element `id` (usually an empty `<div>`). If that element 
 Replaces some options and redraws in the same container and SVG, e.g. new data from a server:
 
 ```javascript
-import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.js";
+import { getJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/api.js";
 
 const { status, data } = await getJSON("https://api.example.com/stats", null);
 if (status === 200) chart.update({ labels: data.months, series: data.series });

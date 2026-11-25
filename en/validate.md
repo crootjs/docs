@@ -9,7 +9,7 @@ Every function takes an **input element** (not an ID) and returns nothing. That 
 ## Usage (Import)
 
 ```javascript
-import { validateUserName, validateHouseNumber, validatePhoneNumber, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/validate.js";
+import { validateUserName, validateHouseNumber, validatePhoneNumber, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/validate.js";
 ```
 
 ## `validateUserName(input)`
@@ -74,8 +74,8 @@ The `Rp. ` prefix is stripped again on the next call, so it is safe to attach to
 
 ```javascript
 // script.js
-import { validateUserName, validatePhoneNumber, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/validate.js";
-import { onInput } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/element.js";
+import { validateUserName, validatePhoneNumber, formatRupiah } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/validate.js";
+import { onInput } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.42/element.js";
 
 onInput("uname", validateUserName);
 onInput("telepon", validatePhoneNumber);
