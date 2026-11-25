@@ -33,9 +33,10 @@ jobs:
           if [ -z "$VERSION" ]; then
             VERSION=$(curl -fsS https://croot.js.org/lib/version.json | jq -r .version)
           fi
-          curl -fsSL "https://raw.githubusercontent.com/crootjs/lib/main/tools/bump-pins.sh" -o /tmp/bump-pins.sh
-          # bump-pins.sh menolak apa pun yang bukan x.y.z, termasuk halaman galat.
-          sh /tmp/bump-pins.sh "$VERSION"
+          curl -fsSL "https://raw.githubusercontent.com/crootjs/lib/main/tools/bump-pins.py" -o /tmp/bump-pins.py
+          # bump-pins.py menolak apa pun yang bukan x.y.z, termasuk halaman galat, dan memperbarui
+          # hash integrity; kalau hash tidak bisa diambil, tidak ada berkas yang diubah.
+          python3 /tmp/bump-pins.py "$VERSION"
           if git diff --quiet; then
             echo "Pin sudah lib@$VERSION."
             exit 0

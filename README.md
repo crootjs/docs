@@ -33,12 +33,94 @@ Browser baru tahu sebuah modul butuh modul lain setelah modul itu selesai diundu
 Tambahkan `<link rel="modulepreload">` di `<head>` untuk modul yang Anda impor **dan** modul di kolom "Ikut dimuat", dengan versi dan akhiran `.min.js` yang sama. Semuanya lalu diunduh bersamaan sejak awal. Contoh untuk halaman yang mengimpor `api.min.js`:
 
 ```html
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.min.js">
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/storage.min.js">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.min.js" integrity="sha384-FkrcJYDj82Td9axSh3O+A2TIpwCIg67PsrurLGMr5vk4KnL8c+zONZlBbaMEU0Cy">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/storage.min.js" integrity="sha384-I68UpwZkgCfB4R68KBk7oSjwdRZqI+8zHf73gCvG+J2YFk5fxD3kBQjgt45dGk0Z">
 <script type="module" src="index.js"></script>
 ```
 
 Di landing page croot.js.org, cara ini memajukan request API pertama sekitar 300 ms pada latensi 150 ms. Tabel di atas dibuat dari kode dengan `python3 tools/module-deps.py` di repo `lib`.
+
+Atribut `integrity` pada contoh di atas dijelaskan di bagian berikut. `python3 tools/module-deps.py <versi>` mencetak baris `modulepreload` setiap modul lengkap dengan hash-nya.
+
+### Mengunci isi berkas dengan `integrity` (SRI)
+
+Pin versi menjamin URL-nya tetap, bukan isinya: isi di balik `@0.0.41` tetap bergantung pada jsDelivr dan GitHub. Dengan hash SRI (Subresource Integrity) browser menghitung hash berkas yang diunduh dan menolak menjalankannya kalau tidak cocok. Sejak 0.0.42 setiap rilis menyertakan `integrity.json` (`https://cdn.jsdelivr.net/gh/crootjs/lib@<versi>/integrity.json`): hash sha384 semua `.js`, `.min.js`, dan `.css`, ditambah modul yang diimpor setiap modul.
+
+`integrity` di `<link rel="modulepreload">` saja tidak cukup: hanya Chromium yang menolak berkas yang berubah, Firefox dan Safari tetap menjalankan modul yang diimpor `import`. Yang ditegakkan ketiganya adalah import map dengan kunci `integrity`, dan import map itu juga berlaku untuk import di dalam modul (`api.min.js` mengimpor `storage.min.js`). Pasang import map itu dari `integrity.js`, skrip **klasik** pertama di `<head>` (satu-satunya pengecualian aturan [modul ES](conventions#2-javascript-must-be-loaded-as-an-es-module)):
+
+```html
+<head>
+  <script src="integrity.js"></script>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.min.js" integrity="sha384-FkrcJYDj82Td9axSh3O+A2TIpwCIg67PsrurLGMr5vk4KnL8c+zONZlBbaMEU0Cy">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/storage.min.js" integrity="sha384-I68UpwZkgCfB4R68KBk7oSjwdRZqI+8zHf73gCvG+J2YFk5fxD3kBQjgt45dGk0Z">
+  <script type="module" src="index.js"></script>
+</head>
+```
+
+```javascript
+// integrity.js: import map berisi hash SRI modul CrootJS. Skrip klasik yang dimuat paling awal,
+// karena Firefox mengabaikan import map yang ditambahkan setelah modul atau preload mulai diunduh.
+const map = document.createElement("script");
+map.type = "importmap";
+map.textContent = JSON.stringify({
+    integrity: {
+        "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.min.js": "sha384-FkrcJYDj82Td9axSh3O+A2TIpwCIg67PsrurLGMr5vk4KnL8c+zONZlBbaMEU0Cy",
+        "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/storage.min.js": "sha384-I68UpwZkgCfB4R68KBk7oSjwdRZqI+8zHf73gCvG+J2YFk5fxD3kBQjgt45dGk0Z"
+    }
+});
+document.currentScript.after(map);
+```
+
+- Cantumkan setiap modul yang diimpor halaman **dan** modul di kolom "Ikut dimuat" (`openapi.js` juga memuat `yaml.js` dan `markdown.js` saat dibutuhkan). Modul yang tidak ada di daftar tetap dimuat, hanya tanpa dicek; `bump-pins.py` melaporkannya.
+- Tulis hash yang sama di `modulepreload`. Tanpa itu Chromium membuang hasil preload dan mengunduh modulnya lagi.
+- `crossorigin` tidak perlu untuk modul (selalu diminta dengan CORS). Untuk CSS pakai `<link rel="stylesheet" href="…/croot.css" integrity="…" crossorigin="anonymous">` dengan `.css`, bukan `.min.css`: `croot.min.css` diperkecil jsDelivr sendiri dan tidak ada di rilis, jadi hash-nya tidak dijamin tetap.
+- Hash tidak perlu ditulis tangan: tulis `integrity=""` atau `"…/api.min.js": ""`, lalu jalankan `bump-pins.py` (bagian berikut) untuk mengisinya.
+- Browser yang belum mengenal `integrity` di import map tetap memuat modulnya tanpa dicek. Kalau halaman sudah punya import map sendiri, tambahkan kunci `integrity` ke sana. Dekoder Draco yang diunduh `model3d.js` dari gstatic.com tidak tercakup.
+
+### Menaikkan versi dengan `bump-pins.py`
+
+Versi tertulis di beberapa tempat (import, `modulepreload`, `integrity.js`) dan hash berubah setiap versi. Satu yang terlewat berarti modul yang sama diunduh dua kali, atau ditolak browser. `tools/bump-pins.py` (Python 3 saja, tanpa paket tambahan) mengganti semuanya dalam satu folder:
+
+```sh
+curl -fsSLO https://raw.githubusercontent.com/crootjs/lib/main/tools/bump-pins.py
+python3 bump-pins.py latest .     # atau versi tertentu: python3 bump-pins.py 0.0.42 .
+```
+
+Setiap `crootjs/lib@x.y.z` di berkas `.html`, `.js`, `.md`, `.txt`, dan `.json` menjadi versi baru, dan setiap `integrity` di samping URL CrootJS diisi hash versi itu (dari `integrity.json`, atau dari berkas yang diunduh untuk versi sebelum 0.0.42). Kalau satu hash gagal diambil, tidak ada berkas yang ditulis. `latest` membaca https://croot.js.org/lib/version.json.
+
+Supaya dibuka PR setiap ada versi baru (seperti Dependabot), salin workflow ini ke repo Anda. Di Settings → Actions → General, aktifkan "Allow GitHub Actions to create and approve pull requests". PR yang dibuat dengan `github.token` tidak memicu workflow lain, jadi uji CI Anda tidak otomatis berjalan di PR itu.
+
+```yaml
+# .github/workflows/crootjs.yml
+name: crootjs
+on:
+  schedule:
+    - cron: "0 2 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(curl -fsS https://croot.js.org/lib/version.json | jq -r .version)
+          branch="crootjs-$VERSION"
+          if git ls-remote --exit-code origin "refs/heads/$branch" > /dev/null; then exit 0; fi
+          curl -fsSL https://raw.githubusercontent.com/crootjs/lib/main/tools/bump-pins.py -o /tmp/bump-pins.py
+          python3 /tmp/bump-pins.py "$VERSION" .
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898341+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git commit -am "CrootJS $VERSION"
+          git push origin "$branch"
+          gh pr create --title "CrootJS $VERSION" --body "https://github.com/crootjs/lib/releases/tag/v$VERSION"
+```
 
 ## Referensi Modul
 
@@ -91,7 +173,7 @@ Lihat juga: [source code lib](https://github.com/crootjs/lib) dan [contoh implem
 
 ## Coding Conventions (Wajib)
 
-Semua kode yang memakai CrootJS — ditulis manusia maupun AI coding agent — **wajib** memisahkan HTML, CSS, dan JS ke file terpisah, dan JS wajib dimuat sebagai `type="module"`. Tidak boleh ada `<style>`/`<script>` inline atau atribut `onclick`/`style=""` di HTML.
+Semua kode yang memakai CrootJS — ditulis manusia maupun AI coding agent — **wajib** memisahkan HTML, CSS, dan JS ke file terpisah, dan JS wajib dimuat sebagai `type="module"` (kecuali `integrity.js` untuk [SRI](#mengunci-isi-berkas-dengan-integrity-sri)). Tidak boleh ada `<style>`/`<script>` inline atau atribut `onclick`/`style=""` di HTML.
 
 Baca aturan lengkap & alasannya: **[conventions.md](conventions)**.
 

@@ -33,12 +33,94 @@ A browser only learns that a module needs another one after it has downloaded it
 Add `<link rel="modulepreload">` in `<head>` for the modules you import **and** the ones in the "Also loads" column, with the same version and `.min.js` suffix. They are then all downloaded together from the start. Example for a page that imports `api.min.js`:
 
 ```html
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.min.js">
-<link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/storage.min.js">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.min.js" integrity="sha384-FkrcJYDj82Td9axSh3O+A2TIpwCIg67PsrurLGMr5vk4KnL8c+zONZlBbaMEU0Cy">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/storage.min.js" integrity="sha384-I68UpwZkgCfB4R68KBk7oSjwdRZqI+8zHf73gCvG+J2YFk5fxD3kBQjgt45dGk0Z">
 <script type="module" src="index.js"></script>
 ```
 
 On the croot.js.org landing page this moves the first API request about 300 ms earlier at 150 ms latency. The table above is generated from the code with `python3 tools/module-deps.py` in the `lib` repo.
+
+The `integrity` attributes in the example are explained in the next section. `python3 tools/module-deps.py <version>` prints the `modulepreload` lines of every module with their hashes.
+
+### Locking file contents with `integrity` (SRI)
+
+Pinning a version keeps the URL the same, not the content: what is behind `@0.0.41` still depends on jsDelivr and GitHub. With an SRI (Subresource Integrity) hash the browser hashes the downloaded file and refuses to run it when the hash doesn't match. Since 0.0.42 every release includes `integrity.json` (`https://cdn.jsdelivr.net/gh/crootjs/lib@<version>/integrity.json`): sha384 hashes of every `.js`, `.min.js`, and `.css`, plus the modules each module imports.
+
+`integrity` on `<link rel="modulepreload">` alone is not enough: only Chromium rejects a changed file, Firefox and Safari still run the module loaded by `import`. All three enforce an import map with an `integrity` key, and that import map also covers imports inside modules (`api.min.js` imports `storage.min.js`). Install it from `integrity.js`, the first script in `<head>` and a **classic** one (the only exception to the [ES module rule](../conventions#2-javascript-must-be-loaded-as-an-es-module)):
+
+```html
+<head>
+  <script src="integrity.js"></script>
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.min.js" integrity="sha384-FkrcJYDj82Td9axSh3O+A2TIpwCIg67PsrurLGMr5vk4KnL8c+zONZlBbaMEU0Cy">
+  <link rel="modulepreload" href="https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/storage.min.js" integrity="sha384-I68UpwZkgCfB4R68KBk7oSjwdRZqI+8zHf73gCvG+J2YFk5fxD3kBQjgt45dGk0Z">
+  <script type="module" src="index.js"></script>
+</head>
+```
+
+```javascript
+// integrity.js: import map with the SRI hashes of the CrootJS modules. A classic script loaded
+// first, because Firefox ignores an import map added after a module or preload started loading.
+const map = document.createElement("script");
+map.type = "importmap";
+map.textContent = JSON.stringify({
+    integrity: {
+        "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/api.min.js": "sha384-FkrcJYDj82Td9axSh3O+A2TIpwCIg67PsrurLGMr5vk4KnL8c+zONZlBbaMEU0Cy",
+        "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.41/storage.min.js": "sha384-I68UpwZkgCfB4R68KBk7oSjwdRZqI+8zHf73gCvG+J2YFk5fxD3kBQjgt45dGk0Z"
+    }
+});
+document.currentScript.after(map);
+```
+
+- List every module the page imports **and** the ones in the "Also loads" column (`openapi.js` also loads `yaml.js` and `markdown.js` when needed). A module missing from the list still loads, just unchecked; `bump-pins.py` reports it.
+- Put the same hash on `modulepreload`. Without it Chromium discards the preloaded copy and downloads the module again.
+- Modules need no `crossorigin` (they are always requested with CORS). For CSS use `<link rel="stylesheet" href="…/croot.css" integrity="…" crossorigin="anonymous">` with `.css`, not `.min.css`: `croot.min.css` is minified by jsDelivr itself and isn't part of the release, so its hash is not guaranteed to stay the same.
+- No need to write hashes by hand: write `integrity=""` or `"…/api.min.js": ""`, then run `bump-pins.py` (next section) to fill them in.
+- Browsers that don't know `integrity` in import maps still load the modules, unchecked. If the page already has its own import map, add the `integrity` key there. The Draco decoder that `model3d.js` downloads from gstatic.com is not covered.
+
+### Bumping versions with `bump-pins.py`
+
+The version is written in several places (imports, `modulepreload`, `integrity.js`) and the hashes change with every version. Missing one means the same module is downloaded twice, or rejected by the browser. `tools/bump-pins.py` (just Python 3, no packages) replaces them all in a folder:
+
+```sh
+curl -fsSLO https://raw.githubusercontent.com/crootjs/lib/main/tools/bump-pins.py
+python3 bump-pins.py latest .     # or a specific version: python3 bump-pins.py 0.0.42 .
+```
+
+Every `crootjs/lib@x.y.z` in `.html`, `.js`, `.md`, `.txt`, and `.json` files becomes the new version, and every `integrity` next to a CrootJS URL gets that version's hash (from `integrity.json`, or from the downloaded file for versions before 0.0.42). If one hash can't be fetched, no file is written. `latest` reads https://croot.js.org/lib/version.json.
+
+To get a pull request for every new version (like Dependabot), copy this workflow into your repo. In Settings → Actions → General, enable "Allow GitHub Actions to create and approve pull requests". Pull requests opened with `github.token` don't trigger other workflows, so your CI won't run on them automatically.
+
+```yaml
+# .github/workflows/crootjs.yml
+name: crootjs
+on:
+  schedule:
+    - cron: "0 2 * * 1"
+  workflow_dispatch:
+permissions:
+  contents: write
+  pull-requests: write
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(curl -fsS https://croot.js.org/lib/version.json | jq -r .version)
+          branch="crootjs-$VERSION"
+          if git ls-remote --exit-code origin "refs/heads/$branch" > /dev/null; then exit 0; fi
+          curl -fsSL https://raw.githubusercontent.com/crootjs/lib/main/tools/bump-pins.py -o /tmp/bump-pins.py
+          python3 /tmp/bump-pins.py "$VERSION" .
+          if git diff --quiet; then exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898341+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          git commit -am "CrootJS $VERSION"
+          git push origin "$branch"
+          gh pr create --title "CrootJS $VERSION" --body "https://github.com/crootjs/lib/releases/tag/v$VERSION"
+```
 
 ## Module Reference
 
@@ -91,7 +173,7 @@ See also: [lib source code](https://github.com/crootjs/lib) and [implementation 
 
 ## Coding Conventions (Mandatory)
 
-All code that uses CrootJS — written by humans or by AI coding agents — **must** keep HTML, CSS, and JS in separate files, and JS must be loaded as `type="module"`. No inline `<style>`/`<script>` and no `onclick`/`style=""` attributes in HTML.
+All code that uses CrootJS — written by humans or by AI coding agents — **must** keep HTML, CSS, and JS in separate files, and JS must be loaded as `type="module"` (except `integrity.js` for [SRI](#locking-file-contents-with-integrity-sri)). No inline `<style>`/`<script>` and no `onclick`/`style=""` attributes in HTML.
 
 Read the full rules & rationale: **[conventions.md](../conventions)**.
 

@@ -48,6 +48,8 @@ Every `.js` file your page owns must be loaded with `type="module"`:
 
 Never as a plain classic script. This matches how CrootJS itself is distributed (`import { x } from "https://cdn.jsdelivr.net/gh/crootjs/lib@<version>/module.js"`) and keeps the whole page in strict-mode ES module scope — no accidental globals.
 
+One exception: `integrity.js`, the file that installs the import map with [SRI hashes](en/#locking-file-contents-with-integrity-sri) for CrootJS modules, is a classic script (`<script src="integrity.js"></script>`), the first script in `<head>`. An import map must exist before any module starts loading; Firefox ignores one added later, so a module can't install it, and an inline `<script type="importmap">` would break rule 1. The file holds only the import map, no other logic.
+
 ## 3. Import CrootJS from a pinned CDN version
 
 ```js
@@ -57,6 +59,7 @@ import { getJSON, postJSON } from "https://cdn.jsdelivr.net/gh/crootjs/lib@0.0.4
 - Always pin an exact version tag (`@0.0.5`), never `@latest`, in committed code — `@latest` can silently change behavior under you.
 - Import only the specific module files you actually use (`cookie.js`, `url.js`, ...), not the whole library, so the page only loads what it needs.
 - In production use `.min.js` (`api.min.js`) for **every** CrootJS import on the page, all from the same version. Never mix `api.min.js` with `storage.js`: they are different module URLs, so a module imported by both is loaded twice and each copy keeps its own state. Since 0.0.38 the `.min.js` files in a release import the `.min.js` of their sibling modules.
+- To make the browser reject a file whose content changed behind the same URL, add `integrity` hashes ([SRI](en/#locking-file-contents-with-integrity-sri)) and bump versions with `tools/bump-pins.py`, which updates the hashes too.
 
 ## 4. No AI slop
 
